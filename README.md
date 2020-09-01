@@ -19,3 +19,6 @@
 
 ### Bundle & Minification
 - https://docs.microsoft.com/en-us/aspnet/core/client-side/bundling-and-minification?view=aspnetcore-3.1
+
+### Scaffolding
+ - https://github.com/dotnet/Scaffolding
