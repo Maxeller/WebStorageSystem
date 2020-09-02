@@ -28,7 +28,7 @@ namespace WebStorageSystem.Controllers
             return View();
         }
 
-        public IActionResult Test()
+        public IActionResult TestCreate()
         {
             return View();
         }
