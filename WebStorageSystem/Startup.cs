@@ -24,6 +24,7 @@ namespace WebStorageSystem
         {
             services
                 .AddControllersWithViews()
+                .AddJsonOptions(configure => configure.JsonSerializerOptions.AllowTrailingCommas = true)
                 .AddXmlSerializerFormatters();
         }
 
