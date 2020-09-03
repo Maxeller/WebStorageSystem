@@ -34,6 +34,7 @@ namespace WebStorageSystem
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseRouteDebugger(); //TODO: just trying RouteDebugger
             }
             else
             {

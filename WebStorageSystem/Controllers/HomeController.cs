@@ -28,6 +28,11 @@ namespace WebStorageSystem.Controllers
             return View();
         }
 
+        public IActionResult TestList()
+        {
+            return View();
+        }
+
         public IActionResult TestCreate()
         {
             return View();
