@@ -16,43 +16,10 @@ namespace WebStorageSystem.Controllers
     [ApiController]
     public class ApiController : ControllerBase
     {
-        List<string> list = new List<string>(){"test1", "test2"};
-
-        [HttpGet("list")]
-        public ActionResult<IEnumerable<string>> List()
+        [HttpGet("version")]
+        public ActionResult<string> Version()
         {
-            return list;
-        }
-
-        [HttpGet("list/{id}", Name = "GetById")]
-        public ActionResult<string> List(int id)
-        {
-            var item = list.ElementAtOrDefault(id);
-            return item != null ? (ActionResult<string>) item : NotFound();
-        }
-
-        [HttpPost("list")]
-        public ActionResult AddToList([FromBody] string item)
-        {
-            if (item == null) return BadRequest();
-            list.Add(item);
-            return CreatedAtRoute("GetById",new {id = list.Count-1}, item);
-        }
-
-        [HttpGet("test", Name = "GetTestById")]
-        public ActionResult TestModel(int id)
-        {
-            return Ok();
-        }
-
-        [HttpPost("test")]
-        public ActionResult TestModel([FromBody] TestViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                return CreatedAtRoute("GetTestById", new {id = list.Count - 1}, model);
-            }
-            return BadRequest();
+            return "0.1";
         }
     }
 }
