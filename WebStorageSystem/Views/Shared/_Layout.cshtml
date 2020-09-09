@@ -1,12 +1,11 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - WebStorageSystem</title>
 
-    <partial name="_LayoutCssPartial"/>
-
+    <partial name="LayoutPartial/_LayoutCssPartial"/>
 </head>
 <body>
     <header>
@@ -31,7 +30,7 @@
         </nav>
     </header>
     <div class="container">
-        @*<partial name="_CookieConsentPartial" />*@
+        @*<partial name="LayoutPartial/_CookieConsentPartial"/>*@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -43,7 +42,7 @@
         </div>
     </footer>
 
-    <partial name="_LayoutScriptsPartial">
+    <partial name="LayoutPartial/_LayoutScriptsPartial"/>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

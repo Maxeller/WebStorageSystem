@@ -4,6 +4,9 @@
 
 ## Dev Documentaion
 
+### Configuration
+- https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-3.1
+
 ### Razor Runtime Compilation
 - https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-compilation?view=aspnetcore-3.1&tabs=visual-studio
 - https://blog.elmah.io/add-razor-runtime-compilation-when-developing-asp-net-core/
