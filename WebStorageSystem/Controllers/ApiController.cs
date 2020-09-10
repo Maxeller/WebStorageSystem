@@ -16,10 +16,11 @@ namespace WebStorageSystem.Controllers
     [ApiController]
     public class ApiController : ControllerBase
     {
-        [HttpGet("version")]
+        [HttpGet("version", Name = "Version")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<string> Version()
         {
-            return "0.1";
+            return "0.1"; //TODO: Move to DB or config
         }
     }
 }
