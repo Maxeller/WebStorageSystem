@@ -4,11 +4,11 @@ using WebStorageSystem.Models.Location;
 using WebStorageSystem.Models.Product;
 using WebStorageSystem.Models.Transfers;
 
-namespace WebStorageSystem
+namespace WebStorageSystem.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(StorageDbContext context)
+        public static void Initialize(AppDbContext context)
         {
             context.Database.EnsureCreated();
 

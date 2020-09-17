@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using WebStorageSystem.Data;
 
 namespace WebStorageSystem
 {
@@ -17,13 +18,13 @@ namespace WebStorageSystem
             //CreateHostBuilder(args).Build().Run();
 
             var host = CreateHostBuilder(args).Build();
-
+            
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<StorageDbContext>();
+                    var context = services.GetRequiredService<AppDbContext>();
                     DbInitializer.Initialize(context);
                 }
                 catch (Exception e)
@@ -32,7 +33,7 @@ namespace WebStorageSystem
                     logger.LogError(e, "An error occurred while seeding the database.");
                 }
             }
-
+            
             host.Run();
         }
 

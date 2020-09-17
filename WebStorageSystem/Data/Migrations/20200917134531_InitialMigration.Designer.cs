@@ -5,19 +5,19 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WebStorageSystem;
+using WebStorageSystem.Data;
 
-namespace WebStorageSystem.Migrations
+namespace WebStorageSystem.Data.Migrations
 {
-    [DbContext(typeof(StorageDbContext))]
-    [Migration("20200909211847_InitialMigration")]
+    [DbContext(typeof(AppDbContext))]
+    [Migration("20200917134531_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.7")
+                .HasAnnotation("ProductVersion", "3.1.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 

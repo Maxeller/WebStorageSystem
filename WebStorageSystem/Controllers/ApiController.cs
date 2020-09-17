@@ -17,6 +17,7 @@ namespace WebStorageSystem.Controllers
     public class ApiController : ControllerBase
     {
         [HttpGet("version", Name = "Version")]
+        [FormatFilter]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<string> Version()
         {

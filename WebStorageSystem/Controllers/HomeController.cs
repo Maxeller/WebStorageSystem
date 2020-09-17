@@ -15,7 +15,7 @@ namespace WebStorageSystem.Controllers
 
         public HomeController(ILogger<HomeController> logger)
         {
-            _logger = logger;
+            _logger = logger; //TODO: Read documentation
         }
 
         public IActionResult Index()

@@ -1,16 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.Formatters;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using WebStorageSystem.Models;
 using WebStorageSystem.Models.Location;
 using WebStorageSystem.Models.Product;
 using WebStorageSystem.Models.Transfers;
 
-namespace WebStorageSystem
+namespace WebStorageSystem.Data
 {
-    public class StorageDbContext : DbContext
+    public class AppDbContext : DbContext
     {
-        public StorageDbContext(DbContextOptions<StorageDbContext> options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
 

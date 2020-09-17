@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace WebStorageSystem.Migrations
+namespace WebStorageSystem.Data.Migrations
 {
     public partial class InitialMigration : Migration
     {
@@ -134,13 +134,13 @@ namespace WebStorageSystem.Migrations
                         column: x => x.DestinationLocationId,
                         principalTable: "Locations",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Transfers_Locations_OriginLocationId",
                         column: x => x.OriginLocationId,
                         principalTable: "Locations",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
