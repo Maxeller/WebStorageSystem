@@ -12,7 +12,7 @@ namespace WebStorageSystem.Data
         {
             context.Database.EnsureCreated();
 
-            if(context.Transfers.Any()) return;
+            if(context.Products.Any()) return;
 
             var manufacturers = new[]
             {
@@ -85,7 +85,7 @@ namespace WebStorageSystem.Data
                 new Transfer {OriginLocation = locations[0], DestinationLocation = locations[1], TransferredUnits = tu1.AsQueryable()},
                 new Transfer {OriginLocation = locations[0], DestinationLocation = locations[2], TransferredUnits = tu2.AsQueryable()}
             };
-            context.Transfers.AddRange(transfers);
+            //context.Transfers.AddRange(transfers);
             context.SaveChanges();
         }
     }

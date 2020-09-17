@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System.Net.Mime;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WebStorageSystem.Models.Identity;
 using WebStorageSystem.Models.Location;
 using WebStorageSystem.Models.Product;
-using WebStorageSystem.Models.Transfers;
 
 namespace WebStorageSystem.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -24,10 +26,12 @@ namespace WebStorageSystem.Data
         public DbSet<LocationType> LocationTypes { get; set; }
 
         // Folder: Transfer
-        public DbSet<Transfer> Transfers { get; set; }
+        //public DbSet<Transfer> Transfers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             // Folder: Product
             modelBuilder.Entity<Manufacturer>().ToTable("Manufacturers");
             modelBuilder.Entity<Product>().ToTable("Products");
@@ -44,7 +48,7 @@ namespace WebStorageSystem.Data
             modelBuilder.Entity<LocationType>().ToTable("LocationTypes");
 
             // Folder: Transfer
-            modelBuilder.Entity<Transfer>().ToTable("Transfers");
+            //modelBuilder.Entity<Transfer>().ToTable("Transfers");
         }
     }
 }

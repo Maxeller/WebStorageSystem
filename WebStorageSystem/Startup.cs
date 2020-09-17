@@ -5,10 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebStorageSystem.Data;
+using WebStorageSystem.Models.Identity;
 
 namespace WebStorageSystem
 {
@@ -24,6 +27,36 @@ namespace WebStorageSystem
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // DB
+            services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            // IDENTITY
+            services.AddDefaultIdentity<ApplicationUser>(options =>
+                {
+
+                })
+                .AddEntityFrameworkStores<AppDbContext>();
+
+            // HTTPS
+            /*
+            services.AddHsts(options =>
+            {
+                options.Preload = true;
+                options.IncludeSubDomains = true;
+                options.MaxAge = TimeSpan.FromMinutes(30); //TODO: Change when in long run production
+            });
+
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+                //options.HttpsPort = 5001;
+            });
+            */
+
+            // COOKIES
             /*
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -33,18 +66,19 @@ namespace WebStorageSystem
             });
             */
 
-            services
-                .AddControllersWithViews()
-                .AddJsonOptions(configure =>
+            // MVC/API SETTINGS
+            services.AddControllersWithViews(options =>
                 {
-                    configure.JsonSerializerOptions.AllowTrailingCommas = true; // Allows for trailing commas in JSON file
+                    //TODO: Add Filters
+                    //options.Filters.Add<>()
+                })
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.AllowTrailingCommas = true; // Allows for trailing commas in JSON file
                 })
                 .AddXmlSerializerFormatters(); // Adds XML serializer for input and output
 
-            services.AddDbContext<StorageDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("LocalDbTest"));
-            });
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,6 +108,8 @@ namespace WebStorageSystem
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -81,6 +117,7 @@ namespace WebStorageSystem
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }
