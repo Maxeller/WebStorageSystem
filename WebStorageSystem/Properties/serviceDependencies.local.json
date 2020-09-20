@@ -8,6 +8,12 @@
       "type": "mssql.local",
       "connectionId": "LocalDbTest",
       "secretStore": "LocalSecretsFile"
+    },
+    "mssql2": {
+      "resourceId": null,
+      "type": "mssql.onprem",
+      "connectionId": "tommalik.cz",
+      "secretStore": "LocalSecretsFile"
     }
   }
 }

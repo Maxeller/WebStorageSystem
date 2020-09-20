@@ -6,6 +6,10 @@
     "mssql1": {
       "type": "mssql",
       "connectionId": "LocalDbTest"
+    },
+    "mssql2": {
+      "type": "mssql",
+      "connectionId": "tommalik.cz"
     }
   }
 }

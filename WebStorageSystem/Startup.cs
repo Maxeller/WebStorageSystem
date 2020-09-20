@@ -24,21 +24,45 @@ namespace WebStorageSystem
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // DB
+            // DATABASE
             services.AddDbContext<AppDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(Configuration.GetConnectionString("LocalDb"));
             });
 
             // IDENTITY
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
+
+            //TODO: Add Claims/Roles
+
             services.AddDefaultIdentity<ApplicationUser>(options =>
                 {
+                    // Password settings
+                    options.Password.RequiredLength = 6;
+                    options.Password.RequireDigit = true;
+
+                    // Lockout settings
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                    options.Lockout.MaxFailedAccessAttempts = 5;
+                    options.Lockout.AllowedForNewUsers = true;
 
                 })
                 .AddEntityFrameworkStores<AppDbContext>();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+
+                options.LoginPath = "/Identity/Account/Login";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.SlidingExpiration = true;
+            });
 
             // HTTPS
             /*
@@ -52,11 +76,11 @@ namespace WebStorageSystem
             services.AddHttpsRedirection(options =>
             {
                 options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-                //options.HttpsPort = 5001;
+                options.HttpsPort = 443;
             });
             */
 
-            // COOKIES
+            // COOKIES TODO: Use?
             /*
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -78,10 +102,9 @@ namespace WebStorageSystem
                 })
                 .AddXmlSerializerFormatters(); // Adds XML serializer for input and output
 
-            services.AddRazorPages();
+            services.AddRazorPages(); // Identity uses Razor Pages
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
