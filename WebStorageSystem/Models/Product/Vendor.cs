@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace WebStorageSystem.Models.Product
 {
-    public class Vendor
+    public class Vendor : BaseModel
     {
         public int Id { get; set; }
 
@@ -23,5 +24,7 @@ namespace WebStorageSystem.Models.Product
         [EmailAddress]
         [StringLength(200)]
         public string Email { get; set; }
+
+        public IQueryable<Unit> Units { get; set; }
     }
 }

@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace WebStorageSystem.Models.Product
 {
-    public class Manufacturer
+    public class Manufacturer : BaseModel
     {
         public int Id { get; set; }
 
         [Required]
         [StringLength(100)]
         public string Name { get; set; }
+
+        public IQueryable<Product> Products { get; set; }
     }
 }

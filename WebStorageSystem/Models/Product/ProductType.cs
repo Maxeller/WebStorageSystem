@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebStorageSystem.Models.Product
 {
-    public class ProductType
+    public class ProductType : BaseModel
     {
         public int Id { get; set; }
 
@@ -16,5 +16,7 @@ namespace WebStorageSystem.Models.Product
 
         [StringLength(500)]
         public string Description { get; set; }
+
+        public IQueryable<Product> Products { get; set; }
     }
 }

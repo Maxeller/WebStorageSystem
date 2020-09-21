@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using WebStorageSystem.Models.Identity;
 using WebStorageSystem.Models.Location;
 using WebStorageSystem.Models.Product;
-using WebStorageSystem.Models.Transfers;
+using WebStorageSystem.Models.Transfer;
 
 namespace WebStorageSystem.Data
 {
@@ -40,10 +41,10 @@ namespace WebStorageSystem.Data
 
             var products = new[]
             {
-                new Product {Name = "Cam 3000", Manufacturer = manufacturers[0], ProductType = productTypes[0], Vendor = vendors[0]},
-                new Product {Name = "Cam 5000", Manufacturer = manufacturers[0], ProductType = productTypes[0], Vendor = vendors[0]},
-                new Product {Name = "SuperMic 2", Manufacturer = manufacturers[1], ProductType = productTypes[1], Vendor = vendors[1]},
-                new Product {Name = "SuperMic 3", Manufacturer = manufacturers[1], ProductType = productTypes[1], Vendor = vendors[0]},
+                new Product {Name = "Cam 3000", Manufacturer = manufacturers[0], ProductType = productTypes[0]},
+                new Product {Name = "Cam 5000", Manufacturer = manufacturers[0], ProductType = productTypes[0]},
+                new Product {Name = "SuperMic 2", Manufacturer = manufacturers[1], ProductType = productTypes[1]},
+                new Product {Name = "SuperMic 3", Manufacturer = manufacturers[1], ProductType = productTypes[1]},
             };
             context.Products.AddRange(products);
             context.SaveChanges();
@@ -67,17 +68,17 @@ namespace WebStorageSystem.Data
 
             var units = new[]
             {
-                new Unit {Product = products[0], SerialNumber = "3000-1", Location = locations[0]},
-                new Unit {Product = products[0], SerialNumber = "3000-2", Location = locations[0]},
-                new Unit {Product = products[0], SerialNumber = "3000-3", Location = locations[1]},
-                new Unit {Product = products[0], SerialNumber = "3000-4", Location = locations[2]},
-                new Unit {Product = products[1], SerialNumber = "5000-1", Location = locations[2]},
-                new Unit {Product = products[2], SerialNumber = "PSM2-1", Location = locations[1]},
-                new Unit {Product = products[2], SerialNumber = "PSM2-2", Location = locations[2]}
+                new Unit {Product = products[0], SerialNumber = "3000-1", Location = locations[0], Vendor = vendors[0]},
+                new Unit {Product = products[0], SerialNumber = "3000-2", Location = locations[0], Vendor = vendors[0]},
+                new Unit {Product = products[0], SerialNumber = "3000-3", Location = locations[1], Vendor = vendors[0]},
+                new Unit {Product = products[0], SerialNumber = "3000-4", Location = locations[2], Vendor = vendors[0]},
+                new Unit {Product = products[1], SerialNumber = "5000-1", Location = locations[2], Vendor = vendors[1]},
+                new Unit {Product = products[2], SerialNumber = "PSM2-1", Location = locations[1], Vendor = vendors[1]},
+                new Unit {Product = products[2], SerialNumber = "PSM2-2", Location = locations[2], Vendor = vendors[1]}
             };
             context.Units.AddRange(units);
             context.SaveChanges();
-
+            /*
             var tu1 = new List<Unit> {units[2], units[5]};
             var tu2 = new List<Unit> {units[3], units[4], units[6]};
             var transfers = new[]
@@ -86,6 +87,10 @@ namespace WebStorageSystem.Data
                 new Transfer {OriginLocation = locations[0], DestinationLocation = locations[2], TransferredUnits = tu2.AsQueryable()}
             };
             //context.Transfers.AddRange(transfers);
+            context.SaveChanges();
+            */
+            var admin = new ApplicationUser { IsAdmin = true, }; // TODO: Add admin
+            context.ApplicationUsers.Add(admin);
             context.SaveChanges();
         }
     }

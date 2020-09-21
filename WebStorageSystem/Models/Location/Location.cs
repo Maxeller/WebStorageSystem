@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebStorageSystem.Models.Location
 {
-    public class Location
+    public class Location : BaseModel
     {
         public int Id { get; set; }
 
@@ -17,5 +17,8 @@ namespace WebStorageSystem.Models.Location
         [Required]
         [Display(Name = "Location Type")]
         public LocationType LocationType { get; set; }
+
+        public IQueryable<Transfer.Transfer> OriginTransfers { get; set; }
+        public IQueryable<Transfer.Transfer> DestinationTransfers { get; set; }
     }
 }

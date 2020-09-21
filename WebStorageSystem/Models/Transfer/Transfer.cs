@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
-using WebStorageSystem.Models.Location;
+using WebStorageSystem.Models.Identity;
 using WebStorageSystem.Models.Product;
 
-namespace WebStorageSystem.Models.Transfers
+namespace WebStorageSystem.Models.Transfer
 {
-    public class Transfer
+    public class Transfer : BaseModel
     {
         public int Id { get; set; }
 
@@ -21,9 +19,14 @@ namespace WebStorageSystem.Models.Transfers
         public Location.Location DestinationLocation { get; set; }
 
         [Required]
-        [Display(Name = "Transferred Units")]
-        public IQueryable<Unit> TransferredUnits { get; set; }
+        [Display(Name = "Time of Transfer")]
+        //TODO: DateTime 
+        public DateTime TransferTime { get; set; }
 
-        //TODO: User
+        [Required]
+        [Display(Name = "Transferred Units")]
+        public IQueryable<TransferUnit> TransferredUnits { get; set; }
+
+        public ApplicationUser User { get; set; }
     }
 }

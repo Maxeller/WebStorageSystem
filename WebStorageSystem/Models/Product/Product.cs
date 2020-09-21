@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace WebStorageSystem.Models.Product
 {
-    public class Product
+    public class Product : BaseModel
     {
         public int Id { get; set; }
 
@@ -17,7 +18,6 @@ namespace WebStorageSystem.Models.Product
         [Required]
         public Manufacturer Manufacturer { get; set; }
 
-        [Required]
-        public Vendor Vendor { get; set; } // TODO: move elsewhere?
+        public IQueryable<Unit> Units { get; set; }
     }
 }
