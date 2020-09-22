@@ -35,6 +35,7 @@
 - Relationships via FluentAPI
     - One to Many https://www.learnentityframeworkcore.com/configuration/one-to-many-relationship-configuration
     - Many to Many https://www.learnentityframeworkcore.com/configuration/many-to-many-relationship-configuration
+- Concurrency https://www.learnentityframeworkcore.com/concurrency
 
 ### Authentication & Authorization - IdentityCore
 - https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-3.1&tabs=visual-studio
