@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace WebStorageSystem.Models.Location
 {
-    public class Location : BaseModel
+    public class Location : BaseModelWithId
     {
-        public int Id { get; set; }
-
         [Required]
         [StringLength(100)]
         public string Name { get; set; }

@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace WebStorageSystem.Models.Product
 {
-    public class ProductType : BaseModel
+    public class ProductType : BaseModelWithId
     {
-        public int Id { get; set; }
-
         [Required]
         [StringLength(100)]
         public string Name { get; set; }

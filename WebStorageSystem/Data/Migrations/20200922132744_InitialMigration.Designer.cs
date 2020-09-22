@@ -10,7 +10,7 @@ using WebStorageSystem.Data;
 namespace WebStorageSystem.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200922111825_InitialMigration")]
+    [Migration("20200922132744_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -3,10 +3,8 @@ using System.Linq;
 
 namespace WebStorageSystem.Models.Product
 {
-    public class Vendor : BaseModel
+    public class Vendor : BaseModelWithId
     {
-        public int Id { get; set; }
-
         [Required]
         [StringLength(100)]
         public string Name { get; set; }

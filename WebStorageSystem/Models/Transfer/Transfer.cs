@@ -6,10 +6,8 @@ using WebStorageSystem.Models.Product;
 
 namespace WebStorageSystem.Models.Transfer
 {
-    public class Transfer : BaseModel
+    public class Transfer : BaseModelWithId
     {
-        public int Id { get; set; }
-
         [Required]
         [Display(Name = "Origin Location")]
         public Location.Location OriginLocation { get; set; }

@@ -7,10 +7,8 @@ using WebStorageSystem.Models.Transfer;
 
 namespace WebStorageSystem.Models.Product
 {
-    public class Unit : BaseModel
+    public class Unit : BaseModelWithId
     {
-        public int Id { get; set; }
-
         [Required]
         public string SerialNumber { get; set; } //TODO: compatibility with code reader
 
