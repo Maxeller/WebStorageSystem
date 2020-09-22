@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -33,10 +34,11 @@ namespace WebStorageSystem
             });
 
             // IDENTITY
+            /*
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
-
+            */
             //TODO: Add Claims/Roles
 
             services.AddDefaultIdentity<ApplicationUser>(options =>
@@ -123,7 +125,7 @@ namespace WebStorageSystem
 
             app.UseHttpsRedirection();
 
-            //app.UseStatusCodePages(); // TODO: Use?
+            app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
 
             app.UseStaticFiles();
 
