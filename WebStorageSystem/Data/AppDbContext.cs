@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WebStorageSystem.Models;
@@ -170,6 +172,29 @@ namespace WebStorageSystem.Data
                 }
             }
             return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            var entries =
+                ChangeTracker.Entries()
+                    .Where(e => e.Entity is BaseModel && (e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted));
+
+            foreach (var entityEntry in entries)
+            {
+                ((BaseModel) entityEntry.Entity).ModifiedDate = DateTime.UtcNow;
+
+                switch (entityEntry.State)
+                {
+                    case EntityState.Added:
+                        ((BaseModel) entityEntry.Entity).CreatedDate = DateTime.UtcNow;
+                        break;
+                    case EntityState.Deleted:
+                        ((BaseModel) entityEntry.Entity).IsDeleted = true;
+                        break;
+                }
+            }
+            return base.SaveChangesAsync(cancellationToken);
         }
     }
 }
