@@ -10,6 +10,7 @@ namespace WebStorageSystem.Models
     {
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }
+        public bool IsDeleted { get; set; }
         [Timestamp]
         public byte[] RowVersion { get; set; }
     }

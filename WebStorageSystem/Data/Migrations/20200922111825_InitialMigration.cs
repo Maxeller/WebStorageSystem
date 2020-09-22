@@ -29,6 +29,8 @@ namespace WebStorageSystem.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     ModifiedDate = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     Description = table.Column<string>(maxLength: 500, nullable: true)
                 },
@@ -45,6 +47,8 @@ namespace WebStorageSystem.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     ModifiedDate = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false)
                 },
                 constraints: table =>
@@ -60,6 +64,8 @@ namespace WebStorageSystem.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     ModifiedDate = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     Description = table.Column<string>(maxLength: 500, nullable: true)
                 },
@@ -102,6 +108,8 @@ namespace WebStorageSystem.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     ModifiedDate = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     Address = table.Column<string>(maxLength: 200, nullable: false),
                     Phone = table.Column<string>(maxLength: 50, nullable: false),
@@ -141,6 +149,8 @@ namespace WebStorageSystem.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     ModifiedDate = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     LocationTypeId = table.Column<int>(nullable: false)
                 },
@@ -163,6 +173,8 @@ namespace WebStorageSystem.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     ModifiedDate = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     ProductTypeId = table.Column<int>(nullable: false),
                     ManufacturerId = table.Column<int>(nullable: false)
@@ -277,6 +289,8 @@ namespace WebStorageSystem.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     ModifiedDate = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     OriginLocationId = table.Column<int>(nullable: false),
                     DestinationLocationId = table.Column<int>(nullable: false),
                     TransferTime = table.Column<DateTime>(nullable: false),
@@ -313,6 +327,8 @@ namespace WebStorageSystem.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     ModifiedDate = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     SerialNumber = table.Column<string>(nullable: false),
                     ProductId = table.Column<int>(nullable: false),
                     LocationId = table.Column<int>(nullable: false),
@@ -348,7 +364,9 @@ namespace WebStorageSystem.Data.Migrations
                     TransferId = table.Column<int>(nullable: false),
                     UnitId = table.Column<int>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: false)
+                    ModifiedDate = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {

@@ -45,6 +45,7 @@ namespace WebStorageSystem.Data
                     .WithOne(product => product.Manufacturer)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
+                entity.HasQueryFilter(manufacturer => !manufacturer.IsDeleted);
                 entity.ToTable("Manufacturers");
             });
             modelBuilder.Entity<ProductType>(entity =>
@@ -54,6 +55,7 @@ namespace WebStorageSystem.Data
                     .WithOne(product => product.ProductType)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
+                entity.HasQueryFilter(productType => !productType.IsDeleted);
                 entity.ToTable("ProductTypes");
             });
             modelBuilder.Entity<Vendor>(entity =>
@@ -62,6 +64,7 @@ namespace WebStorageSystem.Data
                     .HasMany(vendor => vendor.Units)
                     .WithOne(unit => unit.Vendor)
                     .OnDelete(DeleteBehavior.Restrict);
+                entity.HasQueryFilter(vendor => !vendor.IsDeleted);
                 entity.ToTable("Vendors");
             });
             modelBuilder.Entity<Product>(entity =>
@@ -71,11 +74,13 @@ namespace WebStorageSystem.Data
                     .WithOne(unit => unit.Product)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
+                entity.HasQueryFilter(product => !product.IsDeleted);
                 entity.ToTable("Products");
             });
             modelBuilder.Entity<Unit>(entity =>
             {
                 entity.HasIndex(unit => unit.SerialNumber).IsUnique();
+                entity.HasQueryFilter(unit => !unit.IsDeleted);
                 entity.ToTable("Units");
             });
 
@@ -87,10 +92,12 @@ namespace WebStorageSystem.Data
                     .WithMany(locationType => locationType.Locations)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
+                entity.HasQueryFilter(location => !location.IsDeleted);
                 entity.ToTable("Locations");
             });
             modelBuilder.Entity<LocationType>(entity =>
             {
+                entity.HasQueryFilter(locationType => !locationType.IsDeleted);
                 entity.ToTable("LocationTypes");
             });
 
@@ -112,6 +119,7 @@ namespace WebStorageSystem.Data
                     .WithMany(location => location.DestinationTransfers)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
+                entity.HasQueryFilter(transfer => !transfer.IsDeleted);
                 entity.ToTable("Transfers");
             });
 
@@ -130,6 +138,7 @@ namespace WebStorageSystem.Data
                     .HasForeignKey(transferUnit => transferUnit.UnitId)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
+                entity.HasQueryFilter(transferUnit => !transferUnit.IsDeleted);
                 entity.ToTable("TransferUnits");
             });
 
@@ -144,15 +153,20 @@ namespace WebStorageSystem.Data
         {
             var entries =
                 ChangeTracker.Entries()
-                    .Where(e => e.Entity is BaseModel && (e.State == EntityState.Added || e.State == EntityState.Modified));
+                    .Where(e => e.Entity is BaseModel && (e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted));
 
             foreach (var entityEntry in entries)
             {
                 ((BaseModel) entityEntry.Entity).ModifiedDate = DateTime.UtcNow;
 
-                if (entityEntry.State == EntityState.Added)
+                switch (entityEntry.State)
                 {
-                    ((BaseModel)entityEntry.Entity).CreatedDate = DateTime.UtcNow;
+                    case EntityState.Added:
+                        ((BaseModel) entityEntry.Entity).CreatedDate = DateTime.UtcNow;
+                        break;
+                    case EntityState.Deleted:
+                        ((BaseModel) entityEntry.Entity).IsDeleted = true;
+                        break;
                 }
             }
             return base.SaveChanges();
