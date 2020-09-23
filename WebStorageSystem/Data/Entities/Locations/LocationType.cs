@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace WebStorageSystem.Data.Entities.Product
+namespace WebStorageSystem.Data.Entities.Locations
 {
-    public class ProductType : BaseEntityWithId
+    public class LocationType : BaseEntityWithId
     {
         [Required]
         [StringLength(100)]
@@ -12,6 +12,6 @@ namespace WebStorageSystem.Data.Entities.Product
         [StringLength(500)]
         public string Description { get; set; }
 
-        public IQueryable<Product> Products { get; set; }
+        public IQueryable<Location> Locations { get; set; }
     }
 }

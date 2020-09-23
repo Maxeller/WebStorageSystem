@@ -1,4 +1,4 @@
-﻿@using WebStorageSystem.Data.Entities.Identity
+﻿@using WebStorageSystem.Data.Entities.Identities
 @inject SignInManager<ApplicationUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();

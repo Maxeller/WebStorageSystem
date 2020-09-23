@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WebStorageSystem.Data.Entities.Identity;
+using WebStorageSystem.Data.Entities.Identities;
 
 namespace WebStorageSystem.Areas.Identity.Pages.Account.Manage
 {

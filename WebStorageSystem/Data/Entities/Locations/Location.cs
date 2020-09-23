@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using WebStorageSystem.Data.Entities.Transfers;
 
-namespace WebStorageSystem.Data.Entities.Location
+namespace WebStorageSystem.Data.Entities.Locations
 {
     public class Location : BaseEntityWithId
     {
@@ -13,7 +14,7 @@ namespace WebStorageSystem.Data.Entities.Location
         [Display(Name = "Location Type")]
         public LocationType LocationType { get; set; }
 
-        public IQueryable<Transfer.Transfer> OriginTransfers { get; set; }
-        public IQueryable<Transfer.Transfer> DestinationTransfers { get; set; }
+        public IQueryable<Transfer> OriginTransfers { get; set; }
+        public IQueryable<Transfer> DestinationTransfers { get; set; }
     }
 }

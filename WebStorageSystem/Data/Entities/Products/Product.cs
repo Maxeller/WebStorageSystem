@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace WebStorageSystem.Data.Entities.Product
+namespace WebStorageSystem.Data.Entities.Products
 {
     public class Product : BaseEntityWithId
     {

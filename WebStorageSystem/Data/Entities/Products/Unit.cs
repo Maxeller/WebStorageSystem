@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using WebStorageSystem.Data.Entities.Transfer;
+using WebStorageSystem.Data.Entities.Transfers;
 
-namespace WebStorageSystem.Data.Entities.Product
+namespace WebStorageSystem.Data.Entities.Products
 {
     public class Unit : BaseEntityWithId
     {
@@ -13,7 +13,7 @@ namespace WebStorageSystem.Data.Entities.Product
         public Product Product { get; set; }
 
         [Required]
-        public Location.Location Location { get; set; }
+        public Locations.Location Location { get; set; }
 
         public Vendor Vendor { get; set; }
 

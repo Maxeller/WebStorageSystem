@@ -1,6 +1,6 @@
-﻿using WebStorageSystem.Data.Entities.Product;
+﻿using WebStorageSystem.Data.Entities.Products;
 
-namespace WebStorageSystem.Data.Entities.Transfer
+namespace WebStorageSystem.Data.Entities.Transfers
 {
     public class TransferUnit : BaseEntity
     {

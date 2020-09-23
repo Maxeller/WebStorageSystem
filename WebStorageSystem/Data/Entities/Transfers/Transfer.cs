@@ -1,19 +1,20 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using WebStorageSystem.Data.Entities.Identity;
+using WebStorageSystem.Data.Entities.Identities;
+using WebStorageSystem.Data.Entities.Locations;
 
-namespace WebStorageSystem.Data.Entities.Transfer
+namespace WebStorageSystem.Data.Entities.Transfers
 {
     public class Transfer : BaseEntityWithId
     {
         [Required]
         [Display(Name = "Origin Location")]
-        public Location.Location OriginLocation { get; set; }
+        public Location OriginLocation { get; set; }
 
         [Required]
         [Display(Name = "Destination Location")]
-        public Location.Location DestinationLocation { get; set; }
+        public Location DestinationLocation { get; set; }
 
         [Required]
         [Display(Name = "Time of Transfer")]
