@@ -29,83 +29,19 @@ namespace WebStorageSystem
         public void ConfigureServices(IServiceCollection services)
         {
             // DATABASE
-            services.AddDbContext<AppDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("LocalDb"));
-            });
+            services.AddMyDatabaseConfiguration(Configuration.GetConnectionString("LocalDb"));
 
             // IDENTITY
-            /*
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders();
-            */
-            //TODO: Add Claims/Roles
-
-            services.AddDefaultIdentity<ApplicationUser>(options =>
-                {
-                    // Password settings
-                    options.Password.RequiredLength = 6;
-                    options.Password.RequireDigit = true;
-
-                    // Lockout settings
-                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                    options.Lockout.MaxFailedAccessAttempts = 5;
-                    options.Lockout.AllowedForNewUsers = true;
-
-                })
-                .AddEntityFrameworkStores<AppDbContext>();
-
-            services.ConfigureApplicationCookie(options =>
-            {
-                // Cookie settings
-                options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
-
-                options.LoginPath = "/Identity/Account/Login";
-                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-                options.SlidingExpiration = true;
-            });
+            services.AddMyIdentityConfiguration();
 
             // HTTPS
-            /*
-            services.AddHsts(options =>
-            {
-                options.Preload = true;
-                options.IncludeSubDomains = true;
-                options.MaxAge = TimeSpan.FromMinutes(30); //TODO: Change when in long run production
-            });
+            //services.AddMyHttpsConfiguration();
 
-            services.AddHttpsRedirection(options =>
-            {
-                options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-                options.HttpsPort = 443;
-            });
-            */
-
-            // COOKIES TODO: Use?
-            /*
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-            */
+            // COOKIE POLICY TODO: Use?
+            //services.AddMyCookiePolicyConfiguration();
 
             // MVC/API SETTINGS
-            services.AddControllersWithViews(options =>
-                {
-                    //TODO: Add Filters
-                    //options.Filters.Add<>()
-                })
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.AllowTrailingCommas = true; // Allows for trailing commas in JSON file
-                })
-                .AddXmlSerializerFormatters(); // Adds XML serializer for input and output
-
-            services.AddRazorPages(); // Identity uses Razor Pages
+            services.AddMyMvcConfiguration();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -143,6 +79,94 @@ namespace WebStorageSystem
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+            });
+        }
+    }
+    public static class ServiceExtensions
+    {
+        public static void AddMyMvcConfiguration(this IServiceCollection services)
+        {
+            services.AddControllersWithViews(options =>
+                {
+                    //TODO: Add Filters
+                    //options.Filters.Add<>()
+                })
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.AllowTrailingCommas = true; // Allows for trailing commas in JSON file
+                })
+                .AddXmlSerializerFormatters(); // Adds XML serializer for input and output
+
+            services.AddRazorPages(); // Identity uses Razor Pages
+        }
+
+        public static void AddMyDatabaseConfiguration(this IServiceCollection services, string connectionString)
+        {
+            services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseSqlServer(connectionString);
+            });
+        }
+
+        public static void AddMyIdentityConfiguration(this IServiceCollection services)
+        {
+            /*
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
+            */
+
+            //TODO: Add Claims/Roles
+
+            services.AddDefaultIdentity<ApplicationUser>(options =>
+                {
+                    // Password settings
+                    options.Password.RequiredLength = 6;
+                    options.Password.RequireDigit = true;
+
+                    // Lockout settings
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                    options.Lockout.MaxFailedAccessAttempts = 5;
+                    options.Lockout.AllowedForNewUsers = true;
+
+                })
+                .AddEntityFrameworkStores<AppDbContext>();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+
+                options.LoginPath = "/Identity/Account/Login";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.SlidingExpiration = true;
+            });
+        }
+
+        public static void AddMyHttpsConfiguration(this IServiceCollection services)
+        {
+            services.AddHsts(options =>
+            {
+                options.Preload = true;
+                options.IncludeSubDomains = true;
+                options.MaxAge = TimeSpan.FromMinutes(30); //TODO: Change when in long run production
+            });
+
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+                options.HttpsPort = 443;
+            });
+        }
+
+        public static void AddMyCookiePolicyConfiguration(this IServiceCollection services)
+        {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
             });
         }
     }
