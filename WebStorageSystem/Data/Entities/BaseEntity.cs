@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace WebStorageSystem.Models
+namespace WebStorageSystem.Data.Entities
 {
-    public class BaseModel
+    public class BaseEntity
     {
         [Display(Name = "Created")]
         public DateTime CreatedDate { get; set; }
@@ -16,13 +13,11 @@ namespace WebStorageSystem.Models
         public bool IsDeleted { get; set; }
 
         [Timestamp]
-        [ScaffoldColumn(false)]
         public byte[] RowVersion { get; set; }
     }
 
-    public class BaseModelWithId : BaseModel
+    public class BaseEntityWithId : BaseEntity
     {
-        [ScaffoldColumn(false)]
         public int Id { get; set; }
     }
 }

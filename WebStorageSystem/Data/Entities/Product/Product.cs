@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace WebStorageSystem.Models.Product
+namespace WebStorageSystem.Data.Entities.Product
 {
-    public class Product : BaseModelWithId
+    public class Product : BaseEntityWithId
     {
         [Required]
         [StringLength(100)]

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using WebStorageSystem.Models.Identity;
-using WebStorageSystem.Models.Product;
+using WebStorageSystem.Data.Entities.Identity;
 
-namespace WebStorageSystem.Models.Transfer
+namespace WebStorageSystem.Data.Entities.Transfer
 {
-    public class Transfer : BaseModelWithId
+    public class Transfer : BaseEntityWithId
     {
         [Required]
         [Display(Name = "Origin Location")]

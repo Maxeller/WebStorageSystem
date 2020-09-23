@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
-using WebStorageSystem.Models.Transfer;
+using WebStorageSystem.Data.Entities.Transfer;
 
-namespace WebStorageSystem.Models.Product
+namespace WebStorageSystem.Data.Entities.Product
 {
-    public class Unit : BaseModelWithId
+    public class Unit : BaseEntityWithId
     {
         [Required]
         public string SerialNumber { get; set; } //TODO: compatibility with code reader

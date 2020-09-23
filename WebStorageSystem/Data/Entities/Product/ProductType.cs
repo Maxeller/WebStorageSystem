@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace WebStorageSystem.Models.Product
+namespace WebStorageSystem.Data.Entities.Product
 {
-    public class ProductType : BaseModelWithId
+    public class ProductType : BaseEntityWithId
     {
         [Required]
         [StringLength(100)]

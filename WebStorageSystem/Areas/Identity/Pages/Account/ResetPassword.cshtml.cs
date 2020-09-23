@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using WebStorageSystem.Models.Identity;
+using WebStorageSystem.Data.Entities.Identity;
 
 namespace WebStorageSystem.Areas.Identity.Pages.Account
 {

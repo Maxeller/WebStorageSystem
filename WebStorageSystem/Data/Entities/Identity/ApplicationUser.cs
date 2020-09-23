@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Identity;
 
-namespace WebStorageSystem.Models.Identity
+namespace WebStorageSystem.Data.Entities.Identity
 {
     public class ApplicationUser : IdentityUser
     {

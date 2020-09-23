@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using WebStorageSystem.Models.Identity;
-using WebStorageSystem.Models.Location;
-using WebStorageSystem.Models.Product;
-using WebStorageSystem.Models.Transfer;
+using WebStorageSystem.Data.Entities.Identity;
+using WebStorageSystem.Data.Entities.Location;
+using WebStorageSystem.Data.Entities.Product;
 
 namespace WebStorageSystem.Data
 {

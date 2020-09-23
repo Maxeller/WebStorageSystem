@@ -4,11 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using WebStorageSystem.Models;
-using WebStorageSystem.Models.Identity;
-using WebStorageSystem.Models.Location;
-using WebStorageSystem.Models.Product;
-using WebStorageSystem.Models.Transfer;
+using WebStorageSystem.Data.Entities;
+using WebStorageSystem.Data.Entities.Identity;
+using WebStorageSystem.Data.Entities.Location;
+using WebStorageSystem.Data.Entities.Product;
+using WebStorageSystem.Data.Entities.Transfer;
 
 namespace WebStorageSystem.Data
 {
@@ -151,49 +151,37 @@ namespace WebStorageSystem.Data
             });
         }
 
-        public override int SaveChanges()
+        private void CheckEntries()
         {
             var entries =
                 ChangeTracker.Entries()
-                    .Where(e => e.Entity is BaseModel && (e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted));
+                    .Where(e => e.Entity is BaseEntity && (e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted));
 
-            foreach (var entityEntry in entries)
+            foreach (var entry in entries)
             {
-                ((BaseModel) entityEntry.Entity).ModifiedDate = DateTime.UtcNow;
+                ((BaseEntity) entry.Entity).ModifiedDate = DateTime.UtcNow;
 
-                switch (entityEntry.State)
+                switch (entry.State)
                 {
                     case EntityState.Added:
-                        ((BaseModel) entityEntry.Entity).CreatedDate = DateTime.UtcNow;
+                        ((BaseEntity) entry.Entity).CreatedDate = DateTime.UtcNow;
                         break;
                     case EntityState.Deleted:
-                        ((BaseModel) entityEntry.Entity).IsDeleted = true;
+                        entry.State = EntityState.Modified;
+                        ((BaseEntity) entry.Entity).IsDeleted = true;
                         break;
                 }
             }
+        }
+        public override int SaveChanges()
+        {
+            CheckEntries();
             return base.SaveChanges();
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            var entries =
-                ChangeTracker.Entries()
-                    .Where(e => e.Entity is BaseModel && (e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted));
-
-            foreach (var entityEntry in entries)
-            {
-                ((BaseModel) entityEntry.Entity).ModifiedDate = DateTime.UtcNow;
-
-                switch (entityEntry.State)
-                {
-                    case EntityState.Added:
-                        ((BaseModel) entityEntry.Entity).CreatedDate = DateTime.UtcNow;
-                        break;
-                    case EntityState.Deleted:
-                        ((BaseModel) entityEntry.Entity).IsDeleted = true;
-                        break;
-                }
-            }
+            CheckEntries();
             return base.SaveChangesAsync(cancellationToken);
         }
     }

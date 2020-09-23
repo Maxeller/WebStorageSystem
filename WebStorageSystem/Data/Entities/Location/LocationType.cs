@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace WebStorageSystem.Models.Location
+namespace WebStorageSystem.Data.Entities.Location
 {
-    public class LocationType : BaseModelWithId
+    public class LocationType : BaseEntityWithId
     {
         [Required]
         [StringLength(100)]
