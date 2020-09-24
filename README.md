@@ -38,6 +38,11 @@
 - Concurrency https://www.learnentityframeworkcore.com/concurrency
 - Global Query Filters https://docs.microsoft.com/en-us/ef/core/querying/filters
 
+### Automapper
+- https://automapper.org/
+- https://code-maze.com/automapper-net-core/
+- Problem of overposting https://andrewlock.net/preventing-mass-assignment-or-over-posting-in-asp-net-core/
+
 ### Authentication & Authorization - IdentityCore
 - https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-3.1&tabs=visual-studio
 - Scaffolding https://docs.microsoft.com/en-us/aspnet/core/security/authentication/scaffold-identity?view=aspnetcore-3.1&tabs=visual-studio

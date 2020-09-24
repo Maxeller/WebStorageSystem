@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using WebStorageSystem.Data.Entities.Transfers;
+using WebStorageSystem.Data.Entities.Locations;
 
 namespace WebStorageSystem.Data.Entities.Products
 {
@@ -13,7 +14,7 @@ namespace WebStorageSystem.Data.Entities.Products
         public Product Product { get; set; }
 
         [Required]
-        public Locations.Location Location { get; set; }
+        public Location Location { get; set; }
 
         public Vendor Vendor { get; set; }
 

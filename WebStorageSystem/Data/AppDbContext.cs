@@ -167,7 +167,7 @@ namespace WebStorageSystem.Data
                         ((BaseEntity) entry.Entity).CreatedDate = DateTime.UtcNow;
                         break;
                     case EntityState.Deleted:
-                        entry.State = EntityState.Modified;
+                        entry.State = EntityState.Unchanged;
                         ((BaseEntity) entry.Entity).IsDeleted = true;
                         break;
                 }
@@ -184,5 +184,7 @@ namespace WebStorageSystem.Data
             CheckEntries();
             return base.SaveChangesAsync(cancellationToken);
         }
+
+        public DbSet<WebStorageSystem.Models.LocationModels.LocationTypeModel> LocationTypeModel { get; set; }
     }
 }

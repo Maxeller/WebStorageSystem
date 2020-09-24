@@ -1,19 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebStorageSystem.Data;
-using WebStorageSystem.Data.Entities.Identity;
+using WebStorageSystem.Data.Entities.Identities;
+using WebStorageSystem.Data.MappingProfiles;
+using WebStorageSystem.Data.Services;
 
 namespace WebStorageSystem
 {
@@ -41,7 +38,11 @@ namespace WebStorageSystem
             //services.AddMyCookiePolicyConfiguration();
 
             // MVC/API SETTINGS
+            services.AddAutoMapper(typeof(Startup));
             services.AddMyMvcConfiguration();
+
+            // SERVICES FOR DB QUERIES
+            services.AddMyDbCommunicationServices();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -97,7 +98,7 @@ namespace WebStorageSystem
                 })
                 .AddXmlSerializerFormatters(); // Adds XML serializer for input and output
 
-            services.AddRazorPages(); // Identity uses Razor Pages
+            services.AddRazorPages(); // Identity Core Scaffolding uses Razor Pages
         }
 
         public static void AddMyDatabaseConfiguration(this IServiceCollection services, string connectionString)
@@ -168,6 +169,11 @@ namespace WebStorageSystem
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+        }
+
+        public static void AddMyDbCommunicationServices(this IServiceCollection services)
+        {
+            services.AddScoped<LocationTypeService>();
         }
     }
 }
