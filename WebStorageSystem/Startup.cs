@@ -9,8 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebStorageSystem.Data;
 using WebStorageSystem.Data.Entities.Identities;
-using WebStorageSystem.Data.MappingProfiles;
-using WebStorageSystem.Data.Services;
+using WebStorageSystem.Data.Services.Locations;
 
 namespace WebStorageSystem
 {

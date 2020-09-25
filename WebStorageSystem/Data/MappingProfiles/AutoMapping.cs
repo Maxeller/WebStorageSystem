@@ -9,6 +9,11 @@ namespace WebStorageSystem.Data.MappingProfiles
     {
         public AutoMapping()
         {
+            LocationTypeMapping();
+        }
+
+        private void LocationTypeMapping()
+        {
             CreateMap<LocationType, LocationTypeModel>();
             CreateMap<List<LocationType>, List<LocationTypeModel>>();
             CreateMap<LocationTypeModel, LocationType>();
