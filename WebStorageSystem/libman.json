@@ -6,15 +6,6 @@
       "library": "bootstrap@4.5.2",
       "destination": "wwwroot/lib/bootstrap/",
       "files": [
-        "LICENSE",
-        "dist/css/bootstrap-grid.css",
-        "dist/css/bootstrap-grid.css.map",
-        "dist/css/bootstrap-grid.min.css",
-        "dist/css/bootstrap-grid.min.css.map",
-        "dist/css/bootstrap-reboot.css",
-        "dist/css/bootstrap-reboot.css.map",
-        "dist/css/bootstrap-reboot.min.css",
-        "dist/css/bootstrap-reboot.min.css.map",
         "dist/css/bootstrap.css",
         "dist/css/bootstrap.css.map",
         "dist/css/bootstrap.min.css",
@@ -33,20 +24,15 @@
       "library": "jquery@3.5.1",
       "destination": "wwwroot/lib/jquery/",
       "files": [
-        "LICENSE.txt",
         "dist/jquery.js",
         "dist/jquery.min.js",
-        "dist/jquery.min.map",
-        "dist/jquery.slim.js",
-        "dist/jquery.slim.min.js",
-        "dist/jquery.slim.min.map"
+        "dist/jquery.min.map"
       ]
     },
     {
       "library": "jquery-validation@1.19.2",
       "destination": "wwwroot/lib/jquery-validation/",
       "files": [
-        "LICENSE.md",
         "dist/additional-methods.js",
         "dist/additional-methods.min.js",
         "dist/jquery.validate.js",
@@ -58,9 +44,7 @@
       "destination": "wwwroot/lib/jquery-validation-unobtrusive/",
       "files": [
         "dist/jquery.validate.unobtrusive.js",
-        "dist/jquery.validate.unobtrusive.min.js",
-        "LICENSE.txt",
-        "README.md"
+        "dist/jquery.validate.unobtrusive.min.js"
       ]
     }
   ]
