@@ -1,4 +1,13 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿// Function for filling modal window with appropriate data
+$("#modalWindow").on("show.bs.modal", function(event) {
+    const url = $(event.relatedTarget).data("url");
+    const name = $(event.relatedTarget).data("name");
+    const array = url.split("/");
+    const action = array[2];
 
-// Write your JavaScript code.
+    $(this).find(".modal-header h5").text(action); // Changes action name (e.g. Delete/Restore) in header of modal window 
+    $(this).find(".modal-body span").text(action.toLowerCase()); // Changes action name in body of modal window 
+    $(this).find(".modal-body b").text(name); // Changes name of the item
+    $(this).find(".modal-footer .btn-danger").text(action); // Change action name on the button
+    $(this).find(".modal-footer form").attr("action", url); // Change action to proper route
+});

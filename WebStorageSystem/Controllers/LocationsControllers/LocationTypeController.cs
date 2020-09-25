@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebStorageSystem.Data;
 using WebStorageSystem.Data.Entities.Locations;
-using WebStorageSystem.Data.Services;
+using WebStorageSystem.Data.Services.Locations;
 using WebStorageSystem.Models.LocationModels;
 
 namespace WebStorageSystem.Controllers.LocationsControllers
@@ -25,19 +25,19 @@ namespace WebStorageSystem.Controllers.LocationsControllers
         }
 
         // GET: LocationType
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] bool getDeleted = false)
         {
-            var locationTypes = await _service.GetLocationTypesAsync();
+            var locationTypes = await _service.GetLocationTypesAsync(getDeleted);
             var models = _mapper.Map<ICollection<LocationTypeModel>>(locationTypes);
             return View(models);
         }
 
         // GET: LocationType/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, [FromQuery] bool getDeleted = false)
         {
             if (id == null) return BadRequest();
 
-            var locationType = await _service.GetLocationTypeAsync((int) id);
+            var locationType = await _service.GetLocationTypeAsync((int) id, getDeleted);
             var locationTypeModel = _mapper.Map<LocationTypeModel>(locationType);
             if (locationTypeModel == null) return NotFound();
 
@@ -63,11 +63,11 @@ namespace WebStorageSystem.Controllers.LocationsControllers
         }
 
         // GET: LocationType/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, [FromQuery] bool getDeleted)
         {
             if (id == null) return BadRequest();
 
-            var locationType = await _service.GetLocationTypeAsync((int) id);
+            var locationType = await _service.GetLocationTypeAsync((int) id, getDeleted);
             var locationTypeModel = _mapper.Map<LocationTypeModel>(locationType);
             if (locationTypeModel == null) return NotFound();
 
@@ -96,25 +96,24 @@ namespace WebStorageSystem.Controllers.LocationsControllers
             }
         }
 
-        // GET: LocationType/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null) return BadRequest();
-
-            var locationType = await _service.GetLocationTypeAsync((int) id);
-            var locationTypeModel = _mapper.Map<LocationTypeModel>(locationType);
-            if (locationTypeModel == null) return NotFound();
-
-            return View(locationTypeModel);
-        }
-
         // POST: LocationType/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            await _service.DeleteLocationType((int) id);
+            await _service.DeleteLocationTypeAsync((int) id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        // POST: LocationType/Restore/5
+        [HttpPost, ActionName("Restore")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Restore(int? id)
+        {
+            if (id == null) return BadRequest();
+            if (!(await _service.LocationTypeExistsAsync((int) id, true))) return NotFound();
+            await _service.RestoreLocationType((int) id);
             return RedirectToAction(nameof(Index));
         }
     }
