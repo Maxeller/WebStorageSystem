@@ -1,6 +1,7 @@
 ﻿<environment include="Development">
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="~/lib/tippy.js/dist/tippy-bundle.umd.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 </environment>
 <environment exclude="Development">
@@ -15,6 +16,12 @@
             asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
             crossorigin="anonymous"
             integrity="sha512-kBFfSXuTKZcABVouRYGnUo35KKa1FBrYgwG4PAx7Z2Heroknm0ca2Fm2TosdrrI356EDHMW383S3ISrwKcVPUw==">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.2.6/tippy-bundle.umd.min.js"
+            asp-fallback-src="~/lib/tippy.js/dist/tippy-bundle.umd.min.js"
+            asp-fallback-test="window.tippy"
+            integrity="sha512-YzXpZ5qzuFVorXTs8wt0gHSo9+T5qwqM6iWKXQLEWNOEr83116QvCEqH5tsEthpGbrYAcUCXGpNJomYagvlFVw==" 
+            crossorigin="anonymous">
     </script>
     <script src="~/js/site.min.js" asp-append-version="true"></script>
 </environment>

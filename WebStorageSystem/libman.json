@@ -46,6 +46,16 @@
         "dist/jquery.validate.unobtrusive.js",
         "dist/jquery.validate.unobtrusive.min.js"
       ]
+    },
+    {
+      "library": "tippy.js@6.2.6",
+      "destination": "wwwroot/lib/tippy.js/",
+      "files": [
+        "dist/tippy-bundle.umd.js",
+        "dist/tippy-bundle.umd.js.map",
+        "dist/tippy-bundle.umd.min.js",
+        "dist/tippy-bundle.umd.min.js.map"
+      ]
     }
   ]
 }
