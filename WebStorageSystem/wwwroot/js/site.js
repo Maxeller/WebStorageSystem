@@ -1,4 +1,7 @@
-﻿// Function for filling modal window with appropriate data
+﻿// Tippy Initialization
+tippy(document.querySelectorAll(".tippy"));
+
+// Function for filling modal window with appropriate data
 $("#modalWindow").on("show.bs.modal", function(event) {
     const url = $(event.relatedTarget).data("url");
     const name = $(event.relatedTarget).data("name");
