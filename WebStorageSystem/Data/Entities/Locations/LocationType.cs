@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebStorageSystem.Data.Entities.Locations
 {
@@ -12,6 +12,6 @@ namespace WebStorageSystem.Data.Entities.Locations
         [StringLength(500)]
         public string Description { get; set; }
 
-        public IQueryable<Location> Locations { get; set; }
+        public IEnumerable<Location> Locations { get; set; }
     }
 }

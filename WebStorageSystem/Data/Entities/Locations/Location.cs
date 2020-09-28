@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using WebStorageSystem.Data.Entities.Transfers;
 
 namespace WebStorageSystem.Data.Entities.Locations
@@ -14,7 +14,7 @@ namespace WebStorageSystem.Data.Entities.Locations
         [Display(Name = "Location Type")]
         public LocationType LocationType { get; set; }
 
-        public IQueryable<Transfer> OriginTransfers { get; set; }
-        public IQueryable<Transfer> DestinationTransfers { get; set; }
+        public IEnumerable<Transfer> OriginTransfers { get; set; }
+        public IEnumerable<Transfer> DestinationTransfers { get; set; }
     }
 }

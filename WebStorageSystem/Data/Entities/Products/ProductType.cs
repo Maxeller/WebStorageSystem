@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebStorageSystem.Data.Entities.Products
 {
@@ -12,6 +12,6 @@ namespace WebStorageSystem.Data.Entities.Products
         [StringLength(500)]
         public string Description { get; set; }
 
-        public IQueryable<Product> Products { get; set; }
+        public IEnumerable<Product> Products { get; set; }
     }
 }

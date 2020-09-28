@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebStorageSystem.Data.Entities.Products
 {
@@ -23,6 +23,6 @@ namespace WebStorageSystem.Data.Entities.Products
         [StringLength(200)]
         public string Email { get; set; }
 
-        public IQueryable<Unit> Units { get; set; }
+        public IEnumerable<Unit> Units { get; set; }
     }
 }

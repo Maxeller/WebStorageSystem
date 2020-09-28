@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Data.Entities.Locations;
 
@@ -23,7 +23,7 @@ namespace WebStorageSystem.Data.Entities.Transfers
 
         [Required]
         [Display(Name = "Transferred Units")]
-        public IQueryable<TransferUnit> TransferredUnits { get; set; }
+        public IEnumerable<TransferUnit> TransferredUnits { get; set; }
 
         public ApplicationUser User { get; set; }
     }

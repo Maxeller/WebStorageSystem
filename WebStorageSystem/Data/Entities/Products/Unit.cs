@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using WebStorageSystem.Data.Entities.Transfers;
 using WebStorageSystem.Data.Entities.Locations;
 
@@ -18,6 +18,6 @@ namespace WebStorageSystem.Data.Entities.Products
 
         public Vendor Vendor { get; set; }
 
-        public IQueryable<TransferUnit> TransferredUnits { get; set; }
+        public IEnumerable<TransferUnit> TransferredUnits { get; set; }
     }
 }

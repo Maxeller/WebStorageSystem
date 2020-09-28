@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebStorageSystem.Data.Entities.Products
 {
@@ -16,6 +16,6 @@ namespace WebStorageSystem.Data.Entities.Products
         [Required]
         public Manufacturer Manufacturer { get; set; }
 
-        public IQueryable<Unit> Units { get; set; }
+        public IEnumerable<Unit> Units { get; set; }
     }
 }
