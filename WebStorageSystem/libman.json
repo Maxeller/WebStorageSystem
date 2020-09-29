@@ -37,17 +37,20 @@
       "destination": "wwwroot/lib/popper.js/",
       "files": [
         "umd/popper.min.js",
-        "umd/popper.js"
+        "umd/popper.min.js.map",
+        "umd/popper.js",
+        "umd/popper.js.map"
+      ]
+    },
+    {
+      "library": "tippy.js@6.2.6",
+      "destination": "wwwroot/lib/tippy.js/",
+      "files": [
+        "tippy-bundle.umd.js",
+        "tippy-bundle.umd.js.map",
+        "tippy-bundle.umd.min.js",
+        "tippy-bundle.umd.min.js.map"
       ]
     }
-  ,
-{
-  "library": "tippy.js@6.2.6",
-  "destination": "wwwroot/lib/tippy.js/",
-  "files": [
-    "tippy-bundle.umd.js",
-    "tippy-bundle.umd.min.js"
   ]
-}
-]
 }
