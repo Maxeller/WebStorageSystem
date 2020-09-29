@@ -1,0 +1,74 @@
+﻿@model WebStorageSystem.Models.LocationModels.LocationModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>LocationModel</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Name
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Name
+        </dd>
+        <dt class="col-sm-2">
+            Description
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Description
+        </dd>
+        <dt class="col-sm-2">
+            Location Type
+        </dt>
+        <dd class="col-sm-10">
+            @Model.LocationType.Name
+        </dd>
+        <dt class="col-sm-2">
+            Location Type Description
+        </dt>
+        <dd class="col-sm-10">
+            @Model.LocationType.Description
+        </dd>
+        <dt class="col-sm-2">
+            Created Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.CreatedDate
+        </dd>
+        <dt class="col-sm-2">
+            Modified Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.ModifiedDate
+        </dd>
+        <dt class="col-sm-2">
+            Deleted
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IsDeleted)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="text-primary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    @if (!Model.IsDeleted)
+    {
+        <a href="#" class="text-primary" data-toggle="modal" data-target="#modalWindow" data-url="@Url.Action("Delete", new {Id = Model.Id})" data-name="@Model.Name">
+            Delete
+        </a>
+    }
+    @if (Model.IsDeleted)
+    {
+        <a href="#" class="text-primary" data-toggle="modal" data-target="#modalWindow" data-url="@Url.Action("Restore", new {Id = Model.Id})" data-name="@Model.Name">
+            Restore
+        </a>
+    }
+    | <a class="text-primary" asp-action="Index">Back to List</a>
+</div>
+
+<partial name="ModalWindow"/>

@@ -184,7 +184,5 @@ namespace WebStorageSystem.Data
             CheckEntries();
             return base.SaveChangesAsync(cancellationToken);
         }
-
-        public DbSet<WebStorageSystem.Models.LocationModels.LocationTypeModel> LocationTypeModel { get; set; }
     }
 }
