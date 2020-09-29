@@ -10,39 +10,60 @@
     <h4>LocationTypeModel</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+        <dt class="col-sm-2">
+            Name
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+        <dd class="col-sm-10">
+            @Model.Name
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
+        <dt class="col-sm-2">
+            Description
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
+        <dd class="col-sm-10">
+            @Model.Description
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
+        <dt class="col-sm-2">
+            Used as type in these locations:
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedDate)
+        <dd class="col-sm-10">
+        @foreach (var location in Model.Locations)
+        {
+            <span class="tippy" data-tippy-content="@location.Description">@location.Name</span><br />
+        }
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ModifiedDate)
+        <dt class="col-sm-2">
+            Created Date
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ModifiedDate)
+        <dd class="col-sm-10">
+            @Model.CreatedDate
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsDeleted)
+        <dt class="col-sm-2">
+            Last Modified
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
+            @Model.ModifiedDate
+        </dd>
+        <dt class="col-sm-2">
+            Deleted
+        </dt>
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IsDeleted)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a class="text-primary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    @if (!Model.IsDeleted)
+    {
+        <a href="#" class="text-primary" data-toggle="modal" data-target="#modalWindow" data-url="@Url.Action("Delete", new {Id = Model.Id})" data-name="@Model.Name">
+            Delete
+        </a>
+    }
+    @if (Model.IsDeleted)
+    {
+        <a href="#" class="text-primary" data-toggle="modal" data-target="#modalWindow" data-url="@Url.Action("Restore", new {Id = Model.Id})" data-name="@Model.Name">
+            Restore
+        </a>
+    }
+    | <a class="text-primary" asp-action="Index">Back to List</a>
 </div>

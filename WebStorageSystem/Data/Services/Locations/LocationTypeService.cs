@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -10,24 +11,45 @@ namespace WebStorageSystem.Data.Services.Locations
     public class LocationTypeService
     {
         private readonly AppDbContext _context;
+        private readonly LocationService _lService;
         private readonly ILogger _logger;
 
-        public LocationTypeService(AppDbContext context, ILoggerFactory factory)
+        private IQueryable<LocationType> _getQuery;
+
+        public LocationTypeService(AppDbContext context, LocationService lService, ILoggerFactory factory)
         {
             _context = context;
+            _lService = lService;
+
             _logger = factory.CreateLogger<LocationTypeService>();
+
+            _getQuery = _context
+                .LocationTypes
+                .AsNoTracking()
+                .OrderBy(locationType => locationType.Name);
         }
 
         public async Task<LocationType> GetLocationTypeAsync(int id, bool getDeleted = false)
         {
-            if(getDeleted) return await _context.LocationTypes.IgnoreQueryFilters().FirstOrDefaultAsync(locationType => locationType.Id == id);
-            return await _context.LocationTypes.FirstOrDefaultAsync(locationType => locationType.Id == id);
+            var locations = await _lService.GetLocationsAsync(getDeleted);
+            var myLocations = locations.ToList().FindAll(location => location.LocationType.Id == id);
+            LocationType locationType = null;
+            if (getDeleted)
+            {
+                locationType = await _getQuery.IgnoreQueryFilters().FirstOrDefaultAsync(locationType => locationType.Id == id);
+                locationType.Locations = myLocations;
+                return locationType;
+            }
+            
+            locationType = await _getQuery.FirstOrDefaultAsync(locationType => locationType.Id == id);
+            locationType.Locations = myLocations;
+            return locationType;
         }
 
         public async Task<ICollection<LocationType>> GetLocationTypesAsync(bool getDeleted = false)
         {
-            if (getDeleted) return await _context.LocationTypes.IgnoreQueryFilters().ToListAsync();
-            return await _context.LocationTypes.ToListAsync();
+            if (getDeleted) return await _getQuery.IgnoreQueryFilters().ToListAsync();
+            return await _getQuery.ToListAsync();
         }
 
         public async Task AddLocationTypeAsync(LocationType locationType)
@@ -64,7 +86,7 @@ namespace WebStorageSystem.Data.Services.Locations
         {
             var locationType = await GetLocationTypeAsync(id, true);
             locationType.IsDeleted = false;
-            _context.Update(locationType);
+            _context.Update(locationType); // TODO: Determine if cascading
             await _context.SaveChangesAsync();
         }
     }

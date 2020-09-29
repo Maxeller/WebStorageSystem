@@ -13,5 +13,16 @@ namespace WebStorageSystem.Data.Entities.Locations
         public string Description { get; set; }
 
         public IEnumerable<Location> Locations { get; set; }
+
+        public LocationType()
+        {
+        }
+
+        public LocationType(LocationType locationType, IEnumerable<Location> locations) : base(locationType)
+        {
+            Name = locationType.Name;
+            Description = locationType.Description;
+            Locations = locations;
+        }
     }
 }
