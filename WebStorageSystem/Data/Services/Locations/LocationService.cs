@@ -76,7 +76,7 @@ namespace WebStorageSystem.Data.Services.Locations
             return location != null;
         }
 
-        public async Task RestoreLocation(int id)
+        public async Task RestoreLocationAsync(int id)
         {
             var location = await GetLocationAsync(id, true);
             location.IsDeleted = false;

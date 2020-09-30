@@ -82,7 +82,7 @@ namespace WebStorageSystem.Data.Services.Locations
             return locationType != null;
         }
 
-        public async Task RestoreLocationType(int id)
+        public async Task RestoreLocationTypeAsync(int id)
         {
             var locationType = await GetLocationTypeAsync(id, true);
             locationType.IsDeleted = false;

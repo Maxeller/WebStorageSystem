@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic.CompilerServices;
-using WebStorageSystem.Data;
 using WebStorageSystem.Data.Entities.Locations;
 using WebStorageSystem.Data.Services.Locations;
 using WebStorageSystem.Models.LocationModels;
@@ -137,7 +133,7 @@ namespace WebStorageSystem.Controllers.LocationsControllers
         {
             if (id == null) return BadRequest();
             if (!(await _service.LocationExistsAsync((int) id, true))) return NotFound();
-            await _service.RestoreLocation((int) id);
+            await _service.RestoreLocationAsync((int) id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -145,7 +141,7 @@ namespace WebStorageSystem.Controllers.LocationsControllers
         {
             var locationTypes = await _ltService.GetLocationTypesAsync(getDeleted);
             var ltModels = _mapper.Map<ICollection<LocationTypeModel>>(locationTypes);
-            return new SelectList(ltModels, "Id", "Name");
+            return new SelectList(ltModels, "Id", "Name", selectedType);
         }
     }
 }

@@ -109,7 +109,7 @@ namespace WebStorageSystem.Controllers.LocationsControllers
         {
             if (id == null) return BadRequest();
             if (!(await _service.LocationTypeExistsAsync((int) id, true))) return NotFound();
-            await _service.RestoreLocationType((int) id);
+            await _service.RestoreLocationTypeAsync((int) id);
             return RedirectToAction(nameof(Index));
         }
     }
