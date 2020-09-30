@@ -1,0 +1,66 @@
+﻿@model IEnumerable<WebStorageSystem.Models.ProductModels.ManufacturerModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Created Date
+            </th>
+            <th>
+                Last Modified
+            </th>
+            <th>
+                Deleted
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.Name
+            </td>
+            <td>
+                @item.CreatedDate
+            </td>
+            <td>
+                @item.ModifiedDate
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsDeleted)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                @if (!item.IsDeleted)
+                {
+                    <a href="#" class="text-primary" data-toggle="modal" data-target="#modalWindow" data-url="@Url.Action("Delete", new {Id = item.Id})" data-name="@item.Name">
+                        Delete
+                    </a>
+                }
+                @if (item.IsDeleted)
+                {
+                    <a href="#" class="text-primary" data-toggle="modal" data-target="#modalWindow" data-url="@Url.Action("Restore", new {Id = item.Id})" data-name="@item.Name">
+                        Restore
+                    </a>
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<partial name="ModalWindow" />
