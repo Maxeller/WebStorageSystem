@@ -1,6 +1,7 @@
 ﻿// Tippy Initialization
 tippy(document.querySelectorAll(".tippy"));
 
+// --- MODALS ---
 // Function for filling modal window for deleting/restoring with appropriate data
 $("#deleteRestoreModal").on("show.bs.modal", function(event) {
     const url = $(event.relatedTarget).data("url");
@@ -13,4 +14,9 @@ $("#deleteRestoreModal").on("show.bs.modal", function(event) {
     $(this).find(".modal-body b").text(name); // Changes name of the item
     $(this).find(".modal-footer .btn-danger").text(action); // Change action name on the button
     $(this).find(".modal-footer form").attr("action", url); // Change action to proper route
+});
+
+// Shows error modal window when loaded in partial
+$(function () {
+    $('#errorModal').modal('show');
 });

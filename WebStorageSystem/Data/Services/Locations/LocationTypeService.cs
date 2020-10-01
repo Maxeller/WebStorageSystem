@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 using WebStorageSystem.Data.Entities.Locations;
 
 namespace WebStorageSystem.Data.Services.Locations
@@ -64,15 +63,25 @@ namespace WebStorageSystem.Data.Services.Locations
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteLocationTypeAsync(int id)
+        public async Task<int> DeleteLocationTypeAsync(int id)
         {
             var locationType = await GetLocationTypeAsync(id);
-            await DeleteLocationTypeAsync(locationType);
+            return await DeleteLocationTypeAsync(locationType);
         }
 
-        public async Task DeleteLocationTypeAsync(LocationType locationType)
+        public async Task<int> DeleteLocationTypeAsync(LocationType locationType)
         {
+            var lt = await GetLocationTypeAsync(locationType.Id);
+            if (lt.Locations.Count() != 0) return -1;
             _context.LocationTypes.Remove(locationType);
+            return await _context.SaveChangesAsync();
+        }
+
+        public async Task RestoreLocationTypeAsync(int id)
+        {
+            var locationType = await GetLocationTypeAsync(id, true);
+            locationType.IsDeleted = false;
+            _context.Update(locationType);
             await _context.SaveChangesAsync();
         }
 
@@ -80,14 +89,6 @@ namespace WebStorageSystem.Data.Services.Locations
         {
             var locationType = await GetLocationTypeAsync(id, getDeleted);
             return locationType != null;
-        }
-
-        public async Task RestoreLocationTypeAsync(int id)
-        {
-            var locationType = await GetLocationTypeAsync(id, true);
-            locationType.IsDeleted = false;
-            _context.Update(locationType); // TODO: Determine if cascading
-            await _context.SaveChangesAsync();
         }
     }
 }

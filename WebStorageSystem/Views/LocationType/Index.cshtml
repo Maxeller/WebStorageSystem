@@ -72,3 +72,7 @@
 </table>
     
 <partial name="DeleteRestoreModal"/>
+@if (TempData["Error"] != null)
+{
+    await Html.RenderPartialAsync("ErrorModal", TempData["Error"]);
+}

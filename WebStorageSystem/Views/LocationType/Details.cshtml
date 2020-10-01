@@ -26,10 +26,10 @@
             Used as type in these locations:
         </dt>
         <dd class="col-sm-10">
-        @foreach (var location in Model.Locations)
-        {
-            <span class="tippy" data-tippy-content="@location.Description">@location.Name</span><br />
-        }
+            @foreach (var location in Model.Locations)
+            {
+                <span class="tippy" data-tippy-content="@location.Description">@location.Name</span><br />
+            }
         </dd>
         <dt class="col-sm-2">
             Created Date
@@ -56,16 +56,18 @@
     @if (!Model.IsDeleted)
     {
         <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Delete", new {Id = Model.Id})" data-name="@Model.Name">
-            Delete
-        </a>
+            Delete</a>
     }
     @if (Model.IsDeleted)
     {
         <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Restore", new {Id = Model.Id})" data-name="@Model.Name">
-            Restore
-        </a>
+            Restore</a>
     }
     | <a class="text-primary" asp-action="Index">Back to List</a>
 </div>
 
-<partial name="DeleteRestoreModal"/>
+<partial name="DeleteRestoreModal" />
+@if (TempData["Error"] != null)
+{
+    await Html.RenderPartialAsync("ErrorModal", TempData["Error"]);
+}
