@@ -15,6 +15,7 @@ namespace WebStorageSystem.Data
     public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         // Folder: Product
+        public DbSet<Bundle> Bundles { get; set; }
         public DbSet<Manufacturer> Manufacturers { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
@@ -78,6 +79,17 @@ namespace WebStorageSystem.Data
                     .OnDelete(DeleteBehavior.Restrict);
                 entity.HasQueryFilter(product => !product.IsDeleted);
                 entity.ToTable("Products");
+            });
+            modelBuilder.Entity<Bundle>(entity =>
+            {
+                entity
+                    .HasMany(bundle => bundle.BundledUnits)
+                    .WithOne(unit => unit.PartOfBundle)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasIndex(bundle => bundle.SerialNumber).IsUnique();
+                entity.HasQueryFilter(bundle => !bundle.IsDeleted);
+                entity.ToTable("Bundles");
             });
             modelBuilder.Entity<Unit>(entity =>
             {
