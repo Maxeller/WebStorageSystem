@@ -18,6 +18,8 @@ namespace WebStorageSystem.Data.Entities.Products
 
         public Vendor Vendor { get; set; }
 
+        public Bundle PartOfBundle { get; set; }
+
         public IEnumerable<TransferUnit> TransferredUnits { get; set; }
     }
 }
