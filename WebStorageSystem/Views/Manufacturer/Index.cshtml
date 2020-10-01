@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<WebStorageSystem.Models.ProductModels.ManufacturerModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Manufacturer List";
 }
 
-<h1>Index</h1>
+<h1>List of Manufacturers</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create New Manufacturer</a>
 </p>
 <table class="table">
     <thead>
@@ -47,13 +47,13 @@
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 @if (!item.IsDeleted)
                 {
-                    <a href="#" class="text-primary" data-toggle="modal" data-target="#modalWindow" data-url="@Url.Action("Delete", new {Id = item.Id})" data-name="@item.Name">
+                    <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Delete", new {Id = item.Id})" data-name="@item.Name">
                         Delete
                     </a>
                 }
                 @if (item.IsDeleted)
                 {
-                    <a href="#" class="text-primary" data-toggle="modal" data-target="#modalWindow" data-url="@Url.Action("Restore", new {Id = item.Id})" data-name="@item.Name">
+                    <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Restore", new {Id = item.Id})" data-name="@item.Name">
                         Restore
                     </a>
                 }
@@ -63,4 +63,4 @@
     </tbody>
 </table>
 
-<partial name="ModalWindow" />
+<partial name="DeleteRestoreModal" />

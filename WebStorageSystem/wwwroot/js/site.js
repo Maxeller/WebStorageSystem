@@ -1,8 +1,8 @@
 ﻿// Tippy Initialization
 tippy(document.querySelectorAll(".tippy"));
 
-// Function for filling modal window with appropriate data
-$("#modalWindow").on("show.bs.modal", function(event) {
+// Function for filling modal window for deleting/restoring with appropriate data
+$("#deleteRestoreModal").on("show.bs.modal", function(event) {
     const url = $(event.relatedTarget).data("url");
     const name = $(event.relatedTarget).data("name");
     const array = url.split("/");

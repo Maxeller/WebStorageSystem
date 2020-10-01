@@ -58,17 +58,17 @@
     <a class="text-primary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     @if (!Model.IsDeleted)
     {
-        <a href="#" class="text-primary" data-toggle="modal" data-target="#modalWindow" data-url="@Url.Action("Delete", new {Id = Model.Id})" data-name="@Model.Name">
+        <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Delete", new {Id = Model.Id})" data-name="@Model.Name">
             Delete
         </a>
     }
     @if (Model.IsDeleted)
     {
-        <a href="#" class="text-primary" data-toggle="modal" data-target="#modalWindow" data-url="@Url.Action("Restore", new {Id = Model.Id})" data-name="@Model.Name">
+        <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Restore", new {Id = Model.Id})" data-name="@Model.Name">
             Restore
         </a>
     }
     | <a class="text-primary" asp-action="Index">Back to List</a>
 </div>
 
-<partial name="ModalWindow"/>
+<partial name="DeleteRestoreModal"/>

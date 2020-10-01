@@ -51,17 +51,17 @@
                 @Html.DisplayFor(modelItem => item.IsDeleted)
             </td>
             <td>
-                <a class="text-primary" asp-action="Edit" asp-route-id="@item.Id" class="text-dark">Edit</a> |
-                <a class="text-primary" asp-action="Details" asp-route-id="@item.Id" class="text-dark">Details</a> |
+                <a class="text-primary" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a class="text-primary" asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 @if (!item.IsDeleted)
                 {
-                    <a href="#" class="text-primary" data-toggle="modal" data-target="#modalWindow" data-url="@Url.Action("Delete", new {Id = item.Id})" data-name="@item.Name">
+                    <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Delete", new {Id = item.Id})" data-name="@item.Name">
                         Delete
                     </a>
                 }
                 @if (item.IsDeleted)
                 {
-                    <a href="#" class="text-primary" data-toggle="modal" data-target="#modalWindow" data-url="@Url.Action("Restore", new {Id = item.Id})" data-name="@item.Name">
+                    <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Restore", new {Id = item.Id})" data-name="@item.Name">
                         Restore
                     </a>
                 }
@@ -71,4 +71,4 @@
     </tbody>
 </table>
     
-<partial name="ModalWindow"/>
+<partial name="DeleteRestoreModal"/>
