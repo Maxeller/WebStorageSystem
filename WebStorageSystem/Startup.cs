@@ -7,9 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using WebStorageSystem.Data;
 using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Data.Services.Locations;
+using WebStorageSystem.Data.Services.Products;
 
 namespace WebStorageSystem
 {
@@ -104,6 +106,7 @@ namespace WebStorageSystem
         {
             services.AddDbContext<AppDbContext>(options =>
             {
+                options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
                 options.UseSqlServer(connectionString);
             });
         }
@@ -128,7 +131,6 @@ namespace WebStorageSystem
                     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                     options.Lockout.MaxFailedAccessAttempts = 5;
                     options.Lockout.AllowedForNewUsers = true;
-
                 })
                 .AddEntityFrameworkStores<AppDbContext>();
 
@@ -172,7 +174,13 @@ namespace WebStorageSystem
 
         public static void AddMyDbCommunicationServices(this IServiceCollection services)
         {
+            // Location Services
             services.AddScoped<LocationTypeService>();
+            services.AddScoped<LocationService>();
+
+            // Product Services
+            services.AddScoped<ManufacturerService>();
+            services.AddScoped<ProductTypeService>();
         }
     }
 }

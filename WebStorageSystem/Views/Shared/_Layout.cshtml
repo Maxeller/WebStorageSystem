@@ -23,13 +23,26 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="LocationType" asp-action="Index">Location Types</a>
+                            <div class="dropdown show">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" role="button" id="locationsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Locations
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="locationsDropdown">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Location" asp-action="Index">Locations</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="LocationType" asp-action="Index">Location Types</a>
+                                </div>
+                            </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Location" asp-action="Index">Locations</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Manufacturer" asp-action="Index">Manufacturers</a>
+                            <div class="dropdown show">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" role="button" id="productsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Products
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="productsDropdown">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Manufacturer" asp-action="Index">Manufacturers</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="ProductType" asp-action="Index">Product Types</a>
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>

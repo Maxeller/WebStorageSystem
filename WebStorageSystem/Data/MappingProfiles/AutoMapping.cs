@@ -14,11 +14,11 @@ namespace WebStorageSystem.Data.MappingProfiles
             LocationTypeMapping();
             LocationMapping();
             ManufacturerMapping();
+            ProductTypeMapping();
         }
 
         private void LocationTypeMapping()
         {
-            CreateMap<LocationType, LocationTypeModel>();
             CreateMap<LocationType, LocationTypeModel>();
             CreateMap<List<LocationType>, List<LocationTypeModel>>();
             CreateMap<LocationTypeModel, LocationType>();
@@ -39,6 +39,14 @@ namespace WebStorageSystem.Data.MappingProfiles
             CreateMap<List<Manufacturer>, List<ManufacturerModel>>();
             CreateMap<ManufacturerModel, Manufacturer>();
             CreateMap<List<ManufacturerModel>, List<Manufacturer>>();
+        }
+
+        private void ProductTypeMapping()
+        {
+            CreateMap<ProductType, ProductTypeModel>();
+            CreateMap<List<ProductType>, List<ProductTypeModel>>();
+            CreateMap<ProductTypeModel, ProductType>();
+            CreateMap<List<ProductTypeModel>, List<ProductType>>();
         }
     }
 }
