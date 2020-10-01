@@ -1,13 +1,13 @@
 ﻿@model WebStorageSystem.Models.ProductModels.ManufacturerModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Details "+Model.Name;
 }
 
 <h1>Details</h1>
 
 <div>
-    <h4>ManufacturerModel</h4>
+    <h4>Manufacturer</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -41,14 +41,12 @@
     @if (!Model.IsDeleted)
     {
         <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Delete", new {Id = Model.Id})" data-name="@Model.Name">
-            Delete
-        </a>
+            Delete</a>
     }
     @if (Model.IsDeleted)
     {
         <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Restore", new {Id = Model.Id})" data-name="@Model.Name">
-            Restore
-        </a>
+            Restore</a>
     }
     | <a class="text-primary" asp-action="Index">Back to List</a>
 </div>
