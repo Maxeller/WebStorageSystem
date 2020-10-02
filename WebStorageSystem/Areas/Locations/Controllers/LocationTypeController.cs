@@ -4,7 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Areas.Locations.Data.Services;
-using WebStorageSystem.Models.LocationModels;
+using WebStorageSystem.Areas.Locations.Models;
 
 namespace WebStorageSystem.Areas.Locations.Controllers
 {

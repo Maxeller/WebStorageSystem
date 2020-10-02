@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using WebStorageSystem.Data.Entities;
 
-namespace WebStorageSystem.Models.LocationModels
+namespace WebStorageSystem.Areas.Locations.Models
 {
     public class LocationTypeModel : BaseEntityWithId
     {
