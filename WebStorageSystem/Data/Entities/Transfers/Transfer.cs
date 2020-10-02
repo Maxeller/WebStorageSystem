@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Data.Entities.Identities;
-using WebStorageSystem.Data.Entities.Locations;
 
 namespace WebStorageSystem.Data.Entities.Transfers
 {

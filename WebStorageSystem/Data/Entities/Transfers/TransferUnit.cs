@@ -1,4 +1,4 @@
-﻿using WebStorageSystem.Data.Entities.Products;
+﻿using WebStorageSystem.Areas.Products.Data.Entities;
 
 namespace WebStorageSystem.Data.Entities.Transfers
 {

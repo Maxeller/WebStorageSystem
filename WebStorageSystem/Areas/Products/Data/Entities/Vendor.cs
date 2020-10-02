@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using WebStorageSystem.Data.Entities;
 
-namespace WebStorageSystem.Data.Entities.Products
+namespace WebStorageSystem.Areas.Products.Data.Entities
 {
     public class Vendor : BaseEntityWithId
     {

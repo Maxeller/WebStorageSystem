@@ -4,9 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using WebStorageSystem.Data.Entities.Products;
+using WebStorageSystem.Areas.Products.Data.Entities;
+using WebStorageSystem.Data;
 
-namespace WebStorageSystem.Data.Services.Products
+namespace WebStorageSystem.Areas.Products.Data.Services
 {
     public class ManufacturerService
     {

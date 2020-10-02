@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using WebStorageSystem.Data.Entities;
 
-namespace WebStorageSystem.Models.ProductModels
+namespace WebStorageSystem.Areas.Products.Models
 {
     public class ProductTypeModel: BaseEntityWithId
     {

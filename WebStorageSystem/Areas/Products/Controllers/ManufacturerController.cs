@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebStorageSystem.Data.Entities.Products;
-using WebStorageSystem.Data.Services.Products;
-using WebStorageSystem.Models.ProductModels;
+using WebStorageSystem.Areas.Products.Data.Entities;
+using WebStorageSystem.Areas.Products.Data.Services;
+using WebStorageSystem.Areas.Products.Models;
 
-namespace WebStorageSystem.Controllers.ProductsControllers
+namespace WebStorageSystem.Areas.Products.Controllers
 {
+    [Area("Products")]
     public class ManufacturerController : Controller
     {
         private readonly ManufacturerService _service;

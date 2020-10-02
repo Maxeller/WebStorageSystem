@@ -4,10 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WebStorageSystem.Areas.Locations.Data.Entities;
+using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Data.Entities;
 using WebStorageSystem.Data.Entities.Identities;
-using WebStorageSystem.Data.Entities.Locations;
-using WebStorageSystem.Data.Entities.Products;
 using WebStorageSystem.Data.Entities.Transfers;
 
 namespace WebStorageSystem.Data

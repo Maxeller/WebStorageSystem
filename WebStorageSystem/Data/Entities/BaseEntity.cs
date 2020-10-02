@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using WebStorageSystem.Data.Entities.Locations;
 
 namespace WebStorageSystem.Data.Entities
 {

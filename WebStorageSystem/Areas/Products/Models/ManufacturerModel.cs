@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using WebStorageSystem.Data.Entities;
 
-namespace WebStorageSystem.Models.ProductModels
+namespace WebStorageSystem.Areas.Products.Models
 {
     public class ManufacturerModel : BaseEntityWithId
     {

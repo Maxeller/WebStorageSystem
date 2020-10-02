@@ -8,10 +8,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using WebStorageSystem.Areas.Locations.Data.Services;
+using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Data;
 using WebStorageSystem.Data.Entities.Identities;
-using WebStorageSystem.Data.Services.Locations;
-using WebStorageSystem.Data.Services.Products;
 
 namespace WebStorageSystem
 {
@@ -77,6 +77,9 @@ namespace WebStorageSystem
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                    name: "Areas",
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -181,6 +184,7 @@ namespace WebStorageSystem
             // Product Services
             services.AddScoped<ManufacturerService>();
             services.AddScoped<ProductTypeService>();
+            services.AddScoped<VendorService>();
         }
     }
 }

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using WebStorageSystem.Data.Entities;
 
-namespace WebStorageSystem.Data.Entities.Products
+namespace WebStorageSystem.Areas.Products.Data.Entities
 {
     public class Bundle : BaseEntityWithId
     {
@@ -17,5 +15,7 @@ namespace WebStorageSystem.Data.Entities.Products
 
         [Required]
         public IEnumerable<Unit> BundledUnits { get; set; }
+
+        // TODO: Transfers?
     }
 }

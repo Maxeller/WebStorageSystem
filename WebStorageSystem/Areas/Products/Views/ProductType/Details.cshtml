@@ -1,4 +1,4 @@
-﻿@model WebStorageSystem.Models.ProductModels.ManufacturerModel
+﻿@model WebStorageSystem.Areas.Products.Models.ProductTypeModel
 
 @{
     ViewData["Title"] = "Details "+Model.Name;
@@ -7,7 +7,7 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Manufacturer</h4>
+    <h4>Product Type</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -17,13 +17,19 @@
             @Model.Name
         </dd>
         <dt class="col-sm-2">
+            Description
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Description
+        </dd>
+        <dt class="col-sm-2">
             Created Date
         </dt>
         <dd class="col-sm-10">
             @Model.CreatedDate
         </dd>
         <dt class="col-sm-2">
-            Last Modified
+            Last Modification
         </dt>
         <dd class="col-sm-10">
             @Model.ModifiedDate
@@ -52,3 +58,7 @@
 </div>
 
 <partial name="DeleteRestoreModal" />
+@if (TempData["Error"] != null)
+{
+    await Html.RenderPartialAsync("ErrorModal", TempData["Error"]);
+}

@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using WebStorageSystem.Areas.Locations.Data.Entities;
+using WebStorageSystem.Data.Entities;
 using WebStorageSystem.Data.Entities.Transfers;
-using WebStorageSystem.Data.Entities.Locations;
 
-namespace WebStorageSystem.Data.Entities.Products
+namespace WebStorageSystem.Areas.Products.Data.Entities
 {
     public class Unit : BaseEntityWithId
     {

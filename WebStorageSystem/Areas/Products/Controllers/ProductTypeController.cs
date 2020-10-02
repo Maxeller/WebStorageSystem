@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using WebStorageSystem.Data;
-using WebStorageSystem.Data.Entities.Products;
-using WebStorageSystem.Data.Services.Products;
-using WebStorageSystem.Models.ProductModels;
+using WebStorageSystem.Areas.Products.Data.Entities;
+using WebStorageSystem.Areas.Products.Data.Services;
+using WebStorageSystem.Areas.Products.Models;
 
-namespace WebStorageSystem.Controllers.ProductsControllers
+namespace WebStorageSystem.Areas.Products.Controllers
 {
+    [Area("Products")]
     public class ProductTypeController : Controller
     {
         private readonly ProductTypeService _service;
