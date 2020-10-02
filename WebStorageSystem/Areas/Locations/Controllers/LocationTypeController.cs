@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebStorageSystem.Data.Entities.Locations;
-using WebStorageSystem.Data.Services.Locations;
+using WebStorageSystem.Areas.Locations.Data.Entities;
+using WebStorageSystem.Areas.Locations.Data.Services;
 using WebStorageSystem.Models.LocationModels;
 
-namespace WebStorageSystem.Controllers.LocationsControllers
+namespace WebStorageSystem.Areas.Locations.Controllers
 {
+    [Area("Locations")]
     public class LocationTypeController : Controller
     {
         private readonly LocationTypeService _service;

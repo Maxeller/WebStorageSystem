@@ -4,9 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using WebStorageSystem.Data.Entities.Locations;
+using WebStorageSystem.Areas.Locations.Data.Entities;
+using WebStorageSystem.Data;
 
-namespace WebStorageSystem.Data.Services.Locations
+namespace WebStorageSystem.Areas.Locations.Data.Services
 {
     public class LocationService
     {
