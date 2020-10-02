@@ -56,10 +56,24 @@ namespace WebStorageSystem.Data.Services.Products
             await _context.SaveChangesAsync();
         }
 
-        public async Task EditProductTypeAsync(ProductType productType)
+        public async Task<(bool Success, string ErrorMessage)> EditProductTypeAsync(ProductType productType)
         {
-            _context.ProductTypes.Update(productType);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.ProductTypes.Update(productType);
+                await _context.SaveChangesAsync();
+                return (true, null);
+            }
+            catch (DbUpdateConcurrencyException concurrencyException)
+            {
+                // TODO: log
+                return (false, concurrencyException.Message); // TODO: Change to more friendly message
+            }
+            catch (Exception ex)
+            {
+                // TODO: log
+                return (false, ex.Message); // TODO: Change to more friendly message
+            }
         }
 
         public async Task<int> DeleteProductTypeAsync(int id)

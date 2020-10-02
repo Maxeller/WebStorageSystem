@@ -84,16 +84,11 @@ namespace WebStorageSystem.Controllers.ProductsControllers
 
             var productType = _mapper.Map<ProductType>(productTypeModel);
 
-            try
-            {
-                await _service.EditProductTypeAsync(productType);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (await _service.GetProductTypeAsync(productType.Id) == null) return NotFound();
-                throw; // TODO: Handle exception
-            }
+            var (success, errorMessage) = await _service.EditProductTypeAsync(productType);
+            if(success) return RedirectToAction(nameof(Index));
+            if (await _service.GetProductTypeAsync(productType.Id) == null) return NotFound();
+            TempData["Error"] = errorMessage;
+            return View(productTypeModel);
         }
 
         // POST: ProductType/Delete/5

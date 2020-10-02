@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -45,10 +46,24 @@ namespace WebStorageSystem.Data.Services.Products
             await _context.SaveChangesAsync();
         }
 
-        public async Task EditManufacturerAsync(Manufacturer manufacturer)
+        public async Task<(bool Success, string ErrorMessage)> EditManufacturerAsync(Manufacturer manufacturer)
         {
-            _context.Manufacturers.Update(manufacturer);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Manufacturers.Update(manufacturer);
+                await _context.SaveChangesAsync();
+                return (true, null);
+            }
+            catch (DbUpdateConcurrencyException concurrencyException)
+            {
+                // TODO: log
+                return (false, concurrencyException.Message); // TODO: Change to more friendly message
+            }
+            catch (Exception ex)
+            {
+                // TODO: log
+                return (false, ex.Message); // TODO: Change to more friendly message
+            }
         }
 
         public async Task DeleteManufacturerAsync(int id)

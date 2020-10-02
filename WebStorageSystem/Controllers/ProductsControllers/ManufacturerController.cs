@@ -79,16 +79,12 @@ namespace WebStorageSystem.Controllers.ProductsControllers
             if (!ModelState.IsValid) return View(manufacturerModel);
 
             var manufacturer = _mapper.Map<Manufacturer>(manufacturerModel);
-            try
-            {
-                await _service.EditManufacturerAsync(manufacturer);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (await _service.GetManufacturerAsync(manufacturer.Id) == null) return NotFound();
-                throw; // TODO: Handle exception
-            }
+
+            var (success, errorMessage) = await _service.EditManufacturerAsync(manufacturer);
+            if(success) return RedirectToAction(nameof(Index));
+            if (await _service.GetManufacturerAsync(manufacturer.Id) == null) return NotFound();
+            TempData["Error"] = errorMessage;
+            return View(manufacturerModel);
         }
 
         // POST: Manufacturer/Delete/5

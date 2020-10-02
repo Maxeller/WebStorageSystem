@@ -80,16 +80,11 @@ namespace WebStorageSystem.Controllers.LocationsControllers
 
             var locationType = _mapper.Map<LocationType>(locationTypeModel);
 
-            try
-            {
-                await _service.EditLocationTypeAsync(locationType);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (await _service.GetLocationTypeAsync(locationType.Id) == null) return NotFound();
-                throw; // TODO: Handle exception
-            }
+            var (success, errorMessage) = await _service.EditLocationTypeAsync(locationType);
+            if(success) return RedirectToAction(nameof(Index));
+            if (await _service.GetLocationTypeAsync(locationType.Id) == null) return NotFound();
+            TempData["Error"] = errorMessage;
+            return View(locationTypeModel);
         }
 
         // POST: LocationType/Delete/5

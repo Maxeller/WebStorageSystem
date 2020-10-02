@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -52,10 +53,27 @@ namespace WebStorageSystem.Data.Services.Locations
             await _context.SaveChangesAsync();
         }
 
-        public async Task EditLocationAsync(Location location)
+        public async Task<(bool Success, string ErrorMessage)> EditLocationAsync(Location location)
         {
-            _context.Locations.Update(location);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var entry = _context.Locations.First(l => l.Id == location.Id);
+                _context.Entry(entry).State = EntityState.Detached; // Because location was created via join (i think), previous version of it is still attached in context. It must be detached, so updated one can be properly saved.
+                _context.Entry(location).State = EntityState.Modified;
+                _context.Locations.Update(location);
+                await _context.SaveChangesAsync();
+                return (true, null);
+            }
+            catch (DbUpdateConcurrencyException concurrencyException)
+            {
+                // TODO: log
+                return (false, concurrencyException.Message); // TODO: Change to more friendly message
+            }
+            catch (Exception ex)
+            {
+                // TODO: log
+                return (false, ex.Message); // TODO: Change to more friendly message
+            }
         }
 
         public async Task DeleteLocationAsync(int id)

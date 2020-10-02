@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -46,7 +47,7 @@ namespace WebStorageSystem.Controllers.LocationsControllers
         // GET: Location/Create
         public async Task<IActionResult> Create([FromQuery] bool getDeleted = false)
         {
-            ViewBag.LocationTypes = await CreateLocationTypeDropdownList(getDeleted);
+            await CreateLocationTypeDropdownList(getDeleted);
             return View();
         }
 
@@ -57,14 +58,14 @@ namespace WebStorageSystem.Controllers.LocationsControllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.LocationTypes = await CreateLocationTypeDropdownList(getDeleted);
+                await CreateLocationTypeDropdownList(getDeleted);
                 return View(locationModel);
             }
 
             var locationType = await _ltService.GetLocationTypeAsync(locationModel.LocationTypeId, getDeleted);
             if (locationType == null)
             {
-                ViewBag.LocationTypes = await CreateLocationTypeDropdownList(getDeleted);
+                await CreateLocationTypeDropdownList(getDeleted);
                 return View(locationModel);
             }
             var location = _mapper.Map<Location>(locationModel);
@@ -82,7 +83,7 @@ namespace WebStorageSystem.Controllers.LocationsControllers
             var locationModel = _mapper.Map<LocationModel>(location);
             if (locationModel == null) return NotFound();
 
-            ViewBag.LocationTypes = await CreateLocationTypeDropdownList(getDeleted, locationModel.LocationType);
+            await CreateLocationTypeDropdownList(getDeleted, locationModel.LocationType);
 
             return View(locationModel);
         }
@@ -98,22 +99,18 @@ namespace WebStorageSystem.Controllers.LocationsControllers
             var locationType = await _ltService.GetLocationTypeAsync(locationModel.LocationTypeId, getDeleted);
             if (locationType == null)
             {
-                ViewBag.LocationTypes = await CreateLocationTypeDropdownList(getDeleted);
+                await CreateLocationTypeDropdownList(getDeleted);
                 return View(locationModel);
             }
             var location = _mapper.Map<Location>(locationModel);
             location.LocationType = locationType;
 
-            try
-            {
-                await _service.EditLocationAsync(location);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (await _service.GetLocationAsync(location.Id) == null) return NotFound();
-                throw; // TODO: Handle exception
-            }
+            var (success, errorMessage) = await _service.EditLocationAsync(location);
+            if(success) return RedirectToAction(nameof(Index));
+            if (await _service.GetLocationAsync(location.Id) == null) return NotFound();
+            await CreateLocationTypeDropdownList(getDeleted);
+            TempData["Error"] = errorMessage;
+            return View(locationModel);
         }
 
         // POST: Location/Delete/5
@@ -137,11 +134,11 @@ namespace WebStorageSystem.Controllers.LocationsControllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<SelectList> CreateLocationTypeDropdownList(bool getDeleted = false, object selectedType = null)
+        private async Task CreateLocationTypeDropdownList(bool getDeleted = false, object selectedType = null)
         {
             var locationTypes = await _ltService.GetLocationTypesAsync(getDeleted);
             var ltModels = _mapper.Map<ICollection<LocationTypeModel>>(locationTypes);
-            return new SelectList(ltModels, "Id", "Name", selectedType);
+            ViewBag.LocationTypes = new SelectList(ltModels, "Id", "Name", selectedType);
         }
     }
 }

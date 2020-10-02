@@ -1,7 +1,7 @@
 ﻿@model WebStorageSystem.Models.LocationModels.LocationModel
 
 @{
-    ViewData["Title"] = "Edit "+Model.Name;
+    ViewData["Title"] = "Edit " + Model.Name;
 }
 
 <h1>Edit</h1>
@@ -47,6 +47,11 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+@if (TempData["Error"] != null)
+{
+    await Html.RenderPartialAsync("ErrorModal", TempData["Error"]);
+}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

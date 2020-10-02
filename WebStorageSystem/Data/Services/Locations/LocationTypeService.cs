@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -57,10 +58,24 @@ namespace WebStorageSystem.Data.Services.Locations
             await _context.SaveChangesAsync();
         }
 
-        public async Task EditLocationTypeAsync(LocationType locationType)
+        public async Task<(bool Success, string ErrorMessage)> EditLocationTypeAsync(LocationType locationType)
         {
-            _context.LocationTypes.Update(locationType);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.LocationTypes.Update(locationType);
+                await _context.SaveChangesAsync();
+                return (true, null);
+            }
+            catch (DbUpdateConcurrencyException concurrencyException)
+            {
+                // TODO: log
+                return (false, concurrencyException.Message); // TODO: Change to more friendly message
+            }
+            catch (Exception ex)
+            {
+                // TODO: log
+                return (false, ex.Message); // TODO: Change to more friendly message
+            }
         }
 
         public async Task<int> DeleteLocationTypeAsync(int id)
