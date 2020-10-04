@@ -42,7 +42,7 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
             return list.FirstOrDefault(location => location.Id == id);
         }
 
-        public async Task<ICollection<Location>> GetLocationsAsync(bool getDeleted = false)
+        public async Task<IEnumerable<Location>> GetLocationsAsync(bool getDeleted = false)
         {
             if (getDeleted) return await _getQuery.IgnoreQueryFilters().ToListAsync();
             return await _getQuery.ToListAsync();

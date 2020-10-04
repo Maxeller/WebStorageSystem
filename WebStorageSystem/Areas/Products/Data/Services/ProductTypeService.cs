@@ -45,7 +45,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             return productType;
         }
 
-        public async Task<ICollection<ProductType>> GetProductTypesAsync(bool getDeleted = false)
+        public async Task<IEnumerable<ProductType>> GetProductTypesAsync(bool getDeleted = false)
         {
             if (getDeleted) return await _getQuery.IgnoreQueryFilters().ToListAsync();
             return await _getQuery.ToListAsync();

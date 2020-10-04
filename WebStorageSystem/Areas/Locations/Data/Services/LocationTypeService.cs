@@ -47,7 +47,7 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
             return locationType;
         }
 
-        public async Task<ICollection<LocationType>> GetLocationTypesAsync(bool getDeleted = false)
+        public async Task<IEnumerable<LocationType>> GetLocationTypesAsync(bool getDeleted = false)
         {
             if (getDeleted) return await _getQuery.IgnoreQueryFilters().ToListAsync();
             return await _getQuery.ToListAsync();

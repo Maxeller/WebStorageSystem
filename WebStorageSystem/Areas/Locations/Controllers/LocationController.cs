@@ -27,7 +27,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         public async Task<IActionResult> Index([FromQuery] bool getDeleted = false)
         {
             var locations = await _service.GetLocationsAsync(getDeleted);
-            var models = _mapper.Map<ICollection<LocationModel>>(locations);
+            var models = _mapper.Map<IEnumerable<LocationModel>>(locations);
             return View(models);
         }
 

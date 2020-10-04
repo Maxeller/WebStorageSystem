@@ -24,8 +24,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Index([FromQuery] bool getDeleted)
         {
             var manufacturers = await _service.GetManufacturersAsync(getDeleted);
-            var models = _mapper.Map<ICollection<ManufacturerModel>>(manufacturers);
-            return View(models);
+            var manufacturerModels = _mapper.Map<IEnumerable<ManufacturerModel>>(manufacturers);
+            return View(manufacturerModels);
         }
 
         // GET: Manufacturer/Details/5

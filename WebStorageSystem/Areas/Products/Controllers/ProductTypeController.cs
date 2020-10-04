@@ -24,7 +24,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Index([FromQuery] bool getDeleted)
         {
             var productType = await _service.GetProductTypesAsync(getDeleted);
-            var models = _mapper.Map<ICollection<ProductTypeModel>>(productType);
+            var models = _mapper.Map<IEnumerable<ProductTypeModel>>(productType);
             return View(models);
         }
 
