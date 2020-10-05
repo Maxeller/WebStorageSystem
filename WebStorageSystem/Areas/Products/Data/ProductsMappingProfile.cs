@@ -12,6 +12,7 @@ namespace WebStorageSystem.Areas.Products.Data
             ManufacturerMapping();
             ProductTypeMapping();
             VendorMapping();
+            ProductMapping();
         }
 
         private void ManufacturerMapping()
@@ -36,6 +37,14 @@ namespace WebStorageSystem.Areas.Products.Data
             CreateMap<List<Vendor>, List<VendorModel>>();
             CreateMap<VendorModel, Vendor>();
             CreateMap<List<VendorModel>, List<Vendor>>();
+        }
+
+        private void ProductMapping()
+        {
+            CreateMap<Product, ProductModel>();
+            CreateMap<List<Product>, List<ProductModel>>();
+            CreateMap<ProductModel, Product>();
+            CreateMap<List<ProductModel>, List<Product>>();
         }
     }
 }
