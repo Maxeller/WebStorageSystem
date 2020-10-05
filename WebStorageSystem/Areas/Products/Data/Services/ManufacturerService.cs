@@ -75,7 +75,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
 
         public async Task DeleteManufacturerAsync(Manufacturer manufacturer)
         {
-            _context.Manufacturers.Remove(manufacturer);
+            _context.Manufacturers.Remove(manufacturer); // TODO: Cascading 
             await _context.SaveChangesAsync();
         }
 

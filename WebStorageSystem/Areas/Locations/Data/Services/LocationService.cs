@@ -50,9 +50,6 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         {
             try
             {
-                var entry = await _context.Locations.FirstAsync(l => l.Id == location.Id);
-                _context.Entry(entry).State = EntityState.Detached; // Because location was created via join (i think), previous version of it is still attached in context. It must be detached, so updated one can be properly saved.
-                _context.Entry(location).State = EntityState.Modified;
                 _context.Locations.Update(location);
                 await _context.SaveChangesAsync();
                 return (true, null);
@@ -71,13 +68,13 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
 
         public async Task DeleteLocationAsync(int id)
         {
-            var locationType = await GetLocationAsync(id);
-            await DeleteLocationAsync(locationType);
+            var location = await GetLocationAsync(id);
+            await DeleteLocationAsync(location);
         }
 
         public async Task DeleteLocationAsync(Location location)
         {
-            _context.Locations.Remove(location);
+            _context.Locations.Remove(location); // TODO: Determine if cascading
             await _context.SaveChangesAsync();
         }
 
@@ -91,7 +88,7 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         {
             var location = await GetLocationAsync(id, true);
             location.IsDeleted = false;
-            _context.Update(location); // TODO: Determine if cascading
+            _context.Update(location);
             await _context.SaveChangesAsync();
         }
     }

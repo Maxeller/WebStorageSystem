@@ -115,7 +115,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         // POST: Location/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
             await _service.DeleteLocationAsync((int) id);

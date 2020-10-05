@@ -87,7 +87,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         {
             var pt = await GetProductTypeAsync(productType.Id);
             //if (pt.Products.Count() != 0) return -1;
-            _context.ProductTypes.Remove(productType);
+            _context.ProductTypes.Remove(productType); // TODO: Cascading
             return await _context.SaveChangesAsync();
         }
 
