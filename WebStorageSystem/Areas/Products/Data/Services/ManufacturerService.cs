@@ -14,7 +14,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         private readonly AppDbContext _context;
         private readonly ILogger _logger;
 
-        private IQueryable<Manufacturer> _getQuery;
+        private readonly IQueryable<Manufacturer> _getQuery;
 
         public ManufacturerService(AppDbContext context, ILoggerFactory factory)
         {
@@ -25,9 +25,17 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             _getQuery = _context
                 .Manufacturers
                 .AsNoTracking()
-                .OrderBy(manufacturer => manufacturer.Name);
+                .OrderBy(manufacturer => manufacturer.Name)
+                .Include(manufacturer => manufacturer.Products)
+                .AsNoTracking();
         }
 
+        /// <summary>
+        /// Gets entry from DB
+        /// </summary>
+        /// <param name="id">Entity ID</param>
+        /// <param name="getDeleted">Looks through soft deleted entries</param>
+        /// <returns>If found returns object, otherwise null</returns>
         public async Task<Manufacturer> GetManufacturerAsync(int id, bool getDeleted = false)
         {
             if (getDeleted) return await _getQuery.IgnoreQueryFilters().FirstOrDefaultAsync(manufacturer => manufacturer.Id == id);
@@ -35,18 +43,32 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             return await _getQuery.FirstOrDefaultAsync(manufacturer => manufacturer.Id == id);
         }
 
+        /// <summary>
+        /// Gets all entries from DB
+        /// </summary>
+        /// <param name="getDeleted">Looks through soft deleted entries</param>
+        /// <returns>Collection of entities</returns>
         public async Task<IEnumerable<Manufacturer>> GetManufacturersAsync(bool getDeleted = false)
         {
             if (getDeleted) return await _getQuery.IgnoreQueryFilters().ToListAsync();
             return await _getQuery.ToListAsync();
         }
 
+        /// <summary>
+        /// Adds object to DB
+        /// </summary>
+        /// <param name="manufacturer">Object for adding</param>
         public async Task AddManufacturerAsync(Manufacturer manufacturer)
         {
             _context.Manufacturers.Add(manufacturer);
             await _context.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Edits entry in DB
+        /// </summary>
+        /// <param name="manufacturer">Object for editing</param>
+        /// <returns>Return tuple if editing was successful, if not error message is provided</returns>
         public async Task<(bool Success, string ErrorMessage)> EditManufacturerAsync(Manufacturer manufacturer)
         {
             try
@@ -67,30 +89,52 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             }
         }
 
-        public async Task DeleteManufacturerAsync(int id)
+        /// <summary>
+        /// Soft deletes entry based on entry ID
+        /// </summary>
+        /// <param name="id">Entry ID</param>
+        /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
+        public async Task<(bool Success, string ErrorMessage)> DeleteManufacturerAsync(int id)
         {
             var manufacturer= await GetManufacturerAsync(id);
-            await DeleteManufacturerAsync(manufacturer);
+            return await DeleteManufacturerAsync(manufacturer);
         }
 
-        public async Task DeleteManufacturerAsync(Manufacturer manufacturer)
+        /// <summary>
+        /// Soft deletes entry based on object
+        /// </summary>
+        /// <param name="manufacturer">Object for deletion</param>
+        /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
+        public async Task<(bool Success, string ErrorMessage)> DeleteManufacturerAsync(Manufacturer manufacturer)
         {
-            _context.Manufacturers.Remove(manufacturer); // TODO: Cascading 
+            if (manufacturer.Products.Count(product => !product.IsDeleted) != 0) return (false, "Manufacturer cannot be deleted.<br/>It's used in existing Product.");
+            _context.Manufacturers.Remove(manufacturer);
             await _context.SaveChangesAsync();
+            return (true, null);
         }
 
-        public async Task<bool> ManufacturerExistsAsync(int id, bool getDeleted)
-        {
-            var manufacturer = await GetManufacturerAsync(id, getDeleted);
-            return manufacturer != null;
-        }
-
+        /// <summary>
+        /// Restores soft deleted entry
+        /// </summary>
+        /// <param name="id">Entry ID</param>
         public async Task RestoreManufacturerAsync(int id)
         {
             var manufacturer = await GetManufacturerAsync(id, true);
             manufacturer.IsDeleted = false;
-            _context.Update(manufacturer); // TODO: Determine if cascading
+            _context.Update(manufacturer);
             await _context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Determines existence of entry
+        /// </summary>
+        /// <param name="id">Entry ID</param>
+        /// <param name="getDeleted">Look through soft deleted entries</param>
+        /// <returns>True if entry exists</returns>
+        public async Task<bool> ManufacturerExistsAsync(int id, bool getDeleted)
+        {
+            var manufacturer = await GetManufacturerAsync(id, getDeleted); // TODO: Change everywhere to call _context.<Table>.Any()
+            return manufacturer != null;
         }
     }
 }

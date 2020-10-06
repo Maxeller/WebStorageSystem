@@ -21,10 +21,12 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
             _context = context;
             _logger = factory.CreateLogger<LocationService>();
 
-            _getQuery = _context.Locations
+            _getQuery = _context
+                .Locations
                 .AsNoTracking()
                 .OrderBy(location => location.Name)
-                .Include(location => location.LocationType);
+                .Include(location => location.LocationType)
+                .AsNoTracking();
         }
 
         public async Task<Location> GetLocationAsync(int id, bool getDeleted = false)
@@ -50,6 +52,9 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         {
             try
             {
+                var prev = await _context.Locations.FirstAsync(l => l.Id == location.Id);
+                _context.Entry(prev).State = EntityState.Detached;
+                _context.Entry(location).State = EntityState.Modified;
                 _context.Locations.Update(location);
                 await _context.SaveChangesAsync();
                 return (true, null);
@@ -80,8 +85,8 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
 
         public async Task<bool> LocationExistsAsync(int id, bool getDeleted)
         {
-            var location = await GetLocationAsync(id, getDeleted);
-            return location != null;
+            if (getDeleted) await _context.Locations.IgnoreQueryFilters().AnyAsync(location => location.Id == id);
+            return await _context.Locations.AnyAsync(location => location.Id == id);
         }
 
         public async Task RestoreLocationAsync(int id)

@@ -22,6 +22,24 @@ namespace WebStorageSystem.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Bundles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    Name = table.Column<string>(maxLength: 100, nullable: false),
+                    SerialNumber = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bundles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "LocationTypes",
                 columns: table => new
                 {
@@ -152,6 +170,7 @@ namespace WebStorageSystem.Data.Migrations
                     IsDeleted = table.Column<bool>(nullable: false),
                     RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
+                    Description = table.Column<string>(maxLength: 500, nullable: true),
                     LocationTypeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -332,7 +351,8 @@ namespace WebStorageSystem.Data.Migrations
                     SerialNumber = table.Column<string>(nullable: false),
                     ProductId = table.Column<int>(nullable: false),
                     LocationId = table.Column<int>(nullable: false),
-                    VendorId = table.Column<int>(nullable: true)
+                    VendorId = table.Column<int>(nullable: true),
+                    PartOfBundleId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -343,6 +363,12 @@ namespace WebStorageSystem.Data.Migrations
                         principalTable: "Locations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Units_Bundles_PartOfBundleId",
+                        column: x => x.PartOfBundleId,
+                        principalTable: "Bundles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Units_Products_ProductId",
                         column: x => x.ProductId,
@@ -413,6 +439,12 @@ namespace WebStorageSystem.Data.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Bundles_SerialNumber",
+                table: "Bundles",
+                column: "SerialNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Locations_LocationTypeId",
                 table: "Locations",
                 column: "LocationTypeId");
@@ -451,6 +483,11 @@ namespace WebStorageSystem.Data.Migrations
                 name: "IX_Units_LocationId",
                 table: "Units",
                 column: "LocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Units_PartOfBundleId",
+                table: "Units",
+                column: "PartOfBundleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Units_ProductId",
@@ -515,6 +552,9 @@ namespace WebStorageSystem.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Locations");
+
+            migrationBuilder.DropTable(
+                name: "Bundles");
 
             migrationBuilder.DropTable(
                 name: "Products");

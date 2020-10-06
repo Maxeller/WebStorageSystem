@@ -93,8 +93,8 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            var affectedRows = await _service.DeleteLocationTypeAsync((int) id);
-            if (affectedRows == -1) TempData["Error"] = "Location Type cannot be deleted.<br/>It's used as type in existing Location.";
+            (bool success, string errorMessage) = await _service.DeleteLocationTypeAsync((int) id);
+            if (!success) TempData["Error"] = errorMessage;
             return RedirectToAction(nameof(Index));
         }
 

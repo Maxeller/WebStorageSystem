@@ -12,15 +12,13 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
     public class LocationTypeService
     {
         private readonly AppDbContext _context;
-        private readonly LocationService _lService;
         private readonly ILogger _logger;
 
         private readonly IQueryable<LocationType> _getQuery;
 
-        public LocationTypeService(AppDbContext context, LocationService lService, ILoggerFactory factory)
+        public LocationTypeService(AppDbContext context, ILoggerFactory factory)
         {
             _context = context;
-            _lService = lService;
 
             _logger = factory.CreateLogger<LocationTypeService>();
 
@@ -93,8 +91,8 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         /// Soft deletes entry based on entry ID
         /// </summary>
         /// <param name="id">Entry ID</param>
-        /// <returns>Number of affected rows (return -1 when entry is used as foreign key)</returns>
-        public async Task<int> DeleteLocationTypeAsync(int id)
+        /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
+        public async Task<(bool Success, string ErrorMessage)> DeleteLocationTypeAsync(int id)
         {
             var locationType = await GetLocationTypeAsync(id);
             return await DeleteLocationTypeAsync(locationType);
@@ -104,12 +102,13 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         /// Soft deletes entry based on object
         /// </summary>
         /// <param name="locationType">Object for deletion</param>
-        /// <returns>Number of affected rows (return -1 when entry is used as foreign key)</returns>
-        public async Task<int> DeleteLocationTypeAsync(LocationType locationType)
+        /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
+        public async Task<(bool Success, string ErrorMessage)> DeleteLocationTypeAsync(LocationType locationType)
         {
-            if (locationType.Locations.Count(location => !location.IsDeleted) != 0) return -1;
+            if (locationType.Locations.Count(location => !location.IsDeleted) != 0) return (false, "Location Type cannot be deleted.<br/>It's used as type in existing Location.");
             _context.LocationTypes.Remove(locationType);
-            return await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+            return (true, null);
         }
 
         /// /// <summary>
