@@ -20,18 +20,5 @@ namespace WebStorageSystem.Areas.Locations.Data.Entities
 
         public IEnumerable<Transfer> OriginTransfers { get; set; }
         public IEnumerable<Transfer> DestinationTransfers { get; set; }
-
-        public Location()
-        {
-        }
-
-        public Location(Location location, LocationType locationType) : base(location)
-        {
-            Name = location.Name;
-            Description = location.Description;
-            OriginTransfers = location.OriginTransfers;
-            DestinationTransfers = location.DestinationTransfers;
-            LocationType = locationType;
-        }
     }
 }

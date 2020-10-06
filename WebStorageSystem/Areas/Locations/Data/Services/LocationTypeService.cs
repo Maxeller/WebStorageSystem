@@ -107,8 +107,7 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         /// <returns>Number of affected rows (return -1 when entry is used as foreign key)</returns>
         public async Task<int> DeleteLocationTypeAsync(LocationType locationType)
         {
-            var n = locationType.Locations.Count(location => !location.IsDeleted);
-            if (n != 0) return -1;
+            if (locationType.Locations.Count(location => !location.IsDeleted) != 0) return -1;
             _context.LocationTypes.Remove(locationType);
             return await _context.SaveChangesAsync();
         }
