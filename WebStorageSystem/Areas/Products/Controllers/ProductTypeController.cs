@@ -93,8 +93,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            var affectedRows = await _service.DeleteProductTypeAsync((int) id);
-            if (affectedRows == -1) TempData["Error"] = "Product Type cannot be deleted.<br/>It's used as type in existing Product.";
+            (bool success, string errorMessage) = await _service.DeleteProductTypeAsync((int) id);
+            if (!success) TempData["Error"] = errorMessage;
             return RedirectToAction(nameof(Index));
         }
 

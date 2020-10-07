@@ -12,51 +12,62 @@ namespace WebStorageSystem.Areas.Products.Data.Services
     public class ProductTypeService
     {
         private readonly AppDbContext _context;
-        //private readonly ProductService _pService;
         private readonly ILogger _logger;
 
         private IQueryable<ProductType> _getQuery;
 
-        public ProductTypeService(AppDbContext context, /*ProductService pService,*/ ILoggerFactory factory)
+        public ProductTypeService(AppDbContext context, ILoggerFactory factory)
         {
             _context = context;
-            //_pService = pService;
 
             _logger = factory.CreateLogger<ProductTypeService>();
 
             _getQuery = _context
                 .ProductTypes
                 .AsNoTracking()
-                .OrderBy(productType => productType.Name);
+                .OrderBy(productType => productType.Name)
+                .Include(productType => productType.Products)
+                .AsNoTracking();
         }
 
+        /// <summary>
+        /// Gets entry from DB
+        /// </summary>
+        /// <param name="id">Entity ID</param>
+        /// <param name="getDeleted">Looks through soft deleted entries</param>
+        /// <returns>If found returns object, otherwise null</returns>
         public async Task<ProductType> GetProductTypeAsync(int id, bool getDeleted = false)
         {
-            /*var products = await _pService.GetProductsAsync(getDeleted);
-            var myProducts = products.ToList().FindAll(product => product.ProductType.Id == id);*/
-            ProductType productType = null;
-            if (getDeleted)
-            {
-                productType = await _getQuery.IgnoreQueryFilters().FirstOrDefaultAsync(productType => productType.Id == id);
-                return productType;
-            }
-
-            productType = await _getQuery.FirstOrDefaultAsync(productType => productType.Id == id);
-            return productType;
+            if (getDeleted) return await _getQuery.IgnoreQueryFilters().FirstOrDefaultAsync(productType => productType.Id == id);
+            return await _getQuery.FirstOrDefaultAsync(productType => productType.Id == id);
         }
 
+        /// <summary>
+        /// Gets all entries from DB
+        /// </summary>
+        /// <param name="getDeleted">Looks through soft deleted entries</param>
+        /// <returns>Collection of entities</returns>
         public async Task<IEnumerable<ProductType>> GetProductTypesAsync(bool getDeleted = false)
         {
             if (getDeleted) return await _getQuery.IgnoreQueryFilters().ToListAsync();
             return await _getQuery.ToListAsync();
         }
 
+        /// <summary>
+        /// Adds object to DB
+        /// </summary>
+        /// <param name="productType">Object for adding</param>
         public async Task AddProductTypeAsync(ProductType productType)
         {
             _context.ProductTypes.Add(productType);
             await _context.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Edits entry in DB
+        /// </summary>
+        /// <param name="productType">Object for editing</param>
+        /// <returns>Return tuple if editing was successful, if not error message is provided</returns>
         public async Task<(bool Success, string ErrorMessage)> EditProductTypeAsync(ProductType productType)
         {
             try
@@ -77,20 +88,35 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             }
         }
 
-        public async Task<int> DeleteProductTypeAsync(int id)
+        /// <summary>
+        /// Soft deletes entry based on entry ID
+        /// </summary>
+        /// <param name="id">Entry ID</param>
+        /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
+        public async Task<(bool Success, string ErrorMessage)> DeleteProductTypeAsync(int id)
         {
             var productType = await GetProductTypeAsync(id);
             return await DeleteProductTypeAsync(productType);
         }
 
-        public async Task<int> DeleteProductTypeAsync(ProductType productType)
+
+        /// <summary>
+        /// Soft deletes entry based on object
+        /// </summary>
+        /// <param name="productType">Object for deletion</param>
+        /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
+        public async Task<(bool Success, string ErrorMessage)> DeleteProductTypeAsync(ProductType productType)
         {
-            var pt = await GetProductTypeAsync(productType.Id);
-            //if (pt.Products.Count() != 0) return -1;
-            _context.ProductTypes.Remove(productType); // TODO: Cascading
-            return await _context.SaveChangesAsync();
+            if (productType.Products.Count(product => !product.IsDeleted) != 0) return (false, "Product Type cannot be deleted.<br/>It's used as type in existing Product.");
+            _context.ProductTypes.Remove(productType);
+            await _context.SaveChangesAsync();
+            return (true, null);
         }
 
+        /// <summary>
+        /// Restores soft deleted entry
+        /// </summary>
+        /// <param name="id">Entry ID</param>
         public async Task RestoreProductTypeAsync(int id)
         {
             var productType = await GetProductTypeAsync(id, true);
@@ -99,10 +125,16 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             await _context.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Determines existence of entry
+        /// </summary>
+        /// <param name="id">Entry ID</param>
+        /// <param name="getDeleted">Look through soft deleted entries</param>
+        /// <returns>True if entry exists</returns>
         public async Task<bool> ProductTypeExistsAsync(int id, bool getDeleted)
         {
-            var productType = await GetProductTypeAsync(id, getDeleted);
-            return productType != null;
+            if (getDeleted) return await _context.ProductTypes.AsNoTracking().IgnoreQueryFilters().AnyAsync(productType => productType.Id == id);
+            return await _context.ProductTypes.AsNoTracking().AnyAsync(productType => productType.Id == id);
         }
     }
 }

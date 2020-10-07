@@ -133,8 +133,10 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <returns>True if entry exists</returns>
         public async Task<bool> ManufacturerExistsAsync(int id, bool getDeleted)
         {
-            var manufacturer = await GetManufacturerAsync(id, getDeleted); // TODO: Change everywhere to call _context.<Table>.Any()
-            return manufacturer != null;
+            if (getDeleted)
+                return await _context.Manufacturers.AsNoTracking().IgnoreQueryFilters()
+                    .AnyAsync(manufacturer => manufacturer.Id == id);
+            return await _context.Manufacturers.AsNoTracking().AnyAsync(manufacturer => manufacturer.Id == id);
         }
     }
 }

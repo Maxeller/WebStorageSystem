@@ -14,32 +14,50 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         private readonly AppDbContext _context;
         private readonly ILogger _logger;
 
-        private IQueryable<Product> _getQuery;
+        private readonly IQueryable<Product> _getQuery;
 
         public ProductService(AppDbContext context, ILoggerFactory factory)
         {
             _context = context;
             _logger = factory.CreateLogger<ProductService>();
 
-            _getQuery = _context.Products
+            _getQuery = _context
+                .Products
                 .AsNoTracking()
                 .OrderBy(product => product.Name)
                 .Include(product => product.ProductType)
-                .Include(product => product.Manufacturer);
+                .AsNoTracking()
+                .Include(product => product.Manufacturer)
+                .AsNoTracking();
         }
 
+        /// <summary>
+        /// Gets entry from DB
+        /// </summary>
+        /// <param name="id">Entity ID</param>
+        /// <param name="getDeleted">Looks through soft deleted entries</param>
+        /// <returns>If found returns object, otherwise null</returns>
         public async Task<Product> GetProductAsync(int id, bool getDeleted = false)
         {
             if (getDeleted) return await _getQuery.IgnoreQueryFilters().FirstOrDefaultAsync(product => product.Id == id);
             return await _getQuery.FirstOrDefaultAsync(product => product.Id == id);
         }
 
+        /// <summary>
+        /// Gets all entries from DB
+        /// </summary>
+        /// <param name="getDeleted">Looks through soft deleted entries</param>
+        /// <returns>Collection of entities</returns>
         public async Task<IEnumerable<Product>> GetProductsAsync(bool getDeleted = false)
         {
             if (getDeleted) return await _getQuery.IgnoreQueryFilters().ToListAsync();
             return await _getQuery.ToListAsync();
         }
 
+        /// <summary>
+        /// Adds object to DB
+        /// </summary>
+        /// <param name="product">Object for adding</param>
         public async Task AddProductAsync(Product product)
         {
             product.Manufacturer = _context.Manufacturers.Attach(product.Manufacturer).Entity;
@@ -48,10 +66,18 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             await _context.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Edits entry in DB
+        /// </summary>
+        /// <param name="product">Object for editing</param>
+        /// <returns>Return tuple if editing was successful, if not error message is provided</returns>
         public async Task<(bool Success, string ErrorMessage)> EditProductAsync(Product product)
         {
             try
             {
+                var prev = await _context.Products.FirstAsync(p => p.Id == product.Id);
+                _context.Entry(prev).State = EntityState.Detached;
+                _context.Entry(product).State = EntityState.Modified;
                 _context.Products.Update(product);
                 await _context.SaveChangesAsync();
                 return (true, null);
@@ -68,30 +94,51 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             }
         }
 
-        public async Task DeleteProductAsync(int id)
+        /// <summary>
+        /// Soft deletes entry based on entry ID
+        /// </summary>
+        /// <param name="id">Entry ID</param>
+        /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
+        public async Task<(bool Success, string ErrorMessage)> DeleteProductAsync(int id)
         {
             var product = await GetProductAsync(id);
-            await DeleteLocationAsync(product);
+            return await DeleteLocationAsync(product);
         }
 
-        public async Task DeleteLocationAsync(Product product)
+        /// <summary>
+        /// Soft deletes entry based on object
+        /// </summary>
+        /// <param name="product">Object for deletion</param>
+        /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
+        public async Task<(bool Success, string ErrorMessage)> DeleteLocationAsync(Product product)
         {
             _context.Products.Remove(product); // TODO: Determine if cascading
             await _context.SaveChangesAsync();
+            return (true, null);
         }
 
-        public async Task<bool> ProductExistsAsync(int id, bool getDeleted)
-        {
-            var product = await GetProductAsync(id, getDeleted);
-            return product != null;
-        }
-
+        /// <summary>
+        /// Restores soft deleted entry
+        /// </summary>
+        /// <param name="id">Entry ID</param>
         public async Task RestoreProductAsync(int id)
         {
             var product = await GetProductAsync(id, true);
             product.IsDeleted = false;
             _context.Update(product);
             await _context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Determines existence of entry
+        /// </summary>
+        /// <param name="id">Entry ID</param>
+        /// <param name="getDeleted">Look through soft deleted entries</param>
+        /// <returns>True if entry exists</returns>
+        public async Task<bool> ProductExistsAsync(int id, bool getDeleted)
+        {
+            if (getDeleted) await _context.Products.AsNoTracking().IgnoreQueryFilters().AnyAsync(product => product.Id == id);
+            return await _context.Products.AsNoTracking().AnyAsync(product => product.Id == id);
         }
     }
 }

@@ -26,7 +26,8 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
                 .LocationTypes
                 .AsNoTracking()
                 .OrderBy(locationType => locationType.Name)
-                .Include(locationType => locationType.Locations);
+                .Include(locationType => locationType.Locations)
+                .AsNoTracking();
         }
 
         /// <summary>
@@ -111,7 +112,7 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
             return (true, null);
         }
 
-        /// /// <summary>
+        /// <summary>
         /// Restores soft deleted entry
         /// </summary>
         /// <param name="id">Entry ID</param>
@@ -131,8 +132,8 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         /// <returns>True if entry exists</returns>
         public async Task<bool> LocationTypeExistsAsync(int id, bool getDeleted)
         {
-            var locationType = await GetLocationTypeAsync(id, getDeleted);
-            return locationType != null;
+            if (getDeleted) return await _context.LocationTypes.AsNoTracking().IgnoreQueryFilters().AnyAsync(locationType => locationType.Id == id);
+            return await _context.LocationTypes.AsNoTracking().AnyAsync(locationType => locationType.Id == id);
         }
     }
 }
