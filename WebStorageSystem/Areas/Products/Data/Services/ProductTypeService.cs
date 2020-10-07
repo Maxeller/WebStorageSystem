@@ -95,7 +95,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
         public async Task<(bool Success, string ErrorMessage)> DeleteProductTypeAsync(int id)
         {
-            var productType = await GetProductTypeAsync(id);
+            var productType = await GetProductTypeAsync(id, true);
             return await DeleteProductTypeAsync(productType);
         }
 

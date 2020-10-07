@@ -101,8 +101,8 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
         public async Task<(bool Success, string ErrorMessage)> DeleteProductAsync(int id)
         {
-            var product = await GetProductAsync(id);
-            return await DeleteLocationAsync(product);
+            var product = await GetProductAsync(id, true);
+            return await DeleteProductAsync(product);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// </summary>
         /// <param name="product">Object for deletion</param>
         /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
-        public async Task<(bool Success, string ErrorMessage)> DeleteLocationAsync(Product product)
+        public async Task<(bool Success, string ErrorMessage)> DeleteProductAsync(Product product)
         {
             _context.Products.Remove(product); // TODO: Determine if cascading
             await _context.SaveChangesAsync();

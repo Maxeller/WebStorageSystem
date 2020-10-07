@@ -95,7 +95,7 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
         public async Task<(bool Success, string ErrorMessage)> DeleteLocationTypeAsync(int id)
         {
-            var locationType = await GetLocationTypeAsync(id);
+            var locationType = await GetLocationTypeAsync(id, true);
             return await DeleteLocationTypeAsync(locationType);
         }
 
