@@ -75,6 +75,8 @@ namespace WebStorageSystem
 
             app.UseAuthorization();
 
+            app.UseSession();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -91,6 +93,16 @@ namespace WebStorageSystem
     {
         public static void AddMyMvcConfiguration(this IServiceCollection services)
         {
+            
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+            
             services.AddControllersWithViews(options =>
                 {
                     //TODO: Add Filters
@@ -109,6 +121,7 @@ namespace WebStorageSystem
         {
             services.AddDbContext<AppDbContext>(options =>
             {
+                options.EnableSensitiveDataLogging(true); // TODO: Delete
                 options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
                 options.UseSqlServer(connectionString);
             });
@@ -184,7 +197,9 @@ namespace WebStorageSystem
             // Product Services
             services.AddScoped<ManufacturerService>();
             services.AddScoped<ProductTypeService>();
+            services.AddScoped<ProductService>();
             services.AddScoped<VendorService>();
+            services.AddScoped<UnitService>();
         }
     }
 }

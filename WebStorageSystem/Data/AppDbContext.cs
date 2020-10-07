@@ -85,7 +85,6 @@ namespace WebStorageSystem.Data
                 entity
                     .HasMany(bundle => bundle.BundledUnits)
                     .WithOne(unit => unit.PartOfBundle)
-                    .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
                 entity.HasIndex(bundle => bundle.SerialNumber).IsUnique();
                 entity.HasQueryFilter(bundle => !bundle.IsDeleted);
