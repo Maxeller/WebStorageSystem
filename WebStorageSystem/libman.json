@@ -51,6 +51,42 @@
         "tippy-bundle.umd.min.js",
         "tippy-bundle.umd.min.js.map"
       ]
+    },
+    {
+      "library": "moment.js@2.29.1",
+      "destination": "wwwroot/lib/moment.js/",
+      "files": [
+        "moment-with-locales.min.js.map",
+        "moment-with-locales.min.js",
+        "moment-with-locales.js"
+      ]
+    },
+    {
+      "library": "datatables@1.10.21",
+      "destination": "wwwroot/lib/datatables/",
+      "files": [
+        "images/sort_asc.png",
+        "images/sort_asc_disabled.png",
+        "images/sort_both.png",
+        "images/sort_desc.png",
+        "images/sort_desc_disabled.png",
+        "js/dataTables.bootstrap4.min.js",
+        "js/dataTables.bootstrap4.js",
+        "js/jquery.dataTables.min.js",
+        "js/jquery.dataTables.js",
+        "css/dataTables.bootstrap4.css",
+        "css/dataTables.bootstrap4.min.css"
+      ]
+    },
+    {
+      "library": "select2@4.0.13",
+      "destination": "wwwroot/lib/select2/",
+      "files": [
+        "css/select2.css",
+        "css/select2.min.css",
+        "js/select2.js",
+        "js/select2.min.js"
+      ]
     }
   ]
 }
