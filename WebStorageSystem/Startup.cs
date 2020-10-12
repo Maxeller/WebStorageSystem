@@ -52,8 +52,7 @@ namespace WebStorageSystem
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
-                app.UseBrowserLink();
-                //app.UseRouteDebugger(); // TODO: Testing
+                //app.UseBrowserLink();
             }
             else
             {
@@ -200,6 +199,7 @@ namespace WebStorageSystem
             services.AddScoped<ProductService>();
             services.AddScoped<VendorService>();
             services.AddScoped<UnitService>();
+            services.AddScoped<BundleService>();
         }
     }
 }

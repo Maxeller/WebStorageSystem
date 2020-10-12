@@ -1,6 +1,13 @@
 ﻿// Tippy Initialization
 tippy(document.querySelectorAll(".tippy"));
 
+// Select2
+$(document).ready(function() {
+    $(".selectTwo").select2({
+        theme: "bootstrap4"
+    }); // TODO: Move when select2 moved to separate partial
+});
+
 // --- MODALS ---
 // Function for filling modal window for deleting/restoring with appropriate data
 $("#deleteRestoreModal").on("show.bs.modal", function(event) {
