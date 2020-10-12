@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
             _mapper = mapper;
         }
 
-        // GET: Location
+        // GET: Locations/Location
         public async Task<IActionResult> Index([FromQuery] bool getDeleted = false)
         {
             var locations = await _service.GetLocationsAsync(getDeleted);
@@ -31,26 +32,26 @@ namespace WebStorageSystem.Areas.Locations.Controllers
             return View(models);
         }
 
-        // GET: Location/Details/5
+        // GET: Locations/Location/Details/5
         public async Task<IActionResult> Details(int? id, [FromQuery] bool getDeleted = false)
         {
             if (id == null) return BadRequest();
 
             var location = await _service.GetLocationAsync((int) id, getDeleted);
+            if (location == null) return NotFound();
             var locationModel = _mapper.Map<LocationModel>(location);
-            if (locationModel == null) return NotFound();
 
             return View(locationModel);
         }
 
-        // GET: Location/Create
+        // GET: Locations/Location/Create
         public async Task<IActionResult> Create([FromQuery] bool getDeleted = false)
         {
             await CreateLocationTypeDropdownList(getDeleted);
             return View();
         }
 
-        // POST: Location/Create
+        // POST: Locations/Location/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,Description,LocationTypeId,IsDeleted")] LocationModel locationModel, [FromQuery] bool getDeleted = false)
@@ -73,21 +74,21 @@ namespace WebStorageSystem.Areas.Locations.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Location/Edit/5
+        // GET: Locations/Location/Edit/5
         public async Task<IActionResult> Edit(int? id, [FromQuery] bool getDeleted = false)
         {
             if (id == null) return BadRequest();
 
             var location = await _service.GetLocationAsync((int) id, getDeleted);
+            if (location == null) return NotFound();
             var locationModel = _mapper.Map<LocationModel>(location);
-            if (locationModel == null) return NotFound();
 
             await CreateLocationTypeDropdownList(getDeleted, locationModel.LocationType);
 
             return View(locationModel);
         }
 
-        // POST: Location/Edit/5
+        // POST: Locations/Location/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Name,Description,LocationTypeId,Id,CreatedDate,IsDeleted,RowVersion")] LocationModel locationModel, [FromQuery] bool getDeleted)
@@ -112,7 +113,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
             return View(locationModel);
         }
 
-        // POST: Location/Delete/5
+        // POST: Locations/Location/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int? id)
@@ -122,7 +123,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: Location/Restore/5
+        // POST: Locations/Location/Restore/5
         [HttpPost, ActionName("Restore")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Restore(int? id)
