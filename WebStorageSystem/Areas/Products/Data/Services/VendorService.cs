@@ -101,7 +101,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <summary>
         /// Soft deletes entry based on object
         /// </summary>
-        /// <param name="unit">Object for deletion</param>
+        /// <param name="vendor">Object for deletion</param>
         /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
         public async Task DeleteVendorAsync(Vendor vendor)
         {

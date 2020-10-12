@@ -7,42 +7,84 @@
 <h1>Details</h1>
 
 <div>
-    <h4>UnitModel</h4>
+    <h4>Unit</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             Serial Number
         </dt>
-        <dd class = "col-sm-10">
-            @Model.Product.Name
+        <dd class="col-sm-10">
+            @Model.SerialNumber
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
+        <dt class="col-sm-2">
+            Product
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedDate)
+        <dd class="col-sm-10">
+            @Model.Product.Name (@Model.Product.ProductType.Name)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ModifiedDate)
+        <dt class="col-sm-2">
+            Location
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ModifiedDate)
+        <dd class="col-sm-10">
+            @Model.Location.Name (@Model.Location.LocationType.Name)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsDeleted)
+        <dt class="col-sm-2">
+            Vendor
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
+        @if (Model.Vendor != null)
+        {
+            @Model.Vendor.Name
+        }
+        </dd>
+        <dt class="col-sm-2">
+            Budle
+        </dt>
+        <dd class="col-sm-10">
+        @if (Model.PartOfBundle != null)
+        {
+            <span>@Model.PartOfBundle.Name</span> <span>(@Model.PartOfBundle.SerialNumber)</span>
+        }
+        </dd>
+        <dt class="col-sm-2">
+            Creation Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.CreatedDate;
+        </dd>
+        <dt class="col-sm-2">
+            Last Modification
+        </dt>
+        <dd class="col-sm-10">
+            @Model.ModifiedDate
+        </dd>
+        <dt class="col-sm-2">
+            Deleted
+        </dt>
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IsDeleted)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RowVersion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RowVersion)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a class="text-primary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    @if (!Model.IsDeleted)
+    {
+        <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Delete", new {Id = Model.Id})" data-name="@Model.SerialNumber">
+            Delete
+        </a>
+    }
+    @if (Model.IsDeleted)
+    {
+        <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Restore", new {Id = Model.Id})" data-name="@Model.SerialNumber">
+            Restore
+        </a>
+    }
+    | <a class="text-primary" asp-action="Index">Back to List</a>
 </div>
+
+<partial name="DeleteRestoreModal" />
+@if (TempData["Error"] != null)
+{
+    await Html.RenderPartialAsync("ErrorModal", TempData["Error"]);
+}

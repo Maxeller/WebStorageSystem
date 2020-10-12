@@ -14,6 +14,7 @@ namespace WebStorageSystem.Areas.Products.Data
             VendorMapping();
             ProductMapping();
             UnitMapping();
+            BundleMapping();
         }
 
         private void ManufacturerMapping()
@@ -54,6 +55,14 @@ namespace WebStorageSystem.Areas.Products.Data
             CreateMap<List<Unit>, List<UnitModel>>();
             CreateMap<UnitModel, Unit>();
             CreateMap<List<UnitModel>, List<Unit>>();
+        }
+
+        private void BundleMapping()
+        {
+            CreateMap<Bundle, BundleModel>();
+            CreateMap<List<Bundle>, List<BundleModel>>();
+            CreateMap<BundleModel, Bundle>();
+            CreateMap<List<BundleModel>, List<Bundle>>();
         }
     }
 }

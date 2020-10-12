@@ -24,8 +24,8 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             _getQuery = _context
                 .Units.AsNoTracking()
                 .OrderBy(unit => unit.SerialNumber)
-                .Include(unit => unit.Product).AsNoTracking()
-                .Include(unit => unit.Location).AsNoTracking()
+                .Include(unit => unit.Product).ThenInclude(product => product.ProductType).AsNoTracking()
+                .Include(unit => unit.Location).ThenInclude(location => location.LocationType).AsNoTracking()
                 .Include(unit => unit.Vendor).AsNoTracking()
                 .Include(unit => unit.PartOfBundle).AsNoTracking()
                 .Include(unit => unit.TransferredUnits).ThenInclude(transferUnit => transferUnit.Transfer)
@@ -42,6 +42,29 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         {
             if (getDeleted) return await _getQuery.IgnoreQueryFilters().FirstOrDefaultAsync(unit => unit.Id == id);
             return await _getQuery.FirstOrDefaultAsync(unit => unit.Id == id);
+        }
+
+        /// <summary>
+        /// Gets entry from DB
+        /// </summary>
+        /// <param name="id">Entity ID</param>
+        /// <param name="getDeleted">Looks through soft deleted entries</param>
+        /// <returns>If found returns object, otherwise null</returns>
+        public async Task<IEnumerable<Unit>> GetUnitAsync(IEnumerable<int> ids, bool getDeleted = false)
+        {
+            var result = new List<Unit>();
+            foreach (var id in ids)
+            {
+                if (getDeleted)
+                {
+                    result.Add(await _getQuery.IgnoreQueryFilters().FirstOrDefaultAsync(unit => unit.Id == id));
+                }
+                else
+                {
+                    result.Add(await _getQuery.FirstOrDefaultAsync(unit => unit.Id == id));
+                }
+            }
+            return result;
         }
 
         /// <summary>

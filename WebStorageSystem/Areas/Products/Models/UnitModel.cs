@@ -26,13 +26,21 @@ namespace WebStorageSystem.Areas.Products.Models
 
         [DisplayName("Vendor")]
         public int? VendorId { get; set; }
-        /*
+
         public BundleModel PartOfBundle { get; set; }
-        
+
         [DisplayName("Part of Bundle")]
-        public int PartOfBundleId { get; set; }
+        public int? PartOfBundleId { get; set; }
 
         //public IEnumerable<TransferUnitModel> TransferredUnits { get; set; }
-        */
+
+        public string SerialNumberProduct
+        {
+            get
+            {
+                if (Product == null) return SerialNumber;
+                return SerialNumber + " (" + Product.Name + ")";
+            }
+        }
     }
 }

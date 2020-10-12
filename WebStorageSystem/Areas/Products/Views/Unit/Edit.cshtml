@@ -1,12 +1,12 @@
 ﻿@model UnitModel
 
 @{
-    ViewData["Title"] = "Edit "+@Model.SerialNumber;
+    ViewData["Title"] = "Edit " + @Model.SerialNumber;
 }
 
 <h1>Edit</h1>
 
-<h4>UnitModel</h4>
+<h4>Unit</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -38,6 +38,13 @@
                 </select>
                 <span asp-validation-for="VendorId" class="text-danger" />
             </div>
+            <div class="form-group">
+                <label asp-for="PartOfBundleId" class="control-label"></label>
+                <select asp-for="PartOfBundleId" class="form-control" asp-items="ViewBag.Bundles">
+                    <option value="">-- Select Bundle --</option>
+                </select>
+                <span asp-validation-for="PartOfBundleId" class="text-danger" />
+            </div>
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="CreatedDate" />
             <input type="hidden" asp-for="RowVersion" />
@@ -59,4 +66,8 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+@if (TempData["Error"] != null)
+{
+    await Html.RenderPartialAsync("ErrorModal", TempData["Error"]);
 }

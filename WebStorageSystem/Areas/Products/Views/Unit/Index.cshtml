@@ -25,6 +25,9 @@
                 Vendor
             </th>
             <th>
+                Bundle
+            </th>
+            <th>
                 Creation Date
             </th>
             <th>
@@ -53,6 +56,12 @@
                 @if (item.Vendor != null)
                 {
                     @item.Vendor.Name;
+                }
+            </td>
+            <td>
+                @if (item.PartOfBundle != null)
+                {
+                    <span data-tippy-content="@item.PartOfBundle.SerialNumber" class="tippy">@item.PartOfBundle.Name</span>
                 }
             </td>
             <td>
@@ -86,6 +95,7 @@
 </table>
 
 <partial name="DeleteRestoreModal" />
+
 @if (TempData["Error"] != null)
 {
     await Html.RenderPartialAsync("ErrorModal", TempData["Error"]);

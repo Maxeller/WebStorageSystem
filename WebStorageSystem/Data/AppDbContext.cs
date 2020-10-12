@@ -162,6 +162,18 @@ namespace WebStorageSystem.Data
             });
         }
 
+        public override int SaveChanges()
+        {
+            CheckEntries();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            CheckEntries();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
         private void CheckEntries()
         {
             var entries =
@@ -183,17 +195,6 @@ namespace WebStorageSystem.Data
                         break;
                 }
             }
-        }
-        public override int SaveChanges()
-        {
-            CheckEntries();
-            return base.SaveChanges();
-        }
-
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
-        {
-            CheckEntries();
-            return base.SaveChangesAsync(cancellationToken);
         }
     }
 }
