@@ -33,14 +33,14 @@
             </div>
             <div class="form-group">
                 <label asp-for="VendorId" class="control-label"></label>
-                <select asp-for="VendorId" class="form-control selectTwo" asp-items="ViewBag.Vendors" data-placeholder="Select Vendor (optional)">
+                <select asp-for="VendorId" class="form-control selectTwoAllowClear" asp-items="ViewBag.Vendors" data-placeholder="Select Vendor (optional)">
                     <option value="">-- Select Vendor --</option>
                 </select>
                 <span asp-validation-for="VendorId" class="text-danger" />
             </div>
             <div class="form-group">
                 <label asp-for="PartOfBundleId" class="control-label"></label>
-                <select asp-for="PartOfBundleId" class="form-control selectTwo" asp-items="ViewBag.Bundles" data-placeholder="Select Bundle (optional)">
+                <select asp-for="PartOfBundleId" class="form-control selectTwoAllowClear" asp-items="ViewBag.Bundles" data-placeholder="Select Bundle (optional)">
                     <option value="">-- Select Bundle --</option>
                 </select>
                 <span asp-validation-for="PartOfBundleId" class="text-danger" />
