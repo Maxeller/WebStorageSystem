@@ -9,7 +9,7 @@
     <script src="~/lib/moment.js/moment-with-locales.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 </environment>
-<environment exclude="Development"> @*//TODO: Add CDNs for select2 & dataTables *@
+<environment exclude="Development">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
             asp-fallback-src="~/lib/jquery/jquery.min.js"
             asp-fallback-test="window.jQuery"
@@ -32,6 +32,24 @@
             asp-fallback-src="~/lib/tippy.js/tippy-bundle.umd.min.js"
             asp-fallback-test="window.tippy"
             integrity="sha512-YzXpZ5qzuFVorXTs8wt0gHSo9+T5qwqM6iWKXQLEWNOEr83116QvCEqH5tsEthpGbrYAcUCXGpNJomYagvlFVw=="
+            crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
+            asp-fallback-src="~/lib/select2/js/select2.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.fn && window.fn.select2"
+            integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
+            crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"
+            asp-fallback-src="~/lib/datatables/js/jquery.dataTables.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.DataTable"
+            integrity="sha512-BkpSL20WETFylMrcirBahHfSnY++H2O1W+UnEEO4yNIl+jI2+zowyoGJpbtk6bx97fBXf++WJHSSK2MV4ghPcg=="
+            crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap4.min.js" 
+            asp-fallback-src="~/lib/datatables/js/dataTables.bootstrap4.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.DataTable && window.jQuery.fn.DataTable.ext.renderer.pageButton.bootstrap"
+            integrity="sha512-OQlawZneA7zzfI6B1n1tjUuo3C5mtYuAWpQdg+iI9mkDoo7iFzTqnQHf+K5ThOWNJ9AbXL4+ZDwH7ykySPQc+A==" 
             crossorigin="anonymous">
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"
