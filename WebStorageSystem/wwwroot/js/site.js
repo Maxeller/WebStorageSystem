@@ -2,10 +2,14 @@
 tippy(document.querySelectorAll(".tippy"));
 
 // Select2
-$(document).ready(function() {
+$(document).ready(function() { // TODO: Move when select2 moved to separate partial
     $(".selectTwo").select2({
         theme: "bootstrap4"
-    }); // TODO: Move when select2 moved to separate partial
+    }); 
+    $(".selectTwoAllowClear").select2({
+        theme: "bootstrap4",
+        allowClear: true
+    });
 });
 
 // --- MODALS ---

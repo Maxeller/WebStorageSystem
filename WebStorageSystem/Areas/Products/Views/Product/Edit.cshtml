@@ -19,14 +19,14 @@
             </div>
             <div class="form-group">
                 <label asp-for="ManufacturerId" class="control-label"></label>
-                <select asp-for="ManufacturerId" class="form-control" asp-items="ViewBag.Manufacturers">
+                <select asp-for="ManufacturerId" class="form-control selectTwo" asp-items="ViewBag.Manufacturers" data-placeholder="Select Manufacturer">
                     <option value="">-- Select Manufacturer --</option>
                 </select>
                 <span asp-validation-for="ManufacturerId" class="text-danger" />
             </div>
             <div class="form-group">
                 <label asp-for="ProductTypeId" class="control-label"></label>
-                <select asp-for="ProductTypeId" class="form-control" asp-items="ViewBag.ProductTypes">
+                <select asp-for="ProductTypeId" class="form-control selectTwo" asp-items="ViewBag.ProductTypes" data-placeholder="Select Product Type">
                     <option value="">-- Select Product Type --</option>
                 </select>
                 <span asp-validation-for="ProductTypeId" class="text-danger" />
