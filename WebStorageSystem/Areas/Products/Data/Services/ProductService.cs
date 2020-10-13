@@ -78,6 +78,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 var prev = await _context.Products.FirstAsync(p => p.Id == product.Id);
                 _context.Entry(prev).State = EntityState.Detached;
                 _context.Entry(product).State = EntityState.Modified;
+                
                 _context.Products.Update(product);
                 await _context.SaveChangesAsync();
                 return (true, null);

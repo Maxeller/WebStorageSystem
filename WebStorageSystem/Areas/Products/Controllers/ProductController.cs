@@ -39,8 +39,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (id == null) return BadRequest();
 
             var product = await _service.GetProductAsync((int) id, getDeleted);
+            if (product == null) return NotFound();
             var productModel = _mapper.Map<ProductModel>(product);
-            if (productModel == null) return NotFound();
 
             return View(productModel);
         }
@@ -83,8 +83,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (id == null) return BadRequest();
 
             var product = await _service.GetProductAsync((int) id, getDeleted);
+            if (product == null) return NotFound();
             var productModel = _mapper.Map<ProductModel>(product);
-            if (productModel == null) return NotFound();
 
             await CreateDropdownLists(getDeleted, productModel.Manufacturer, productModel.ProductType);
 

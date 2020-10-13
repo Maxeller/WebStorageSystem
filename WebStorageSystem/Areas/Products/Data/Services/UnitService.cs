@@ -87,6 +87,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             unit.Product = _context.Products.Attach(unit.Product).Entity;
             unit.Location = _context.Locations.Attach(unit.Location).Entity;
             if (unit.Vendor != null) unit.Vendor = _context.Vendors.Attach(unit.Vendor).Entity;
+            if (unit.PartOfBundle != null) unit.PartOfBundle = _context.Bundles.Attach(unit.PartOfBundle).Entity;
             _context.Units.Add(unit);
             await _context.SaveChangesAsync();
         }
@@ -100,9 +101,11 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         {
             try
             {
+                /*
                 var prev = await _context.Units.FirstAsync(u => u.Id == unit.Id);
                 _context.Entry(prev).State = EntityState.Detached;
                 _context.Entry(unit).State = EntityState.Modified;
+                */
                 _context.Units.Update(unit);
                 await _context.SaveChangesAsync();
                 return (true, null);

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Services;
@@ -23,6 +24,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // GET: VendorModels
         public async Task<IActionResult> Index([FromQuery] bool getDeleted)
         {
+            if(getDeleted) HttpContext.Session.SetInt32("GetDeleted", 1);
             var vendors = await _service.GetVendorsAsync(getDeleted);
             var vendorModels = _mapper.Map<IEnumerable<VendorModel>>(vendors);
             return View(vendorModels);
@@ -34,8 +36,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (id == null) return BadRequest();
 
             var vendor = await _service.GetVendorAsync((int) id, getDeleted);
+            if (vendor == null) return NotFound();
             var vendorModel = _mapper.Map<VendorModel>(vendor);
-            if (vendorModel == null) return NotFound();
 
             return View(vendorModel);
         }
@@ -64,8 +66,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (id == null) return BadRequest();
 
             var vendor = await _service.GetVendorAsync((int) id, getDeleted);
+            if (vendor == null) return NotFound();
             var vendorModel = _mapper.Map<VendorModel>(vendor);
-            if (vendorModel == null) return NotFound();
 
             return View(vendorModel);
         }

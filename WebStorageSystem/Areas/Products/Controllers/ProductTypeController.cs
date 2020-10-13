@@ -34,8 +34,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (id == null) return BadRequest();
 
             var productType = await _service.GetProductTypeAsync((int) id, getDeleted);
+            if (productType == null) return NotFound();
             var productTypeModel = _mapper.Map<ProductTypeModel>(productType);
-            if (productTypeModel == null) return NotFound();
 
             return View(productTypeModel);
         }
@@ -64,8 +64,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (id == null) return BadRequest();
 
             var productType = await _service.GetProductTypeAsync((int) id, getDeleted);
+            if (productType == null) return NotFound();
             var productTypeModel = _mapper.Map<ProductTypeModel>(productType);
-            if (productTypeModel == null) return NotFound();
 
             return View(productTypeModel);
         }

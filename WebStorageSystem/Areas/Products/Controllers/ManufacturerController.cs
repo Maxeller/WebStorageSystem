@@ -34,8 +34,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (id == null) return BadRequest();
 
             var manufacturer = await _service.GetManufacturerAsync((int) id, getDeleted);
+            if (manufacturer == null) return NotFound();
             var manufacturerModel = _mapper.Map<ManufacturerModel>(manufacturer);
-            if (manufacturerModel == null) return NotFound();
 
             return View(manufacturerModel);
         }
@@ -64,8 +64,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (id == null) return BadRequest();
 
             var manufacturer = await _service.GetManufacturerAsync((int) id, getDeleted);
+            if (manufacturer == null) return NotFound();
             var manufacturerModel = _mapper.Map<ManufacturerModel>(manufacturer);
-            if (manufacturerModel == null) return NotFound();
 
             return View(manufacturerModel);
         }

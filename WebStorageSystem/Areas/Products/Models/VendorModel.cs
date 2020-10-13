@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using WebStorageSystem.Data.Entities;
 
 namespace WebStorageSystem.Areas.Products.Models
@@ -23,6 +24,6 @@ namespace WebStorageSystem.Areas.Products.Models
         [StringLength(200)]
         public string Email { get; set; }
 
-        //public IEnumerable<UnitModel> Units { get; set; }
+        public IEnumerable<UnitModel> Units { get; set; }
     }
 }

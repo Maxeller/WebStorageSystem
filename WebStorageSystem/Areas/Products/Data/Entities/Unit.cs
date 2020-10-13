@@ -13,9 +13,11 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
 
         [Required]
         public Product Product { get; set; }
+        public int ProductId { get; set; }
 
         [Required]
         public Location Location { get; set; }
+        public int LocationId { get; set; }
 
         public Vendor Vendor { get; set; }
         public int? VendorId { get; set; }

@@ -41,6 +41,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
             var bundle = await _service.GetBundleAsync((int) id, getDeleted);
+            if (bundle == null) return NotFound();
             var bundleModel = _mapper.Map<BundleModel>(bundle);
             return View(bundleModel);
         }
@@ -75,6 +76,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
             var bundle = await _service.GetBundleAsync((int) id, getDeleted);
+            if (bundle == null) return NotFound();
             var bundleModel = _mapper.Map<BundleModel>(bundle);
             await CreateUnitDropdownList(getDeleted, bundleModel.BundledUnits);
             return View(bundleModel);

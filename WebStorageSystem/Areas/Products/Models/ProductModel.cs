@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using WebStorageSystem.Data.Entities;
 
 namespace WebStorageSystem.Areas.Products.Models
@@ -22,6 +23,6 @@ namespace WebStorageSystem.Areas.Products.Models
 
         public ManufacturerModel Manufacturer { get; set; }
 
-        //public IEnumerable<UnitModel> Units { get; set; }
+        public IEnumerable<UnitModel> Units { get; set; }
     }
 }

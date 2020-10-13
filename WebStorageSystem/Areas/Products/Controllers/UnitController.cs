@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Locations.Data.Services;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Areas.Products.Data.Entities;
@@ -48,8 +49,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (id == null) return BadRequest();
 
             var unit = await _service.GetUnitAsync((int) id, getDeleted);
+            if (unit == null) return NotFound();
             var unitModel = _mapper.Map<UnitModel>(unit);
-            if (unitModel == null) return NotFound();
             return View(unitModel);
         }
 
@@ -63,7 +64,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Products/Unit/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SerialNumber,ProductId,LocationId,VendorId,IsDeleted")] UnitModel unitModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Create([Bind("SerialNumber,ProductId,LocationId,VendorId,PartOfBundleId,IsDeleted")] UnitModel unitModel, [FromQuery] bool getDeleted)
         {
             if (!ModelState.IsValid)
             {
@@ -93,8 +94,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (id == null) return BadRequest();
 
             var unit = await _service.GetUnitAsync((int) id, getDeleted);
+            if (unit == null) return NotFound();
             var unitModel = _mapper.Map<UnitModel>(unit);
-            if (unitModel == null) return NotFound();
 
             await CreateDropdownLists(getDeleted, unitModel.Product, unitModel.Location, unitModel.Vendor);
             return View(unitModel);
@@ -103,7 +104,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Products/Unit/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SerialNumber,ProductId,LocationId,VendorId,Id,CreatedDate,IsDeleted,RowVersion")] UnitModel unitModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Edit(int id, [Bind("SerialNumber,ProductId,LocationId,VendorId,PartOfBundleId,Id,CreatedDate,IsDeleted,RowVersion")] UnitModel unitModel, [FromQuery] bool getDeleted)
         {
             if (id != unitModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(unitModel);
@@ -118,8 +119,13 @@ namespace WebStorageSystem.Areas.Products.Controllers
             var unit = _mapper.Map<Unit>(unitModel);
             unit.Product = product;
             unit.Location = location;
-            unit.Vendor = unitModel.VendorId != null ? await _vService.GetVendorAsync((int) unitModel.VendorId, getDeleted) : null;
-            unit.PartOfBundle = unitModel.PartOfBundleId != null ? await _bService.GetBundleAsync((int) unitModel.PartOfBundleId, getDeleted) : null;
+            unit.Vendor = unitModel.VendorId != null
+                ? await _vService.GetVendorAsync((int) unitModel.VendorId, getDeleted)
+                : null;
+
+            unit.PartOfBundle = unitModel.PartOfBundleId != null
+                ? await _bService.GetBundleAsync((int) unitModel.PartOfBundleId, getDeleted)
+                : null;
 
             var (success, errorMessage) = await _service.EditUnitAsync(unit);
             if(success) return RedirectToAction(nameof(Index));
