@@ -92,6 +92,11 @@ namespace WebStorageSystem.Data
             });
             modelBuilder.Entity<Unit>(entity =>
             {
+                entity
+                    .HasOne(unit => unit.Location)
+                    .WithMany(location => location.Units)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
                 entity.HasIndex(unit => unit.SerialNumber).IsUnique();
                 entity.HasQueryFilter(unit => !unit.IsDeleted);
                 entity.ToTable("Units");

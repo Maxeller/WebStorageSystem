@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Data.Entities;
 using WebStorageSystem.Data.Entities.Transfers;
 
@@ -17,8 +18,10 @@ namespace WebStorageSystem.Areas.Locations.Data.Entities
         [Required]
         [Display(Name = "Location Type")]
         public LocationType LocationType { get; set; }
+        public int LocationTypeId { get; set; }
 
         public IEnumerable<Transfer> OriginTransfers { get; set; }
         public IEnumerable<Transfer> DestinationTransfers { get; set; }
+        public IEnumerable<Unit> Units { get; set; }
     }
 }

@@ -101,11 +101,10 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         {
             try
             {
-                /*
                 var prev = await _context.Units.FirstAsync(u => u.Id == unit.Id);
                 _context.Entry(prev).State = EntityState.Detached;
                 _context.Entry(unit).State = EntityState.Modified;
-                */
+
                 _context.Units.Update(unit);
                 await _context.SaveChangesAsync();
                 return (true, null);
