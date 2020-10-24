@@ -11,10 +11,9 @@ namespace WebStorageSystem
     {
         public static void Main(string[] args)
         {
-            //CreateHostBuilder(args).Build().Run();
-
-            var host = CreateHostBuilder(args).Build();
+            CreateHostBuilder(args).Build().Run();
             /*
+            var host = CreateHostBuilder(args).Build();
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -29,8 +28,8 @@ namespace WebStorageSystem
                     logger.LogError(e, "An error occurred while seeding the database.");
                 }
             }
-            */
             host.Run();
+            */
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

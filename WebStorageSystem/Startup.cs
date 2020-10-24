@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,17 +18,20 @@ namespace WebStorageSystem
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment _env;
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
+            _env = env;
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             // DATABASE
-            services.AddMyDatabaseConfiguration(Configuration.GetConnectionString("LocalDb"));
+            services.AddMyDatabaseConfiguration(Configuration.GetConnectionString("LocalDb"), _env);
+
 
             // IDENTITY
             services.AddMyIdentityConfiguration();
@@ -60,6 +64,8 @@ namespace WebStorageSystem
                 app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+
+                app.UpdateMigrations(); // Applies migrations to DB on Production
             }
 
             app.UseHttpsRedirection();
@@ -93,9 +99,9 @@ namespace WebStorageSystem
         public static void AddMyMvcConfiguration(this IServiceCollection services)
         {
             
-            services.AddDistributedMemoryCache();
+            services.AddDistributedMemoryCache(); // Memory Cache for Sessions
 
-            services.AddSession(options =>
+            services.AddSession(options => // Session settings
             {
                 options.IdleTimeout = TimeSpan.FromSeconds(10);
                 options.Cookie.HttpOnly = true;
@@ -110,18 +116,23 @@ namespace WebStorageSystem
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.AllowTrailingCommas = true; // Allows for trailing commas in JSON file
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); // Settings for jQueryDataTablesServerSide
+                    options.JsonSerializerOptions.PropertyNamingPolicy = null; // Settings for jQueryDataTablesServerSide
                 })
                 .AddXmlSerializerFormatters(); // Adds XML serializer for input and output
 
             services.AddRazorPages(); // Identity Core Scaffolding uses Razor Pages
         }
 
-        public static void AddMyDatabaseConfiguration(this IServiceCollection services, string connectionString)
+        public static void AddMyDatabaseConfiguration(this IServiceCollection services, string connectionString, IWebHostEnvironment env)
         {
             services.AddDbContext<AppDbContext>(options =>
             {
-                options.EnableSensitiveDataLogging(true); // TODO: Delete
-                options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
+                if (env.IsDevelopment())
+                {
+                    options.EnableSensitiveDataLogging(true);
+                    options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
+                }
                 options.UseSqlServer(connectionString);
             });
         }
@@ -200,6 +211,13 @@ namespace WebStorageSystem
             services.AddScoped<VendorService>();
             services.AddScoped<UnitService>();
             services.AddScoped<BundleService>();
+        }
+
+        public static void UpdateMigrations(this IApplicationBuilder app)
+        {
+            using var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
+            using var context = serviceScope.ServiceProvider.GetService<AppDbContext>();
+            context.Database.Migrate();
         }
     }
 }
