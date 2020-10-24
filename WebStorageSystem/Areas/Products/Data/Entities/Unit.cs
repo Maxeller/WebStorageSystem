@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Data.Entities;
@@ -26,5 +27,11 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
         public int? PartOfBundleId { get; set; }
 
         public IEnumerable<TransferUnit> TransferredUnits { get; set; }
+
+        public override DateTime CreatedDate { get; set; }
+        public override DateTime ModifiedDate { get; set; }
+        public override bool IsDeleted { get; set; }
+        public override byte[] RowVersion { get; set; }
+        public override int Id { get; set; }
     }
 }

@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using WebStorageSystem.Data.Entities;
+using WebStorageSystem.Models;
 
 namespace WebStorageSystem.Areas.Products.Models
 {
-    public class ProductModel : BaseEntityWithId
+    public class ProductModel : BaseEntityModelWithId
     {
         [Required]
         [StringLength(100)]
@@ -24,5 +25,12 @@ namespace WebStorageSystem.Areas.Products.Models
         public ManufacturerModel Manufacturer { get; set; }
 
         public IEnumerable<UnitModel> Units { get; set; }
+
+        public override DateTime CreatedDate { get; set; }
+        public override DateTime ModifiedDate { get; set; }
+        public override bool IsDeleted { get; set; }
+        public override byte[] RowVersion { get; set; }
+        public override Dictionary<string, string> Action { get; set; }
+        public override int Id { get; set; }
     }
 }

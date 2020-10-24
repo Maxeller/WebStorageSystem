@@ -3,42 +3,20 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebStorageSystem.Data.Entities
 {
-    public class BaseEntity
+    public abstract class BaseEntity
     {
-        [Display(Name = "Created")]
-        public DateTime CreatedDate { get; set; }
-        [Display(Name = "Last Modification")]
-        public DateTime ModifiedDate { get; set; }
-        [Display(Name = "Deleted")]
-        public bool IsDeleted { get; set; }
+        public abstract DateTime CreatedDate { get; set; }
+
+        public abstract DateTime ModifiedDate { get; set; }
+
+        public abstract bool IsDeleted { get; set; }
+
         [Timestamp]
-        public byte[] RowVersion { get; set; }
-
-        protected BaseEntity()
-        {
-
-        }
-
-        protected BaseEntity(BaseEntity entity)
-        {
-            CreatedDate = entity.CreatedDate;
-            ModifiedDate = entity.ModifiedDate;
-            IsDeleted = entity.IsDeleted;
-            RowVersion = entity.RowVersion;
-        }
+        public abstract byte[] RowVersion { get; set; }
     }
 
-    public class BaseEntityWithId : BaseEntity
+    public abstract class BaseEntityWithId : BaseEntity
     {
-        public int Id { get; set; }
-
-        protected BaseEntityWithId()
-        {
-        }
-
-        protected BaseEntityWithId(BaseEntityWithId entityWithId) : base(entityWithId)
-        {
-            Id = entityWithId.Id;
-        }
+        public abstract int Id { get; set; }
     }
 }

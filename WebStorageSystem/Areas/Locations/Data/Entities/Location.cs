@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Data.Entities;
@@ -8,6 +9,8 @@ namespace WebStorageSystem.Areas.Locations.Data.Entities
 {
     public class Location : BaseEntityWithId
     {
+        public override int Id { get; set; }
+
         [Required]
         [StringLength(100)]
         public string Name { get; set; }
@@ -21,7 +24,17 @@ namespace WebStorageSystem.Areas.Locations.Data.Entities
         public int LocationTypeId { get; set; }
 
         public IEnumerable<Transfer> OriginTransfers { get; set; }
+
         public IEnumerable<Transfer> DestinationTransfers { get; set; }
+
         public IEnumerable<Unit> Units { get; set; }
+
+        public override DateTime CreatedDate { get; set; }
+
+        public override DateTime ModifiedDate { get; set; }
+
+        public override bool IsDeleted { get; set; }
+
+        public override byte[] RowVersion { get; set; }
     }
 }

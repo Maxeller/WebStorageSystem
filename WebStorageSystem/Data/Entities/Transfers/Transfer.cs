@@ -18,7 +18,6 @@ namespace WebStorageSystem.Data.Entities.Transfers
 
         [Required]
         [Display(Name = "Time of Transfer")]
-        //TODO: DateTime 
         public DateTime TransferTime { get; set; }
 
         [Required]
@@ -26,5 +25,10 @@ namespace WebStorageSystem.Data.Entities.Transfers
         public IEnumerable<TransferUnit> TransferredUnits { get; set; }
 
         public ApplicationUser User { get; set; }
+        public override DateTime CreatedDate { get; set; }
+        public override DateTime ModifiedDate { get; set; }
+        public override bool IsDeleted { get; set; }
+        public override byte[] RowVersion { get; set; }
+        public override int Id { get; set; }
     }
 }

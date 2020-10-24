@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WebStorageSystem.Data.Entities;
 
@@ -25,5 +26,11 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
         public string Email { get; set; }
 
         public IEnumerable<Unit> Units { get; set; }
+
+        public override DateTime CreatedDate { get; set; }
+        public override DateTime ModifiedDate { get; set; }
+        public override bool IsDeleted { get; set; }
+        public override byte[] RowVersion { get; set; }
+        public override int Id { get; set; }
     }
 }
