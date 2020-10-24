@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LocationTypeModel>
+﻿@model LocationTypeModel
 
 @{
     ViewData["Title"] = "Location Type List";
@@ -10,68 +10,20 @@
         <a asp-action="Create">Create New Location Type</a>
     </p>
 </div>
-<table class="table">
-    <thead>
-    <tr>
-        <th>
-            Name
-        </th>
-        <th>
-            Description
-        </th>
-        <th>
-            Created Date
-        </th>
-        <th>
-            Modified Date
-        </th>
-        <th>
-            Deleted
-        </th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @item.Name
-            </td>
-            <td>
-                @item.Description
-            </td>
-            <td>
-                @item.CreatedDate
-            </td>
-            <td>
-                @item.ModifiedDate
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                <a class="text-primary" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a class="text-primary" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                @if (!item.IsDeleted)
-                {
-                    <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Delete", new {Id = item.Id})" data-name="@item.Name">
-                        Delete
-                    </a>
-                }
-                @if (item.IsDeleted)
-                {
-                    <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Restore", new {Id = item.Id})" data-name="@item.Name">
-                        Restore
-                    </a>
-                }
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
-    
-<partial name="DeleteRestoreModal"/>
+
+@Html.AntiForgeryToken()
+<jquery-datatables id="dtLocationType"
+                   class="table"
+                   model="@Model"
+                   thead-class="text-center"
+                   enable-searching="true"
+                   search-row-th-class="p-0"
+                   search-input-class="form-control form-control-sm"
+                   search-input-style="width: 100%"
+                   search-input-placeholder-prefix="Search">
+</jquery-datatables>
+
+<partial name="DeleteRestoreModal" />
 @if (TempData["Error"] != null)
 {
     await Html.RenderPartialAsync("ErrorModal", TempData["Error"]);

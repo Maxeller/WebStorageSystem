@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Areas.Locations.Data.Services;
@@ -21,11 +25,9 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         }
 
         // GET: Locations/LocationType
-        public async Task<IActionResult> Index([FromQuery] bool getDeleted = false)
+        public IActionResult Index([FromQuery] bool getDeleted = false)
         {
-            var locationTypes = await _service.GetLocationTypesAsync(getDeleted);
-            var models = _mapper.Map<IEnumerable<LocationTypeModel>>(locationTypes);
-            return View(models);
+            return View(new LocationTypeModel());
         }
 
         // GET: Locations/LocationType/Details/5
@@ -107,6 +109,37 @@ namespace WebStorageSystem.Areas.Locations.Controllers
             if (!(await _service.LocationTypeExistsAsync((int) id, true))) return NotFound();
             await _service.RestoreLocationTypeAsync((int) id);
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoadTable([FromBody]JqueryDataTablesParameters param)
+        {
+            try
+            {
+                HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), JsonSerializer.Serialize(param));
+                var results = await _service.GetLocationTypesAsync(param);
+                foreach (var item in results.Items)
+                {
+                    item.Action = new Dictionary<string, string>
+                    {
+                        {"Edit", Url.Action(nameof(Edit), new {item.Id})},
+                        {"Details", Url.Action(nameof(Details), new {item.Id})},
+                        {"Delete", Url.Action(nameof(Edit), new {item.Id})},
+                        {"Restore", Url.Action(nameof(Restore), new {item.Id})}
+                    };
+                }
+
+                return new JsonResult(new JqueryDataTablesResult<LocationTypeModel> {
+                    Draw = param.Draw,
+                    Data = results.Items,
+                    RecordsFiltered = results.TotalSize,
+                    RecordsTotal = results.TotalSize
+                });
+            } catch(Exception e)
+            {
+                Console.Write(e.Message);
+                return new JsonResult(new { error = "Internal Server Error" });
+            }
         }
     }
 }
