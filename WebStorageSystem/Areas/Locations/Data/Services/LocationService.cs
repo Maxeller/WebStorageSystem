@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Locations.Data.Entities;
+using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Data;
 
 namespace WebStorageSystem.Areas.Locations.Data.Services
@@ -12,13 +17,15 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
     public class LocationService
     {
         private readonly AppDbContext _context;
+        private readonly IConfigurationProvider _mappingConfiguration;
         private readonly ILogger _logger;
 
         private readonly IQueryable<Location> _getQuery;
 
-        public LocationService(AppDbContext context, ILoggerFactory factory)
+        public LocationService(AppDbContext context, IConfigurationProvider mappingConfiguration, ILoggerFactory factory)
         {
             _context = context;
+            _mappingConfiguration = mappingConfiguration;
             _logger = factory.CreateLogger<LocationService>();
 
             _getQuery = _context
@@ -50,6 +57,50 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         {
             if (getDeleted) return await _getQuery.IgnoreQueryFilters().ToListAsync();
             return await _getQuery.ToListAsync();
+        }
+
+        /// <summary>
+        /// Gets all entries from DB for jQuery Datatables
+        /// </summary>
+        /// <param name="table">JqueryDataTablesParameters with table search and sort options</param>
+        /// <param name="getDeleted">Looks through soft deleted entries</param>
+        /// <returns>JqueryDataTablesPagedResults</returns>
+        public async Task<JqueryDataTablesPagedResults<LocationModel>> GetLocationsAsync(JqueryDataTablesParameters table, bool getDeleted = false)
+        {
+            LocationModel[] items;
+
+            var query = _context
+                .Locations
+                .AsNoTracking()
+                .Include(location => location.LocationType)
+                .AsNoTracking()
+                .IgnoreQueryFilters();
+
+            query = SearchOptionsProcessor<LocationModel, Location>.Apply(query, table.Columns);
+            query = SortOptionsProcessor<LocationModel, Location>.Apply(query, table);
+
+            var size = await query.CountAsync();
+
+            if (table.Length > 0)
+            {
+                items = await query
+                    .Skip((table.Start / table.Length) * table.Length)
+                    .Take(table.Length)
+                    .ProjectTo<LocationModel>(_mappingConfiguration)
+                    .ToArrayAsync();
+            }
+            else
+            {
+                items = await query
+                    .ProjectTo<LocationModel>(_mappingConfiguration)
+                    .ToArrayAsync();
+            }
+
+            return new JqueryDataTablesPagedResults<LocationModel>
+            {
+                Items = items,
+                TotalSize = size
+            };
         }
 
         /// <summary>

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes;
 using WebStorageSystem.Models;
@@ -9,11 +8,11 @@ namespace WebStorageSystem.Areas.Locations.Models
 {
     public class LocationTypeModel : BaseEntityModelWithId
     {
-        [Required, StringLength(100), Display(Name = "Name")]
+        [Required, StringLength(100)]
         [JqueryDataTableColumn, SearchableString, Sortable(Default = true)]
         public string Name { get; set; }
 
-        [StringLength(500), Display(Name = "Description")]
+        [StringLength(500)]
         [JqueryDataTableColumn, SearchableString, Sortable]
         public string Description { get; set; }
 
