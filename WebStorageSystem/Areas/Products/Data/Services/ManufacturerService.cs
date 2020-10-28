@@ -2,9 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using WebStorageSystem.Areas.Locations.Data.Entities;
+using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Areas.Products.Data.Entities;
+using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data;
 
 namespace WebStorageSystem.Areas.Products.Data.Services
@@ -12,14 +19,15 @@ namespace WebStorageSystem.Areas.Products.Data.Services
     public class ManufacturerService
     {
         private readonly AppDbContext _context;
+        private readonly IConfigurationProvider _mappingConfiguration;
         private readonly ILogger _logger;
 
         private readonly IQueryable<Manufacturer> _getQuery;
 
-        public ManufacturerService(AppDbContext context, ILoggerFactory factory)
+        public ManufacturerService(AppDbContext context, IConfigurationProvider mappingConfiguration, ILoggerFactory factory)
         {
             _context = context;
-
+            _mappingConfiguration = mappingConfiguration;
             _logger = factory.CreateLogger<ManufacturerService>();
 
             _getQuery = _context
@@ -52,6 +60,49 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         {
             if (getDeleted) return await _getQuery.IgnoreQueryFilters().ToListAsync();
             return await _getQuery.ToListAsync();
+        }
+
+        /// <summary>
+        /// Gets all entries from DB for jQuery Datatables
+        /// </summary>
+        /// <param name="table">JqueryDataTablesParameters with table search and sort options</param>
+        /// <param name="getDeleted">Looks through soft deleted entries</param>
+        /// <returns>JqueryDataTablesPagedResults</returns>
+        public async Task<JqueryDataTablesPagedResults<ManufacturerModel>> GetManufacturersAsync(JqueryDataTablesParameters table, bool getDeleted = false)
+        {
+            ManufacturerModel[] items;
+
+            var query = _context
+                .Manufacturers
+                .AsNoTracking()
+                .IgnoreQueryFilters();
+
+
+            query = SearchOptionsProcessor<ManufacturerModel, Manufacturer>.Apply(query, table.Columns);
+            query = SortOptionsProcessor<ManufacturerModel, Manufacturer>.Apply(query, table);
+
+            var size = await query.CountAsync();
+
+            if (table.Length > 0)
+            {
+                items = await query
+                    .Skip((table.Start / table.Length) * table.Length)
+                    .Take(table.Length)
+                    .ProjectTo<ManufacturerModel>(_mappingConfiguration)
+                    .ToArrayAsync();
+            }
+            else
+            {
+                items = await query
+                    .ProjectTo<ManufacturerModel>(_mappingConfiguration)
+                    .ToArrayAsync();
+            }
+
+            return new JqueryDataTablesPagedResults<ManufacturerModel>
+            {
+                Items = items,
+                TotalSize = size
+            };
         }
 
         /// <summary>

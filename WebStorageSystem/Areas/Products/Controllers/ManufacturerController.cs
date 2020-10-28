@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Services;
@@ -21,11 +25,9 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         // GET: Manufacturer
-        public async Task<IActionResult> Index([FromQuery] bool getDeleted)
+        public IActionResult Index([FromQuery] bool getDeleted)
         {
-            var manufacturers = await _service.GetManufacturersAsync(getDeleted);
-            var manufacturerModels = _mapper.Map<IEnumerable<ManufacturerModel>>(manufacturers);
-            return View(manufacturerModels);
+            return View(new ManufacturerModel());
         }
 
         // GET: Manufacturer/Details/5
@@ -107,6 +109,37 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (!(await _service.ManufacturerExistsAsync((int) id, true))) return NotFound();
             await _service.RestoreManufacturerAsync((int) id);
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoadTable([FromBody]JqueryDataTablesParameters param)
+        {
+            try
+            {
+                HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), JsonSerializer.Serialize(param));
+                var results = await _service.GetManufacturersAsync(param);
+                foreach (var item in results.Items)
+                {
+                    item.Action = new Dictionary<string, string>
+                    {
+                        {"Edit", Url.Action(nameof(Edit), new {item.Id})},
+                        {"Details", Url.Action(nameof(Details), new {item.Id})},
+                        {"Delete", Url.Action(nameof(Edit), new {item.Id})},
+                        {"Restore", Url.Action(nameof(Restore), new {item.Id})}
+                    };
+                }
+
+                return new JsonResult(new JqueryDataTablesResult<ManufacturerModel> {
+                    Draw = param.Draw,
+                    Data = results.Items,
+                    RecordsFiltered = results.TotalSize,
+                    RecordsTotal = results.TotalSize
+                });
+            } catch(Exception e)
+            {
+                Console.Write(e.Message);
+                return new JsonResult(new { error = "Internal Server Error" });
+            }
         }
     }
 }
