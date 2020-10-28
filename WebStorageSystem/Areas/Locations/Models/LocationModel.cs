@@ -9,11 +9,11 @@ namespace WebStorageSystem.Areas.Locations.Models
     public class LocationModel : BaseEntityModelWithId
     {
         [Required, StringLength(100), Display(Name = "Name")]
-        [JqueryDataTableColumn, SearchableString, Sortable(Default = true)]
+        [JqueryDataTableColumn(Order = 1), SearchableString, Sortable(Default = true)]
         public string Name { get; set; }
 
         [StringLength(500)]
-        [JqueryDataTableColumn, SearchableString, Sortable]
+        [JqueryDataTableColumn(Order = 2), SearchableString, Sortable]
         public string Description { get; set; }
 
         [Required, Display(Name = "Location Type")]
@@ -27,14 +27,19 @@ namespace WebStorageSystem.Areas.Locations.Models
         //public IQueryable<Transfer> DestinationTransfers { get; set; }
 
         [Display(Name = "Creation Date")]
+        [JqueryDataTableColumn(Order = 9)]
         public override DateTime CreatedDate { get; set; }
 
         [Display(Name = "Last Modification")]
+        [JqueryDataTableColumn(Order = 10)]
         public override DateTime ModifiedDate { get; set; }
 
         [Display(Name = "Deleted")]
+        [JqueryDataTableColumn(Order = 11)]
         public override bool IsDeleted { get; set; }
         public override byte[] RowVersion { get; set; }
+
+        [JqueryDataTableColumn(Order = 12)]
         public override Dictionary<string, string> Action { get; set; }
         public override int Id { get; set; }
     }

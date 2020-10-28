@@ -108,7 +108,7 @@ $(() => {
         });
 
         table.columns().every(function (index) {
-            $("#dtLocationType thead tr:last th:eq(" + index + ") input")
+            $(`#dtLocationType thead tr:last th:eq(${index}) input`)
                 .on("keyup",
                     function (e) {
                         if (e.keyCode === 13) {
@@ -183,6 +183,10 @@ $(() => {
                     name: "co"
                 },
                 {
+                    data: "LocationType.Name",
+                    name: "co"
+                },
+                {
                     data: "LocationType.Description",
                     name: "co",
                     visible: false
@@ -201,10 +205,6 @@ $(() => {
                     data: "LocationType.IsDeleted",
                     name: "eq",
                     visible: false
-                },
-                {
-                    data: "LocationType.Name",
-                    name: "co"
                 },
                 {
                     data: "LocationType.Action",
@@ -259,7 +259,7 @@ $(() => {
         });
 
         table.columns().every(function (index) {
-            $("#dtLocation thead tr:last th:eq(" + index + ") input")
+            $(`#dtLocation thead tr:last th:eq(${index}) input`)
                 .on("keyup",
                     function (e) {
                         if (e.keyCode === 13) {
