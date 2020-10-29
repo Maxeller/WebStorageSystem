@@ -1,7 +1,7 @@
 ﻿// --- LOCATION TYPE ---
 $(() => {
     if ($("#dtLocationType").length !== 0) {
-        var table = $("#dtLocationType").DataTable({
+        const table = $("#dtLocationType").DataTable({
             language: {
                 processing: "Loading Data...",
                 zeroRecords: "No matching records found"
@@ -112,7 +112,7 @@ $(() => {
 // --- LOCATION ---
 $(() => {
     if ($("#dtLocation").length !== 0) {
-        var table = $("#dtLocation").DataTable({
+        const table = $("#dtLocation").DataTable({
             language: {
                 processing: "Loading Data...",
                 zeroRecords: "No matching records found"

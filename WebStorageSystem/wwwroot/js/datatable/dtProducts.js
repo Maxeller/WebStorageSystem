@@ -1,7 +1,7 @@
 ﻿// --- MANUFACTURER ---
 $(() => {
     if ($("#dtManufacturer").length !== 0) {
-        var table = $("#dtManufacturer").DataTable({
+        const table = $("#dtManufacturer").DataTable({
             language: {
                 processing: "Loading Data...",
                 zeroRecords: "No matching records found"
@@ -108,7 +108,7 @@ $(() => {
 // --- PRODUCT TYPE ---
 $(() => {
     if ($("#dtProductType").length !== 0) {
-        var table = $("#dtProductType").DataTable({
+        const table = $("#dtProductType").DataTable({
             language: {
                 processing: "Loading Data...",
                 zeroRecords: "No matching records found"
@@ -152,6 +152,10 @@ $(() => {
             columns: [
                 {
                     data: "Name",
+                    name: "co"
+                },
+                {
+                    data: "Description",
                     name: "co"
                 },
                 {
