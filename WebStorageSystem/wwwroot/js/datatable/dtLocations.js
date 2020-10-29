@@ -24,16 +24,6 @@ $(() => {
                     init: function (api, node, config) {
                         $(node).removeClass("dt-button");
                     }
-                },
-                {
-                    text: "createText",
-                    className: "btn btn-sm btn-success",
-                    action: function (e, dt, node, config) {
-                        $("#createModal").modal("show");
-                    },
-                    init: function (api, node, config) {
-                        $(node).removeClass("dt-button");
-                    }
                 }
             ],
             ajax: {
@@ -141,16 +131,6 @@ $(() => {
                     className: "btn btn-sm btn-dark",
                     action: function (e, dt, node, config) {
                         window.location.href = "/Home/GetExcel"; // TODO: Change path
-                    },
-                    init: function (api, node, config) {
-                        $(node).removeClass("dt-button");
-                    }
-                },
-                {
-                    text: "createText",
-                    className: "btn btn-sm btn-success",
-                    action: function (e, dt, node, config) {
-                        $("#createModal").modal("show");
                     },
                     init: function (api, node, config) {
                         $(node).removeClass("dt-button");
