@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Products.Data.Entities;
+using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data;
 
 namespace WebStorageSystem.Areas.Products.Data.Services
@@ -12,14 +17,15 @@ namespace WebStorageSystem.Areas.Products.Data.Services
     public class ProductTypeService
     {
         private readonly AppDbContext _context;
+        private readonly IConfigurationProvider _mappingConfiguration;
         private readonly ILogger _logger;
 
         private IQueryable<ProductType> _getQuery;
 
-        public ProductTypeService(AppDbContext context, ILoggerFactory factory)
+        public ProductTypeService(AppDbContext context, IConfigurationProvider mappingConfiguration, ILoggerFactory factory)
         {
             _context = context;
-
+            _mappingConfiguration = mappingConfiguration;
             _logger = factory.CreateLogger<ProductTypeService>();
 
             _getQuery = _context
@@ -51,6 +57,49 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         {
             if (getDeleted) return await _getQuery.IgnoreQueryFilters().ToListAsync();
             return await _getQuery.ToListAsync();
+        }
+
+        /// <summary>
+        /// Gets all entries from DB for jQuery Datatables
+        /// </summary>
+        /// <param name="table">JqueryDataTablesParameters with table search and sort options</param>
+        /// <param name="getDeleted">Looks through soft deleted entries</param>
+        /// <returns>JqueryDataTablesPagedResults</returns>
+        public async Task<JqueryDataTablesPagedResults<ProductTypeModel>> GetProductTypesAsync(JqueryDataTablesParameters table, bool getDeleted = false)
+        {
+            ProductTypeModel[] items;
+
+            var query = _context
+                .ProductTypes
+                .AsNoTracking()
+                .IgnoreQueryFilters();
+
+
+            query = SearchOptionsProcessor<ProductTypeModel, ProductType>.Apply(query, table.Columns);
+            query = SortOptionsProcessor<ProductTypeModel, ProductType>.Apply(query, table);
+
+            var size = await query.CountAsync();
+
+            if (table.Length > 0)
+            {
+                items = await query
+                    .Skip((table.Start / table.Length) * table.Length)
+                    .Take(table.Length)
+                    .ProjectTo<ProductTypeModel>(_mappingConfiguration)
+                    .ToArrayAsync();
+            }
+            else
+            {
+                items = await query
+                    .ProjectTo<ProductTypeModel>(_mappingConfiguration)
+                    .ToArrayAsync();
+            }
+
+            return new JqueryDataTablesPagedResults<ProductTypeModel>
+            {
+                Items = items,
+                TotalSize = size
+            };
         }
 
         /// <summary>
