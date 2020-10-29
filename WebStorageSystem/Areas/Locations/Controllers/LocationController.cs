@@ -148,7 +148,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
                     {
                         {"Edit", Url.Action(nameof(Edit), new {item.Id})},
                         {"Details", Url.Action(nameof(Details), new {item.Id})},
-                        {"Delete", Url.Action(nameof(Edit), new {item.Id})},
+                        {"Delete", Url.Action(nameof(Delete), new {item.Id})},
                         {"Restore", Url.Action(nameof(Restore), new {item.Id})}
                     };
                 }
