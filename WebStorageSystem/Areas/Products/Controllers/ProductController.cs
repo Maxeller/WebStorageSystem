@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebStorageSystem.Areas.Products.Data.Entities;
@@ -26,11 +30,9 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         // GET: Products/Product
-        public async Task<IActionResult> Index([FromQuery] bool getDeleted)
+        public IActionResult Index([FromQuery] bool getDeleted)
         {
-            var products = await _service.GetProductsAsync(getDeleted);
-            var productModels = _mapper.Map<IEnumerable<ProductModel>>(products);
-            return View(productModels);
+            return View(new ProductModel());
         }
 
         // GET: Products/Product/Details/5
@@ -138,6 +140,37 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (!(await _service.ProductExistsAsync((int) id, true))) return NotFound();
             await _service.RestoreProductAsync((int) id);
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoadTable([FromBody]JqueryDataTablesParameters param)
+        {
+            try
+            {
+                HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), JsonSerializer.Serialize(param));
+                var results = await _service.GetProductsAsync(param);
+                foreach (var item in results.Items)
+                {
+                    item.Action = new Dictionary<string, string>
+                    {
+                        {"Edit", Url.Action(nameof(Edit), new {item.Id})},
+                        {"Details", Url.Action(nameof(Details), new {item.Id})},
+                        {"Delete", Url.Action(nameof(Delete), new {item.Id})},
+                        {"Restore", Url.Action(nameof(Restore), new {item.Id})}
+                    };
+                }
+
+                return new JsonResult(new JqueryDataTablesResult<ProductModel> {
+                    Draw = param.Draw,
+                    Data = results.Items,
+                    RecordsFiltered = results.TotalSize,
+                    RecordsTotal = results.TotalSize
+                });
+            } catch(Exception e)
+            {
+                Console.Write(e.Message);
+                return new JsonResult(new { error = "Internal Server Error" });
+            }
         }
 
         private async Task CreateDropdownLists(bool getDeleted = false, object selectedManufacturer = null, object selectedType = null)

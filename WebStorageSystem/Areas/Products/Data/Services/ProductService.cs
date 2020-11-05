@@ -2,9 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Areas.Products.Data.Entities;
+using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data;
 
 namespace WebStorageSystem.Areas.Products.Data.Services
@@ -12,13 +18,15 @@ namespace WebStorageSystem.Areas.Products.Data.Services
     public class ProductService
     {
         private readonly AppDbContext _context;
+        private readonly IConfigurationProvider _mappingConfiguration;
         private readonly ILogger _logger;
 
         private readonly IQueryable<Product> _getQuery;
 
-        public ProductService(AppDbContext context, ILoggerFactory factory)
+        public ProductService(AppDbContext context, IConfigurationProvider mappingConfiguration, ILoggerFactory factory)
         {
             _context = context;
+            _mappingConfiguration = mappingConfiguration;
             _logger = factory.CreateLogger<ProductService>();
 
             _getQuery = _context
@@ -55,6 +63,52 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         }
 
         /// <summary>
+        /// Gets all entries from DB for jQuery Datatables
+        /// </summary>
+        /// <param name="table">JqueryDataTablesParameters with table search and sort options</param>
+        /// <param name="getDeleted">Looks through soft deleted entries</param>
+        /// <returns>JqueryDataTablesPagedResults</returns>
+        public async Task<JqueryDataTablesPagedResults<ProductModel>> GetProductsAsync(JqueryDataTablesParameters table, bool getDeleted = false)
+        {
+            ProductModel[] items;
+
+            var query = _context
+                .Products
+                .AsNoTracking()
+                .OrderBy(product => product.Name)
+                .Include(product => product.ProductType)
+                .AsNoTracking()
+                .Include(product => product.Manufacturer)
+                .AsNoTracking();
+
+            query = SearchOptionsProcessor<ProductModel, Product>.Apply(query, table.Columns);
+            query = SortOptionsProcessor<ProductModel, Product>.Apply(query, table);
+
+            var size = await query.CountAsync();
+
+            if (table.Length > 0)
+            {
+                items = await query
+                    .Skip((table.Start / table.Length) * table.Length)
+                    .Take(table.Length)
+                    .ProjectTo<ProductModel>(_mappingConfiguration)
+                    .ToArrayAsync();
+            }
+            else
+            {
+                items = await query
+                    .ProjectTo<ProductModel>(_mappingConfiguration)
+                    .ToArrayAsync();
+            }
+
+            return new JqueryDataTablesPagedResults<ProductModel>
+            {
+                Items = items,
+                TotalSize = size
+            };
+        }
+
+        /// <summary>
         /// Adds object to DB
         /// </summary>
         /// <param name="product">Object for adding</param>
@@ -78,7 +132,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 var prev = await _context.Products.FirstAsync(p => p.Id == product.Id);
                 _context.Entry(prev).State = EntityState.Detached;
                 _context.Entry(product).State = EntityState.Modified;
-                
+
                 _context.Products.Update(product);
                 await _context.SaveChangesAsync();
                 return (true, null);
