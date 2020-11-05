@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Products.Data.Entities;
+using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data;
 
 namespace WebStorageSystem.Areas.Products.Data.Services
@@ -12,14 +17,15 @@ namespace WebStorageSystem.Areas.Products.Data.Services
     public class VendorService
     {
         private readonly AppDbContext _context;
+        private readonly IConfigurationProvider _mappingConfiguration;
         private readonly ILogger _logger;
 
         private IQueryable<Vendor> _getQuery;
 
-        public VendorService(AppDbContext context, ILoggerFactory factory)
+        public VendorService(AppDbContext context, IConfigurationProvider mappingConfiguration, ILoggerFactory factory)
         {
             _context = context;
-
+            _mappingConfiguration = mappingConfiguration;
             _logger = factory.CreateLogger<VendorService>();
 
             _getQuery = _context
@@ -50,6 +56,49 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         {
             if (getDeleted) return await _getQuery.IgnoreQueryFilters().ToListAsync();
             return await _getQuery.ToListAsync();
+        }
+
+        /// <summary>
+        /// Gets all entries from DB for jQuery Datatables
+        /// </summary>
+        /// <param name="table">JqueryDataTablesParameters with table search and sort options</param>
+        /// <param name="getDeleted">Looks through soft deleted entries</param>
+        /// <returns>JqueryDataTablesPagedResults</returns>
+        public async Task<JqueryDataTablesPagedResults<VendorModel>> GetVendorsAsync(JqueryDataTablesParameters table, bool getDeleted = false)
+        {
+            VendorModel[] items;
+
+            var query = _context
+                .Vendors
+                .AsNoTracking()
+                .IgnoreQueryFilters();
+
+
+            query = SearchOptionsProcessor<VendorModel, Vendor>.Apply(query, table.Columns);
+            query = SortOptionsProcessor<VendorModel, Vendor>.Apply(query, table);
+
+            var size = await query.CountAsync();
+
+            if (table.Length > 0)
+            {
+                items = await query
+                    .Skip((table.Start / table.Length) * table.Length)
+                    .Take(table.Length)
+                    .ProjectTo<VendorModel>(_mappingConfiguration)
+                    .ToArrayAsync();
+            }
+            else
+            {
+                items = await query
+                    .ProjectTo<VendorModel>(_mappingConfiguration)
+                    .ToArrayAsync();
+            }
+
+            return new JqueryDataTablesPagedResults<VendorModel>
+            {
+                Items = items,
+                TotalSize = size
+            };
         }
 
         /// <summary>
@@ -94,7 +143,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
         public async Task DeleteVendorAsync(int id)
         {
-            var vendor= await GetVendorAsync(id, true);
+            var vendor = await GetVendorAsync(id, true);
             await DeleteVendorAsync(vendor);
         }
 

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<VendorModel>
+﻿@model VendorModel
 
 @{
     ViewData["Title"] = "Vendors List";
@@ -9,73 +9,21 @@
 <p>
     <a asp-action="Create">Create New Vendor</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Address
-            </th>
-            <th>
-                Phone
-            </th>
-            <th>
-                Email
-            </th>
-            <th>
-                Created Date
-            </th>
-            <th>
-                Last Modification
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModifiedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                @if (!item.IsDeleted)
-                {
-                    <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Delete", new {Id = item.Id})" data-name="@item.Name">
-                        Delete
-                    </a>
-                }
-                @if (item.IsDeleted)
-                {
-                    <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Restore", new {Id = item.Id})" data-name="@item.Name">
-                        Restore
-                    </a>
-                }
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+@Html.AntiForgeryToken()
+<jquery-datatables id="dtVendor"
+                   class="table"
+                   model="@Model"
+                   thead-class="text-center"
+                   enable-searching="true"
+                   search-row-th-class="p-0"
+                   search-input-class="form-control form-control-sm"
+                   search-input-style="width: 100%"
+                   search-input-placeholder-prefix="Search">
+</jquery-datatables>
 
 <partial name="DeleteRestoreModal" />
+@if (TempData["Error"] != null)
+{
+    await Html.RenderPartialAsync("ErrorModal", TempData["Error"]);
+}

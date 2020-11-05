@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebStorageSystem.Areas.Products.Data.Entities;
@@ -22,12 +25,9 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         // GET: VendorModels
-        public async Task<IActionResult> Index([FromQuery] bool getDeleted)
+        public IActionResult Index([FromQuery] bool getDeleted)
         {
-            if(getDeleted) HttpContext.Session.SetInt32("GetDeleted", 1);
-            var vendors = await _service.GetVendorsAsync(getDeleted);
-            var vendorModels = _mapper.Map<IEnumerable<VendorModel>>(vendors);
-            return View(vendorModels);
+            return View(new VendorModel());
         }
 
         // GET: VendorModels/Details/5
@@ -108,6 +108,37 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (!(await _service.VendorExistsAsync((int) id, true))) return NotFound();
             await _service.RestoreVendorAsync((int) id);
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoadTable([FromBody]JqueryDataTablesParameters param)
+        {
+            try
+            {
+                HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), JsonSerializer.Serialize(param));
+                var results = await _service.GetVendorsAsync(param);
+                foreach (var item in results.Items)
+                {
+                    item.Action = new Dictionary<string, string>
+                    {
+                        {"Edit", Url.Action(nameof(Edit), new {item.Id})},
+                        {"Details", Url.Action(nameof(Details), new {item.Id})},
+                        {"Delete", Url.Action(nameof(Delete), new {item.Id})},
+                        {"Restore", Url.Action(nameof(Restore), new {item.Id})}
+                    };
+                }
+
+                return new JsonResult(new JqueryDataTablesResult<VendorModel> {
+                    Draw = param.Draw,
+                    Data = results.Items,
+                    RecordsFiltered = results.TotalSize,
+                    RecordsTotal = results.TotalSize
+                });
+            } catch(Exception e)
+            {
+                Console.Write(e.Message);
+                return new JsonResult(new { error = "Internal Server Error" });
+            }
         }
 
     }
