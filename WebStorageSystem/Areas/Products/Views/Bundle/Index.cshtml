@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BundleModel>
+﻿@model BundleModel
 
 @{
     ViewData["Title"] = "List of Bundles";
@@ -9,72 +9,18 @@
 <p>
     <a asp-action="Create">Create New Bundle</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Serial Number
-            </th>
-            <th>
-                Number of Units
-            </th>
-            <th>
-                Created Date
-            </th>
-            <th>
-                Last Modification
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-        <tr>
-            <td>
-                @item.Name
-            </td>
-            <td>
-                @item.SerialNumber
-            </td>
-            <td>
-                @item.BundledUnits.Count(unit => !unit.IsDeleted)
-            </td>
-            <td>
-                @item.CreatedDate
-            </td>
-            <td>
-                @item.ModifiedDate
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                @if (!item.IsDeleted)
-                {
-                    <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Delete", new {Id = item.Id})" data-name="@item.SerialNumber">
-                        Delete
-                    </a>
-                }
-                @if (item.IsDeleted)
-                {
-                    <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Restore", new {Id = item.Id})" data-name="@item.SerialNumber">
-                        Restore
-                    </a>
-                }
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
+
+@Html.AntiForgeryToken()
+<jquery-datatables id="dtBundle"
+                   class="table"
+                   model="@Model"
+                   thead-class="text-center"
+                   enable-searching="true"
+                   search-row-th-class="p-0"
+                   search-input-class="form-control form-control-sm"
+                   search-input-style="width: 100%"
+                   search-input-placeholder-prefix="Search">
+</jquery-datatables>
 
 <partial name="DeleteRestoreModal" />
 @if (TempData["Error"] != null)

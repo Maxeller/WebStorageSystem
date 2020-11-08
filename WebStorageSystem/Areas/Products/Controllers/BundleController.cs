@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore.Internal;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Areas.Products.Models;
@@ -29,11 +29,9 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         // GET: Products/Bundle
-        public async Task<IActionResult> Index([FromQuery] bool getDeleted)
+        public IActionResult Index([FromQuery] bool getDeleted)
         {
-            var bundles = await _service.GetBundlesAsync(getDeleted);
-            var bundleModels = _mapper.Map<IEnumerable<BundleModel>>(bundles);
-            return View(bundleModels);
+            return View(new BundleModel());
         }
 
         // GET: Products/Bundle/Details/5
@@ -124,6 +122,37 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (id == null) return BadRequest();
             await _service.RestoreBundleAsync((int) id);
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoadTable([FromBody]JqueryDataTablesParameters param)
+        {
+            try
+            {
+                HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), JsonSerializer.Serialize(param));
+                var results = await _service.GetBundlesAsync(param);
+                foreach (var item in results.Items)
+                {
+                    item.Action = new Dictionary<string, string>
+                    {
+                        {"Edit", Url.Action(nameof(Edit), new {item.Id})},
+                        {"Details", Url.Action(nameof(Details), new {item.Id})},
+                        {"Delete", Url.Action(nameof(Delete), new {item.Id})},
+                        {"Restore", Url.Action(nameof(Restore), new {item.Id})}
+                    };
+                }
+
+                return new JsonResult(new JqueryDataTablesResult<BundleModel> {
+                    Draw = param.Draw,
+                    Data = results.Items,
+                    RecordsFiltered = results.TotalSize,
+                    RecordsTotal = results.TotalSize
+                });
+            } catch(Exception e)
+            {
+                Console.Write(e.Message);
+                return new JsonResult(new { error = "Internal Server Error" });
+            }
         }
 
         private async Task CreateUnitDropdownList(bool getDeleted = false, IEnumerable<UnitModel> selectedValues = null)
