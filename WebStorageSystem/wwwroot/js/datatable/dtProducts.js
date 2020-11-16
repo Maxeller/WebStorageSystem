@@ -1031,5 +1031,6 @@ $(() => {
         $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(3)").text("Product Type");
         $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(4)").text("Manufacturer");
         $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(5)").text("Location");
+        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(6)").text("Bundle");
     }
 });
