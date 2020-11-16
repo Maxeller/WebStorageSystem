@@ -48,6 +48,7 @@ namespace WebStorageSystem
 
             // SERVICES FOR DB QUERIES
             services.AddMyDbCommunicationServices();
+            //services.AddDatabaseDeveloperPageExceptionFilter();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -55,7 +56,8 @@ namespace WebStorageSystem
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                //app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint();
                 //app.UseBrowserLink();
             }
             else

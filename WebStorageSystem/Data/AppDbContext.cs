@@ -137,27 +137,11 @@ namespace WebStorageSystem.Data
                     .WithMany(location => location.DestinationTransfers)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
+                entity
+                    .HasMany(transfer => transfer.TransferredUnits)
+                    .WithMany(unit => unit.PartOfTransfers);
                 entity.HasQueryFilter(transfer => !transfer.IsDeleted);
                 entity.ToTable("Transfers");
-            });
-
-            modelBuilder.Entity<TransferUnit>(entity =>
-            {
-                entity.HasKey(transferUnit => new {transferUnit.TransferId, transferUnit.UnitId});
-                entity
-                    .HasOne(transferUnit => transferUnit.Transfer)
-                    .WithMany(transfer => transfer.TransferredUnits)
-                    .HasForeignKey(transferUnit => transferUnit.TransferId)
-                    .IsRequired()
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity
-                    .HasOne(transferUnit => transferUnit.Unit)
-                    .WithMany(unit => unit.TransferredUnits)
-                    .HasForeignKey(transferUnit => transferUnit.UnitId)
-                    .IsRequired()
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.HasQueryFilter(transferUnit => !transferUnit.IsDeleted);
-                entity.ToTable("TransferUnits");
             });
 
             // Folder: Identity

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WebStorageSystem.Areas.Locations.Data.Entities;
+using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Data.Entities.Identities;
 
 namespace WebStorageSystem.Data.Entities.Transfers
@@ -22,7 +23,7 @@ namespace WebStorageSystem.Data.Entities.Transfers
 
         [Required]
         [Display(Name = "Transferred Units")]
-        public IEnumerable<TransferUnit> TransferredUnits { get; set; }
+        public IEnumerable<Unit> TransferredUnits { get; set; }
 
         public ApplicationUser User { get; set; }
         public override DateTime CreatedDate { get; set; }
