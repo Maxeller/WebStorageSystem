@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes;
+using Microsoft.Extensions.Logging;
 using WebStorageSystem.Models;
 
 namespace WebStorageSystem.Areas.Products.Models
@@ -28,7 +29,7 @@ namespace WebStorageSystem.Areas.Products.Models
 
         [DisplayName("# Units")]
         [JqueryDataTableColumn(Order = 42)]
-        public int NumberOfUnits => BundledUnits.ToArray().Length;
+        public int NumberOfUnits => BundledUnits?.ToArray().Length ?? 0;
 
         [Display(Name = "Creation Date")]
         [JqueryDataTableColumn(Order = 43)]
