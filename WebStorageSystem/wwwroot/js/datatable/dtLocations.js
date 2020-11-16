@@ -247,5 +247,7 @@ $(() => {
                         }
                     }); // TODO: Add function to refresh when input is cleared
         });
+
+        $("#dtLocation > thead > tr:nth-child(1) > th:nth-child(3)").text("Location Type");
     }
 });
