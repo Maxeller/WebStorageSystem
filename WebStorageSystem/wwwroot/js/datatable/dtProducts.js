@@ -894,37 +894,78 @@ $(() => {
                 },
                 {
                     data: "PartOfBundle.Name",
-                    name: "co"
+                    name: "co",
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    },
                 },
                 {
                     data: "PartOfBundle.SerialNumber",
                     name: "co",
-                    visible: false
+                    visible: false,
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    },
                 },
                 {
                     data: "PartOfBundle.NumberOfUnits",
                     name: "co",
-                    visible: false
+                    visible: false,
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    }
                 },
                 {
                     data: "PartOfBundle.CreatedDate",
                     name: "co",
-                    visible: false
+                    visible: false,
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    }
                 },
                 {
                     data: "PartOfBundle.ModifiedDate",
                     name: "co",
-                    visible: false
+                    visible: false,render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    }
                 },
                 {
                     data: "PartOfBundle.IsDeleted",
                     name: "co",
-                    visible: false
+                    visible: false,
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    }
                 },
                 {
                     data: "PartOfBundle.Action",
                     name: "co",
-                    visible: false
+                    visible: false,
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    }
                 },
                 {
                     data: "CreatedDate",
