@@ -79,6 +79,7 @@ $(() => {
                 {
                     data: "Action",
                     orderable: false,
+                    width: 155,
                     render: function (data, type, row) {
                         let s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> | `;
                         s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> | `;
@@ -190,6 +191,7 @@ $(() => {
                 {
                     data: "Action",
                     orderable: false,
+                    width: 155,
                     render: function (data, type, row) {
                         let s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> | `;
                         s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> | `;
@@ -309,6 +311,7 @@ $(() => {
                 {
                     data: "Action",
                     orderable: false,
+                    width: 155,
                     render: function (data, type, row) {
                         let s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> | `;
                         s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> | `;
@@ -469,6 +472,7 @@ $(() => {
                 {
                     data: "Action",
                     orderable: false,
+                    width: 155,
                     render: function (data, type, row) {
                         let s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> | `;
                         s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> | `;
@@ -587,6 +591,7 @@ $(() => {
                 {
                     data: "Action",
                     orderable: false,
+                    width: 155,
                     render: function (data, type, row) {
                         let s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> | `;
                         s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> | `;
@@ -659,59 +664,265 @@ $(() => {
             },
             columns: [
                 {
-                    data: "Name",
+                    data: "SerialNumber",
                     name: "co"
                 },
                 {
-                    data: "ProductType.Name",
+                    data: "Product.Name",
                     name: "co"
                 },
                 {
-                    data: "ProductType.Description",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "ProductType.CreatedDate",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "ProductType.ModifiedDate",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "ProductType.IsDeleted",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "ProductType.Action",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Manufacturer.Name",
+                    data: "Product.ProductType.Name",
                     name: "co"
                 },
                 {
-                    data: "Manufacturer.CreatedDate",
+                    data: "Product.ProductType.Description",
                     name: "co",
                     visible: false
                 },
                 {
-                    data: "Manufacturer.ModifiedDate",
+                    data: "Product.ProductType.CreatedDate",
                     name: "co",
                     visible: false
                 },
                 {
-                    data: "Manufacturer.IsDeleted",
+                    data: "Product.ProductType.ModifiedDate",
                     name: "co",
                     visible: false
                 },
                 {
-                    data: "Manufacturer.Action",
+                    data: "Product.ProductType.IsDeleted",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Product.ProductType.Action",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Product.Manufacturer.Name",
+                    name: "co"
+                },
+                {
+                    data: "Product.Manufacturer.CreatedDate",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Product.Manufacturer.ModifiedDate",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Product.Manufacturer.IsDeleted",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Product.Manufacturer.Action",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Product.CreatedDate",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Product.ModifiedDate",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Product.IsDeleted",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Product.Action",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Location.Name",
+                    name: "co"
+                },
+                {
+                    data: "Location.Description",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Location.LocationType.Name",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Location.LocationType.Description",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Location.LocationType.CreatedDate",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Location.LocationType.ModifiedDate",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Location.LocationType.IsDeleted",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Location.LocationType.Action",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Location.CreatedDate",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Location.ModifiedDate",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Location.IsDeleted",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Location.Action",
+                    name: "co",
+                    orderable: false,
+                    visible: false
+                },
+                {
+                    data: "Vendor.Name",
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    },
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Vendor.Address",
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    },
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Vendor.Phone",
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    },
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Vendor.Email",
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    },
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Vendor.CreatedDate",
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    },
+                    name: "gte",
+                    visible: false
+                },
+                {
+                    data: "Vendor.ModifiedDate",
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    },
+                    name: "gte",
+                    visible: false
+                },
+                {
+                    data: "Vendor.IsDeleted",
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    },
+                    name: "eq",
+                    visible: false
+                },
+                {
+                    data: "Vendor.Action",
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    },
+                    orderable: false,
+                    visible: false
+                },
+                {
+                    data: "PartOfBundle.Name",
+                    name: "co"
+                },
+                {
+                    data: "PartOfBundle.SerialNumber",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "PartOfBundle.NumberOfUnits",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "PartOfBundle.CreatedDate",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "PartOfBundle.ModifiedDate",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "PartOfBundle.IsDeleted",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "PartOfBundle.Action",
                     name: "co",
                     visible: false
                 },
@@ -723,7 +934,8 @@ $(() => {
                         else
                             return null;
                     },
-                    name: "gte"
+                    name: "gte",
+                    visible: false
                 },
                 {
                     data: "ModifiedDate",
@@ -733,7 +945,8 @@ $(() => {
                         else
                             return null;
                     },
-                    name: "gte"
+                    name: "gte",
+                    visible: false
                 },
                 {
                     data: "IsDeleted",
@@ -742,11 +955,13 @@ $(() => {
                             return "Yes";
                         else
                             return "No";
-                    }
+                    },
+                    visible: false
                 },
                 {
                     data: "Action",
                     orderable: false,
+                    width: 155,
                     render: function (data, type, row) {
                         let s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> | `;
                         s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> | `;
@@ -762,7 +977,7 @@ $(() => {
         });
 
         table.columns().every(function (index) {
-            $(`#dtVendor thead tr:last th:eq(${index}) input`)
+            $(`#dtUnit thead tr:last th:eq(${index}) input`)
                 .on("keyup",
                     function (e) {
                         if (e.keyCode === 13) {
@@ -771,7 +986,9 @@ $(() => {
                     }); // TODO: Add function to refresh when input is cleared
         });
 
-        //$("#dtProduct > thead > tr:nth-child(1) > th:nth-child(2)").text("Product Type");
-        //$("#dtProduct > thead > tr:nth-child(1) > th:nth-child(3)").text("Manufacturer");
+        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(2)").text("Product");
+        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(3)").text("Product Type");
+        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(4)").text("Manufacturer");
+        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(5)").text("Location");
     }
 });

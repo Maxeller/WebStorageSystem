@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Locations.Data.Services;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Areas.Products.Data.Entities;
@@ -25,7 +25,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         private readonly BundleService _bService;
         private readonly IMapper _mapper;
 
-        public UnitController(UnitService service, ProductService pService, LocationService lService, VendorService vService, BundleService bService,IMapper mapper)
+        public UnitController(UnitService service, ProductService pService, LocationService lService, VendorService vService, BundleService bService, IMapper mapper)
         {
             _service = service;
             _pService = pService;
@@ -36,11 +36,9 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         // GET: Products/Unit
-        public async Task<IActionResult> Index([FromQuery] bool getDeleted)
+        public IActionResult Index([FromQuery] bool getDeleted)
         {
-            var units = await _service.GetUnitsAsync(getDeleted);
-            var unitModels = _mapper.Map<IEnumerable<UnitModel>>(units);
-            return View(unitModels);
+            return View(new UnitModel());
         }
 
         // GET: Products/Unit/Details/5
@@ -155,6 +153,37 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (!(await _service.UnitExistsAsync((int) id, true))) return NotFound();
             await _service.RestoreUnitAsync((int) id);
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoadTable([FromBody]JqueryDataTablesParameters param)
+        {
+            try
+            {
+                HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), JsonSerializer.Serialize(param));
+                var results = await _service.GetUnitsAsync(param);
+                foreach (var item in results.Items)
+                {
+                    item.Action = new Dictionary<string, string>
+                    {
+                        {"Edit", Url.Action(nameof(Edit), new {item.Id})},
+                        {"Details", Url.Action(nameof(Details), new {item.Id})},
+                        {"Delete", Url.Action(nameof(Delete), new {item.Id})},
+                        {"Restore", Url.Action(nameof(Restore), new {item.Id})}
+                    };
+                }
+
+                return new JsonResult(new JqueryDataTablesResult<UnitModel> {
+                    Draw = param.Draw,
+                    Data = results.Items,
+                    RecordsFiltered = results.TotalSize,
+                    RecordsTotal = results.TotalSize
+                });
+            } catch(Exception e)
+            {
+                Console.Write(e.Message);
+                return new JsonResult(new { error = "Internal Server Error" });
+            }
         }
 
         private async Task CreateDropdownLists(bool getDeleted = false, object selectedProduct = null, object selectedLocation = null, object selectedVendor = null, object selectedBundle = null)

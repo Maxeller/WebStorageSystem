@@ -83,6 +83,7 @@ $(() => {
                 {
                     data: "Action",
                     orderable: false,
+                    width: 155,
                     render: function (data, type, row) {
                         let s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> | `;
                         s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> | `;

@@ -8,12 +8,12 @@ namespace WebStorageSystem.Areas.Locations.Models
 {
     public class LocationModel : BaseEntityModelWithId
     {
-        [Required, StringLength(100), Display(Name = "Name")]
-        [JqueryDataTableColumn(Order = 1), SearchableString, Sortable(Default = true)]
+        [Required, StringLength(100)]
+        [JqueryDataTableColumn(Order = 100), SearchableString, Sortable(Default = true)]
         public string Name { get; set; }
 
         [StringLength(500)]
-        [JqueryDataTableColumn(Order = 2), SearchableString, Sortable]
+        [JqueryDataTableColumn(Order = 102), SearchableString, Sortable]
         public string Description { get; set; }
 
         [Required, Display(Name = "Location Type")]
@@ -23,23 +23,23 @@ namespace WebStorageSystem.Areas.Locations.Models
         [JqueryDataTableColumn, NestedSearchable, NestedSortable]
         public LocationTypeModel LocationType { get; set; }
 
-        //public IQueryable<Transfer> OriginTransfers { get; set; }
-        //public IQueryable<Transfer> DestinationTransfers { get; set; }
+        //public IEnumerable<Transfer> OriginTransfers { get; set; }
+        //public IEnumerable<Transfer> DestinationTransfers { get; set; }
 
         [Display(Name = "Creation Date")]
-        [JqueryDataTableColumn(Order = 9)]
+        [JqueryDataTableColumn(Order = 146)]
         public override DateTime CreatedDate { get; set; }
 
         [Display(Name = "Last Modification")]
-        [JqueryDataTableColumn(Order = 10)]
+        [JqueryDataTableColumn(Order = 147)]
         public override DateTime ModifiedDate { get; set; }
 
         [Display(Name = "Deleted")]
-        [JqueryDataTableColumn(Order = 11)]
+        [JqueryDataTableColumn(Order = 148)]
         public override bool IsDeleted { get; set; }
         public override byte[] RowVersion { get; set; }
 
-        [JqueryDataTableColumn(Order = 12)]
+        [JqueryDataTableColumn(Order = 149)]
         public override Dictionary<string, string> Action { get; set; }
         public override int Id { get; set; }
     }
