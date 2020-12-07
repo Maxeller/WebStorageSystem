@@ -1,0 +1,29 @@
+﻿@model TransferModel
+
+@{
+    ViewData["Title"] = "List of Transfers";
+}
+
+<h1>List of Transfers</h1>
+
+<p>
+    <a asp-action="Create">Create New Transfer</a>
+</p>
+
+@Html.AntiForgeryToken()
+<jquery-datatables id="dtTransfer"
+                   class="table"
+                   model="@Model"
+                   thead-class="text-center"
+                   enable-searching="true"
+                   search-row-th-class="p-0"
+                   search-input-class="form-control form-control-sm"
+                   search-input-style="width: 100%"
+                   search-input-placeholder-prefix="Search">
+</jquery-datatables>
+
+<partial name="DeleteRestoreModal" />
+@if (TempData["Error"] != null)
+{
+    await Html.RenderPartialAsync("ErrorModal", TempData["Error"]);
+}

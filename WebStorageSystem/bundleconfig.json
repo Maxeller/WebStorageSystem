@@ -10,7 +10,8 @@
     "inputFiles": [
       "wwwroot/js/site.js",
       "wwwroot/js/datatable/dtLocations.js",
-      "wwwroot/js/datatable/dtProducts.js"
+      "wwwroot/js/datatable/dtProducts.js",
+      "wwwroot/js/datatable/dtTransfers.js"
     ],
     "minify": {
       "enabled": true,

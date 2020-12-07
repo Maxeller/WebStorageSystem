@@ -13,6 +13,7 @@ using WebStorageSystem.Areas.Locations.Data.Services;
 using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Data;
 using WebStorageSystem.Data.Entities.Identities;
+using WebStorageSystem.Data.Services;
 
 namespace WebStorageSystem
 {
@@ -31,7 +32,6 @@ namespace WebStorageSystem
         {
             // DATABASE
             services.AddMyDatabaseConfiguration(Configuration.GetConnectionString("LocalDb"), _env);
-
 
             // IDENTITY
             services.AddMyIdentityConfiguration();
@@ -100,7 +100,6 @@ namespace WebStorageSystem
     {
         public static void AddMyMvcConfiguration(this IServiceCollection services)
         {
-            
             services.AddDistributedMemoryCache(); // Memory Cache for Sessions
 
             services.AddSession(options => // Session settings
@@ -109,7 +108,7 @@ namespace WebStorageSystem
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-            
+
             services.AddControllersWithViews(options =>
                 {
                     //TODO: Add Filters
@@ -213,6 +212,9 @@ namespace WebStorageSystem
             services.AddScoped<VendorService>();
             services.AddScoped<UnitService>();
             services.AddScoped<BundleService>();
+
+            // Transfer Services
+            services.AddScoped<TransferService>();
         }
 
         public static void UpdateMigrations(this IApplicationBuilder app)

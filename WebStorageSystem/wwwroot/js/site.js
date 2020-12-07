@@ -10,6 +10,22 @@ $(document).ready(function() { // TODO: Move when select2 moved to separate part
         theme: "bootstrap4",
         allowClear: true
     });
+    $(".selectTwoTransferUnits").select2({
+        theme: "bootstrap4",
+        ajax: {
+            url: "/Transfer/UnitLoc",
+            dataType: "json",
+            data: function(params) {
+                var query = {
+                    loc: $("#OriginLocationId :selected").val(),
+                    sn: params.term
+                };
+                return query;
+            },
+            delay: 250
+            // TODO: change container look (ex https://select2.org/data-sources/ajax)
+        }
+    });
 });
 
 // --- MODALS ---

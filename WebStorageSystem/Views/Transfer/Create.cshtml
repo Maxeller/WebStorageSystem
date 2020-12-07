@@ -1,0 +1,58 @@
+﻿@model TransferModel
+
+@{
+    ViewData["Title"] = "Create Transfer";
+}
+
+<h1>Create</h1>
+
+<h4>Transfer</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="TransferNumber" class="control-label"></label>
+                <input asp-for="TransferNumber" class="form-control" />
+                <span asp-validation-for="TransferNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OriginLocationId" class="control-label"></label>
+                <select asp-for="OriginLocationId" class="form-control selectTwo" asp-items="ViewBag.Locations" data-placeholder="Select Location">
+                    <option></option>
+                </select>
+                <span asp-validation-for="OriginLocationId" class="text-danger" />
+            </div>
+            <div class="form-group">
+                <label asp-for="DestinationLocationId" class="control-label"></label>
+                <select asp-for="DestinationLocationId" class="form-control selectTwo" asp-items="ViewBag.Locations" data-placeholder="Select Location">
+                    <option></option>
+                </select>
+                <span asp-validation-for="DestinationLocationId" class="text-danger" />
+            </div>
+            <div class="form-group">
+                <label asp-for="TransferredUnitsIds" class="control-label"></label>
+                <select asp-for="TransferredUnitsIds" class="form-control selectTwoTransferUnits" multiple="multiple" data-placeholder="Select Units">
+                </select>
+                <span asp-validation-for="TransferredUnitsIds" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
