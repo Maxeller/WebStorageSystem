@@ -10,12 +10,24 @@ namespace WebStorageSystem.Data.Entities.Transfers
     public class Transfer : BaseEntityWithId
     {
         [Required]
+        [Display(Name = "Transfer Number")]
+        public string TransferNumber { get; set; }
+
+        [Required]
         [Display(Name = "Origin Location")]
         public Location OriginLocation { get; set; }
 
         [Required]
+        [Display(Name = "Origin Location")]
+        public int OriginLocationId { get; set; }
+
+        [Required]
         [Display(Name = "Destination Location")]
         public Location DestinationLocation { get; set; }
+
+        [Required]
+        [Display(Name = "Destination Location")]
+        public int DestinationLocationId { get; set; }
 
         [Required]
         [Display(Name = "Time of Transfer")]

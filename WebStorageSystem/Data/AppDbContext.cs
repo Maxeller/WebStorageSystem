@@ -122,6 +122,7 @@ namespace WebStorageSystem.Data
             // Folder: Transfer
             modelBuilder.Entity<Transfer>(entity =>
             {
+                entity.HasIndex(transfer => transfer.TransferNumber).IsUnique();
                 entity
                     .HasOne(transfer => transfer.User)
                     .WithMany(user => user.Transfers)
