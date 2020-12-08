@@ -6,9 +6,11 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using WebStorageSystem.Areas.Locations.Models;
+using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Data.Entities.Transfers;
 using WebStorageSystem.Models;
 
@@ -18,14 +20,18 @@ namespace WebStorageSystem.Data.Services
     {
         private readonly AppDbContext _context;
         private readonly IConfigurationProvider _mappingConfiguration;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger _logger;
 
         private readonly IQueryable<Transfer> _getQuery;
 
-        public TransferService(AppDbContext context, IConfigurationProvider mappingConfiguration, ILoggerFactory factory)
+        public TransferService(AppDbContext context, IConfigurationProvider mappingConfiguration, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, ILoggerFactory factory)
         {
             _context = context;
             _mappingConfiguration = mappingConfiguration;
+            _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
             _logger = factory.CreateLogger<TransferService>();
 
             _getQuery = _context
@@ -113,9 +119,15 @@ namespace WebStorageSystem.Data.Services
         /// <param name="transfer">Object for adding</param>
         public async Task AddTransferAsync(Transfer transfer)
         {
-            transfer.TransferTime = DateTime.UtcNow;
-            // TODO: add current user to transfer
-            // TODO: change location in units
+            foreach (var unit in transfer.TransferredUnits) // Moves all transferred units to destination location
+            {
+                unit.LocationId = transfer.DestinationLocationId;
+                _context.Entry(unit).State = EntityState.Modified;
+                _context.Units.Update(unit);
+            }
+
+            transfer.User = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User); // Gets current user from HttpContext and sets it for this transfer
+            transfer.TransferTime = DateTime.UtcNow; // Sets transfer time
             _context.Transfers.Add(transfer);
             await _context.SaveChangesAsync();
         }
