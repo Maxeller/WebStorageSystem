@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Areas.Products.Models;
-using WebStorageSystem.Data.Entities.Identities;
 
 namespace WebStorageSystem.Models
 {
@@ -15,7 +14,7 @@ namespace WebStorageSystem.Models
         public string TransferNumber { get; set; }
 
         [Display(Name = "Origin Location")]
-        [JqueryDataTableColumn, NestedSortable, NestedSearchable]
+        [JqueryDataTableColumn, NestedSearchable, NestedSortable]
         public LocationModel OriginLocation { get; set; }
 
         [Required, Display(Name = "Origin Location")]
@@ -23,7 +22,7 @@ namespace WebStorageSystem.Models
         public int OriginLocationId { get; set; }
 
         [Display(Name = "Destination Location")]
-        [JqueryDataTableColumn, NestedSortable, NestedSearchable]
+        [JqueryDataTableColumn, NestedSearchable, NestedSortable]
         public LocationModel DestinationLocation { get; set; }
 
         [Required, Display(Name = "Destination Location")]
@@ -42,10 +41,11 @@ namespace WebStorageSystem.Models
         [JqueryDataTableColumn(Exclude = true)]
         public IEnumerable<int> TransferredUnitsIds { get; set; }
 
-        public ApplicationUser User { get; set; }
+        [JqueryDataTableColumn, NestedSearchable, NestedSortable]
+        public ApplicationUserModel User { get; set; }
 
-        [JqueryDataTableColumn(Order = 395), SearchableString(EntityProperty = "User.UserName."), Sortable(EntityProperty = "User.UserName")]
-        public string Username => User != null ? User.UserName : "";
+        [JqueryDataTableColumn(Exclude = true)]
+        public string UserId { get; set; }
 
         [Display(Name = "Creation Date")]
         [JqueryDataTableColumn(Order = 396)]

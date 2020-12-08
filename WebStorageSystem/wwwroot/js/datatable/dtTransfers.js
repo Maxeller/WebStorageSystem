@@ -1,5 +1,4 @@
 ﻿// --- TRANSFER ---
-// --- LOCATION ---
 $(() => {
     if ($("#dtTransfer").length !== 0) {
         const table = $("#dtTransfer").DataTable({
@@ -14,15 +13,16 @@ $(() => {
             deferRender: true,
             //lengthMenu: [[5, 10, 15, 20, -1], [5, 10, 15, 20, "All"]],
             paging: false,
-            dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6 text-right"l>><"row"<"col-sm-12"tr>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+            dom:
+                '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6 text-right"l>><"row"<"col-sm-12"tr>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
             buttons: [
                 {
                     text: "Export to Excel",
                     className: "btn btn-sm btn-dark",
-                    action: function (e, dt, node, config) {
+                    action: function(e, dt, node, config) {
                         window.location.href = "/Home/GetExcel"; // TODO: Change path
                     },
-                    init: function (api, node, config) {
+                    init: function(api, node, config) {
                         $(node).removeClass("dt-button");
                     }
                 }
@@ -35,7 +35,7 @@ $(() => {
                 headers: {
                     "XSRF-TOKEN": document.querySelector('[name="__RequestVerificationToken"]').value
                 },
-                data: function (data) {
+                data: function(data) {
                     //let additionalValues = [];
                     //additionalValues[0] = "Additional Parameters 1";
                     //additionalValues[1] = "Additional Parameters 2";
@@ -45,7 +45,7 @@ $(() => {
             },
             columns: [
                 {
-                    data: "SerialNumber",
+                    data: "TransferNumber",
                     name: "co"
                 },
                 {
@@ -169,16 +169,31 @@ $(() => {
                 {
                     data: "TransferredUnits",
                     render: function(data, type, row) {
-                        
+                        let s = "";
+                        data.forEach(elem => {
+                            s += elem.SerialNumber + " ";
+                        });
+                        return s;
                     }
                 },
                 {
                     data: "TransferTime",
                     name: "co"
                 },
+                /*
                 {
                     data: "Username",
                     name: "co"
+                },
+                */
+                {
+                    data: "User.UserName",
+                    name: "co"
+                },
+                {
+                    data: "User.IsAdmin",
+                    name: "eq",
+                    visible: false
                 },
                 {
                     data: "CreatedDate",

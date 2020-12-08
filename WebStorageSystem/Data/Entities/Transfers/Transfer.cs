@@ -38,6 +38,10 @@ namespace WebStorageSystem.Data.Entities.Transfers
         public IEnumerable<Unit> TransferredUnits { get; set; }
 
         public ApplicationUser User { get; set; }
+
+        [Display(Name = "User")]
+        public string UserId { get; set; }
+
         public override DateTime CreatedDate { get; set; }
         public override DateTime ModifiedDate { get; set; }
         public override bool IsDeleted { get; set; }

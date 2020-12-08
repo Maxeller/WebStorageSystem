@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,6 +19,7 @@ using WebStorageSystem.Models;
 
 namespace WebStorageSystem.Controllers
 {
+    [Authorize]
     public class TransferController : Controller
     {
         private readonly TransferService _service;
@@ -50,9 +52,7 @@ namespace WebStorageSystem.Controllers
         // POST: Transfer/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            [Bind("TransferNumber,OriginLocationId,DestinationLocationId,TransferredUnitsIds,IsDeleted")]
-            TransferModel transferModel)
+        public async Task<IActionResult> Create([Bind("TransferNumber,OriginLocationId,DestinationLocationId,TransferredUnitsIds,IsDeleted")] TransferModel transferModel)
         {
             if (!ModelState.IsValid)
             {
