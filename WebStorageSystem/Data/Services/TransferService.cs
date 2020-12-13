@@ -127,15 +127,12 @@ namespace WebStorageSystem.Data.Services
                 _context.Units.Update(dbUnit);
                 dbUnits.Add(dbUnit);
             }
-
             transfer.Units = dbUnits;
-            //var transfers = await _context.Transfers.AsNoTracking().ToListAsync();
-            //transfer.Id = transfers.Count == 0 ? 1 : transfers[^1].Id + 1;
+
             transfer.User = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User); // Gets current user from HttpContext and sets it for this transfer
             transfer.TransferTime = DateTime.UtcNow; // Sets transfer time
             _context.Transfers.Add(transfer);
             await _context.SaveChangesAsync();
-            Console.WriteLine(transfer.Id);
         }
 
         /// <summary>
