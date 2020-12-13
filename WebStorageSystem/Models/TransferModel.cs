@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Areas.Products.Models;
+using WebStorageSystem.Data.Entities.Transfers;
 
 namespace WebStorageSystem.Models
 {
@@ -29,17 +30,21 @@ namespace WebStorageSystem.Models
         [JqueryDataTableColumn(Exclude = true)]
         public int DestinationLocationId { get; set; }
 
+        [Required, Display(Name = "Transfer State")]
+        [JqueryDataTableColumn(Order = 360), SearchableEnum(typeof(TransferState)), Sortable]
+        public TransferState State { get; set; }
+
         [Display(Name = "Time of Transfer")]
-        [JqueryDataTableColumn(Order = 361), SearchableDateTime, Sortable]
+        [JqueryDataTableColumn(Order = 362), SearchableDateTime, Sortable(Default = true)]
         public DateTime TransferTime { get; set; }
 
         [Display(Name = "Transferred Units")]
-        [JqueryDataTableColumn(Order = 360)]
-        public IEnumerable<UnitModel> TransferredUnits { get; set; }
+        [JqueryDataTableColumn(Order = 361)]
+        public IEnumerable<UnitModel> Units { get; set; }
 
         [Required, Display(Name = "Transferred Units")]
         [JqueryDataTableColumn(Exclude = true)]
-        public IEnumerable<int> TransferredUnitsIds { get; set; }
+        public IEnumerable<int> UnitsIds { get; set; }
 
         [JqueryDataTableColumn, NestedSearchable, NestedSortable]
         public ApplicationUserModel User { get; set; }

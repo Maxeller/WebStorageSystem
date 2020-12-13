@@ -167,25 +167,29 @@ $(() => {
                     visible: false
                 },
                 {
-                    data: "TransferredUnits",
+                    data: "State",
+                    name: "co"
+                },
+                {
+                    data: "Units",
                     render: function(data, type, row) {
                         let s = "";
                         data.forEach(elem => {
-                            s += elem.SerialNumber + " ";
+                            s += elem.SerialNumber + "<br />";
                         });
                         return s;
                     }
                 },
                 {
                     data: "TransferTime",
+                    render: function (data, type, row) {
+                        if (data)
+                            return moment(data).local().format("DD.MM.YYYY HH:mm:ss");
+                        else
+                            return null;
+                    },
                     name: "co"
                 },
-                /*
-                {
-                    data: "Username",
-                    name: "co"
-                },
-                */
                 {
                     data: "User.UserName",
                     name: "co"
@@ -235,9 +239,9 @@ $(() => {
                         let s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> | `;
                         s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> | `;
                         if (!row.IsDeleted) {
-                            s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
+                            s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.TransferNumber}">Delete</a>`;
                         } else {
-                            s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
+                            s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.TransferNumber}">Restore</a>`;
                         }
                         return s;
                     }

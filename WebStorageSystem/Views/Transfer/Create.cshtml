@@ -1,7 +1,10 @@
-﻿@model TransferModel
+﻿@using WebStorageSystem.Data.Entities.Transfers
+@model TransferModel
 
 @{
     ViewData["Title"] = "Create Transfer";
+    var transfer = new Dictionary<string, string> {{"state", TransferState.Transferred.ToString()}};
+    var prepare = new Dictionary<string, string> {{"state", TransferState.Prepared.ToString()}};
 }
 
 <h1>Create</h1>
@@ -32,10 +35,10 @@
                 <span asp-validation-for="DestinationLocationId" class="text-danger" />
             </div>
             <div class="form-group">
-                <label asp-for="TransferredUnitsIds" class="control-label"></label>
-                <select asp-for="TransferredUnitsIds" class="form-control selectTwoTransferUnits" multiple="multiple" data-placeholder="Select Units">
+                <label asp-for="UnitsIds" class="control-label"></label>
+                <select asp-for="UnitsIds" class="form-control selectTwoTransferUnits" multiple="multiple" data-placeholder="Select Units">
                 </select>
-                <span asp-validation-for="TransferredUnitsIds" class="text-danger"></span>
+                <span asp-validation-for="UnitsIds" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
@@ -43,7 +46,8 @@
                 </label>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Transfer" asp-all-route-data="transfer" class="btn btn-primary" />
+                <input type="submit" value="Prepare" asp-all-route-data="prepare" asp class="btn btn-secondary" />
             </div>
         </form>
     </div>

@@ -48,5 +48,5 @@ $("#deleteRestoreModal").on("show.bs.modal", function(event) {
 
 // Shows error modal window when loaded in partial
 $(function () {
-    $('#errorModal').modal('show');
+    $("#errorModal").modal("show");
 });
