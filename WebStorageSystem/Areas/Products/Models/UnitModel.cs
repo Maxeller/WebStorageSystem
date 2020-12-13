@@ -43,7 +43,7 @@ namespace WebStorageSystem.Areas.Products.Models
         [JqueryDataTableColumn, NestedSearchable, NestedSortable]
         public BundleModel PartOfBundle { get; set; }
 
-        //public IEnumerable<TransferUnitModel> TransferredUnits { get; set; }
+        public IEnumerable<TransferModel> Transfers { get; set; }
 
         [JqueryDataTableColumn(Exclude = true)]
         public string SerialNumberProduct

@@ -26,7 +26,7 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
         public Bundle PartOfBundle { get; set; }
         public int? PartOfBundleId { get; set; }
 
-        public IEnumerable<Transfer> PartOfTransfers { get; set; }
+        public IEnumerable<Transfer> Transfers { get; set; }
 
         public override DateTime CreatedDate { get; set; }
         public override DateTime ModifiedDate { get; set; }

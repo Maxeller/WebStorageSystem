@@ -35,7 +35,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 .Include(unit => unit.Location).ThenInclude(location => location.LocationType).AsNoTracking()
                 .Include(unit => unit.Vendor).AsNoTracking()
                 .Include(unit => unit.PartOfBundle).AsNoTracking()
-                .Include(unit => unit.PartOfTransfers).AsNoTracking();
+                .Include(unit => unit.Transfers).AsNoTracking();
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 .Include(unit => unit.Location).ThenInclude(location => location.LocationType).AsNoTracking()
                 .Include(unit => unit.Vendor).AsNoTracking()
                 .Include(unit => unit.PartOfBundle).AsNoTracking()
-                .Include(unit => unit.PartOfTransfers).AsNoTracking();
+                .Include(unit => unit.Transfers).AsNoTracking();
 
             query = SearchOptionsProcessor<UnitModel, Unit>.Apply(query, table.Columns);
             query = SortOptionsProcessor<UnitModel, Unit>.Apply(query, table);

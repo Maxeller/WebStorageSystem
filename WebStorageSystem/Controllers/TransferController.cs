@@ -52,7 +52,7 @@ namespace WebStorageSystem.Controllers
         // POST: Transfer/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TransferNumber,OriginLocationId,DestinationLocationId,TransferredUnitsIds,IsDeleted")] TransferModel transferModel)
+        public async Task<IActionResult> Create([Bind("TransferNumber,OriginLocationId,DestinationLocationId,UnitsIds,IsDeleted")] TransferModel transferModel, TransferState state)
         {
             if (!ModelState.IsValid)
             {
@@ -61,13 +61,14 @@ namespace WebStorageSystem.Controllers
             }
 
             var transfer = _mapper.Map<Transfer>(transferModel);
-            var units = new List<Unit>(transferModel.TransferredUnitsIds.ToArray().Length);
-            foreach (var unitId in transferModel.TransferredUnitsIds)
+            var units = new List<Unit>(transferModel.UnitsIds.ToArray().Length);
+            foreach (var unitId in transferModel.UnitsIds)
             {
                 units.Add(await _uService.GetUnitAsync(unitId));
             }
 
-            transfer.TransferredUnits = units;
+            transfer.Units = units;
+            transfer.State = state;
             await _service.AddTransferAsync(transfer);
             return RedirectToAction(nameof(Index));
         }
