@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Data.Entities.Transfers;
 using WebStorageSystem.Models;
@@ -35,13 +36,12 @@ namespace WebStorageSystem.Data.Services
             _logger = factory.CreateLogger<TransferService>();
 
             _getQuery = _context
-                .Transfers
-                .AsNoTracking()
+                .Transfers.AsNoTracking()
                 .OrderByDescending(transfer => transfer.ModifiedDate)
                 .Include(transfer => transfer.OriginLocation).ThenInclude(location => location.LocationType).AsNoTracking()
                 .Include(transfer => transfer.User).AsNoTracking()
                 .Include(transfer => transfer.DestinationLocation).ThenInclude(location => location.LocationType).AsNoTracking()
-                .Include(transfer => transfer.TransferredUnits).ThenInclude(unit => unit.Product).ThenInclude(product => product.ProductType).AsNoTracking();
+                .Include(transfer => transfer.Units).ThenInclude(unit => unit.Product).ThenInclude(product => product.ProductType).AsNoTracking();
         }
 
         /// <summary>
@@ -78,14 +78,13 @@ namespace WebStorageSystem.Data.Services
             TransferModel[] items;
 
             var query = _context
-                .Transfers
-                .AsNoTracking()
-                .OrderByDescending(transfer => transfer.ModifiedDate)
+                .Transfers.AsNoTracking()
+                .OrderByDescending(transfer => transfer.TransferTime)
                 .Include(transfer => transfer.OriginLocation).ThenInclude(location => location.LocationType).AsNoTracking()
                 .Include(transfer => transfer.DestinationLocation).ThenInclude(location => location.LocationType).AsNoTracking()
                 .Include(transfer => transfer.User).AsNoTracking()
-                .Include(transfer => transfer.TransferredUnits).ThenInclude(unit => unit.Product).ThenInclude(product => product.ProductType).AsNoTracking();
-
+                .Include(transfer => transfer.Units).ThenInclude(unit => unit.Product).ThenInclude(product => product.ProductType).AsNoTracking();
+                
             query = SearchOptionsProcessor<TransferModel, Transfer>.Apply(query, table.Columns);
             query = SortOptionsProcessor<TransferModel, Transfer>.Apply(query, table);
 
@@ -119,17 +118,24 @@ namespace WebStorageSystem.Data.Services
         /// <param name="transfer">Object for adding</param>
         public async Task AddTransferAsync(Transfer transfer)
         {
-            foreach (var unit in transfer.TransferredUnits) // Moves all transferred units to destination location
+            var dbUnits = new List<Unit>();
+            foreach (var unit in transfer.Units) // Moves all transferred units to destination location
             {
-                unit.LocationId = transfer.DestinationLocationId;
-                _context.Entry(unit).State = EntityState.Modified;
-                _context.Units.Update(unit);
+                var dbUnit = await _context.Units.FirstAsync(u => u.Id == unit.Id);
+                dbUnit.LocationId = transfer.DestinationLocationId;
+                _context.Entry(dbUnit).State = EntityState.Modified;
+                _context.Units.Update(dbUnit);
+                dbUnits.Add(dbUnit);
             }
 
+            transfer.Units = dbUnits;
+            //var transfers = await _context.Transfers.AsNoTracking().ToListAsync();
+            //transfer.Id = transfers.Count == 0 ? 1 : transfers[^1].Id + 1;
             transfer.User = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User); // Gets current user from HttpContext and sets it for this transfer
             transfer.TransferTime = DateTime.UtcNow; // Sets transfer time
             _context.Transfers.Add(transfer);
             await _context.SaveChangesAsync();
+            Console.WriteLine(transfer.Id);
         }
 
         /// <summary>
