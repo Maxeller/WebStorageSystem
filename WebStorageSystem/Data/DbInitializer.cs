@@ -82,8 +82,8 @@ namespace WebStorageSystem.Data
             var tu2 = new List<Unit> {units[3], units[4], units[6]};
             var transfers = new[]
             {
-                new Transfer {OriginLocation = locations[0], DestinationLocation = locations[1], TransferredUnits = tu1.AsQueryable()},
-                new Transfer {OriginLocation = locations[0], DestinationLocation = locations[2], TransferredUnits = tu2.AsQueryable()}
+                new Transfer {OriginLocation = locations[0], DestinationLocation = locations[1], Units = tu1.AsQueryable()},
+                new Transfer {OriginLocation = locations[0], DestinationLocation = locations[2], Units = tu2.AsQueryable()}
             };
             //context.Transfers.AddRange(transfers);
             context.SaveChanges();

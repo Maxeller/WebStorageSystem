@@ -10,8 +10,8 @@ using WebStorageSystem.Data;
 namespace WebStorageSystem.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201116213539_EFCore5Upgrade")]
-    partial class EFCore5Upgrade
+    [Migration("20201213141409_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,7 +19,7 @@ namespace WebStorageSystem.Data.Migrations
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.0");
+                .HasAnnotation("ProductVersion", "5.0.1");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -158,15 +158,15 @@ namespace WebStorageSystem.Data.Migrations
 
             modelBuilder.Entity("TransferUnit", b =>
                 {
-                    b.Property<int>("PartOfTransfersId")
+                    b.Property<int>("TransfersId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TransferredUnitsId")
+                    b.Property<int>("UnitsId")
                         .HasColumnType("int");
 
-                    b.HasKey("PartOfTransfersId", "TransferredUnitsId");
+                    b.HasKey("TransfersId", "UnitsId");
 
-                    b.HasIndex("TransferredUnitsId");
+                    b.HasIndex("UnitsId");
 
                     b.ToTable("TransferUnit");
                 });
@@ -278,8 +278,7 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SerialNumber")
-                        .IsUnique();
+                    b.HasAlternateKey("SerialNumber");
 
                     b.ToTable("Bundles");
                 });
@@ -430,14 +429,13 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasAlternateKey("SerialNumber");
+
                     b.HasIndex("LocationId");
 
                     b.HasIndex("PartOfBundleId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("SerialNumber")
-                        .IsUnique();
 
                     b.HasIndex("VendorId");
 
@@ -585,6 +583,13 @@ namespace WebStorageSystem.Data.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TransferNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("TransferTime")
                         .HasColumnType("datetime2");
 
@@ -593,6 +598,8 @@ namespace WebStorageSystem.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("TransferNumber");
 
                     b.HasIndex("DestinationLocationId");
 
@@ -658,13 +665,13 @@ namespace WebStorageSystem.Data.Migrations
                 {
                     b.HasOne("WebStorageSystem.Data.Entities.Transfers.Transfer", null)
                         .WithMany()
-                        .HasForeignKey("PartOfTransfersId")
+                        .HasForeignKey("TransfersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WebStorageSystem.Areas.Products.Data.Entities.Unit", null)
                         .WithMany()
-                        .HasForeignKey("TransferredUnitsId")
+                        .HasForeignKey("UnitsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

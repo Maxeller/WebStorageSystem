@@ -29,6 +29,8 @@ namespace WebStorageSystem.Data
         // Folder: Transfer
         public DbSet<Transfer> Transfers { get; set; }
 
+        //public DbSet<TransferUnit> TransferUnits { get; set; }
+
         // Folder: Identity
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
@@ -86,7 +88,7 @@ namespace WebStorageSystem.Data
                     .HasMany(bundle => bundle.BundledUnits)
                     .WithOne(unit => unit.PartOfBundle)
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasIndex(bundle => bundle.SerialNumber).IsUnique();
+                entity.HasAlternateKey(bundle => bundle.SerialNumber);
                 entity.HasQueryFilter(bundle => !bundle.IsDeleted);
                 entity.ToTable("Bundles");
             });
@@ -97,7 +99,7 @@ namespace WebStorageSystem.Data
                     .WithMany(location => location.Units)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasIndex(unit => unit.SerialNumber).IsUnique();
+                entity.HasAlternateKey(unit => unit.SerialNumber);
                 entity.HasQueryFilter(unit => !unit.IsDeleted);
                 entity.ToTable("Units");
             });
@@ -122,7 +124,7 @@ namespace WebStorageSystem.Data
             // Folder: Transfer
             modelBuilder.Entity<Transfer>(entity =>
             {
-                entity.HasIndex(transfer => transfer.TransferNumber).IsUnique();
+                entity.HasAlternateKey(transfer => transfer.TransferNumber);
                 entity
                     .HasOne(transfer => transfer.User)
                     .WithMany(user => user.Transfers)
@@ -138,9 +140,6 @@ namespace WebStorageSystem.Data
                     .WithMany(location => location.DestinationTransfers)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
-                entity
-                    .HasMany(transfer => transfer.TransferredUnits)
-                    .WithMany(unit => unit.PartOfTransfers);
                 entity.HasQueryFilter(transfer => !transfer.IsDeleted);
                 entity.ToTable("Transfers");
             });
@@ -172,16 +171,16 @@ namespace WebStorageSystem.Data
 
             foreach (var entry in entries)
             {
-                ((BaseEntity) entry.Entity).ModifiedDate = DateTime.UtcNow;
+                ((BaseEntity)entry.Entity).ModifiedDate = DateTime.UtcNow;
 
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        ((BaseEntity) entry.Entity).CreatedDate = DateTime.UtcNow;
+                        ((BaseEntity)entry.Entity).CreatedDate = DateTime.UtcNow;
                         break;
                     case EntityState.Deleted:
                         entry.State = EntityState.Unchanged;
-                        ((BaseEntity) entry.Entity).IsDeleted = true;
+                        ((BaseEntity)entry.Entity).IsDeleted = true;
                         break;
                 }
             }

@@ -17,7 +17,7 @@ namespace WebStorageSystem.Data.Migrations
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.0");
+                .HasAnnotation("ProductVersion", "5.0.1");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -156,15 +156,15 @@ namespace WebStorageSystem.Data.Migrations
 
             modelBuilder.Entity("TransferUnit", b =>
                 {
-                    b.Property<int>("PartOfTransfersId")
+                    b.Property<int>("TransfersId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TransferredUnitsId")
+                    b.Property<int>("UnitsId")
                         .HasColumnType("int");
 
-                    b.HasKey("PartOfTransfersId", "TransferredUnitsId");
+                    b.HasKey("TransfersId", "UnitsId");
 
-                    b.HasIndex("TransferredUnitsId");
+                    b.HasIndex("UnitsId");
 
                     b.ToTable("TransferUnit");
                 });
@@ -276,8 +276,7 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SerialNumber")
-                        .IsUnique();
+                    b.HasAlternateKey("SerialNumber");
 
                     b.ToTable("Bundles");
                 });
@@ -428,14 +427,13 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasAlternateKey("SerialNumber");
+
                     b.HasIndex("LocationId");
 
                     b.HasIndex("PartOfBundleId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("SerialNumber")
-                        .IsUnique();
 
                     b.HasIndex("VendorId");
 
@@ -583,6 +581,9 @@ namespace WebStorageSystem.Data.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
                     b.Property<string>("TransferNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -596,12 +597,11 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasAlternateKey("TransferNumber");
+
                     b.HasIndex("DestinationLocationId");
 
                     b.HasIndex("OriginLocationId");
-
-                    b.HasIndex("TransferNumber")
-                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -663,13 +663,13 @@ namespace WebStorageSystem.Data.Migrations
                 {
                     b.HasOne("WebStorageSystem.Data.Entities.Transfers.Transfer", null)
                         .WithMany()
-                        .HasForeignKey("PartOfTransfersId")
+                        .HasForeignKey("TransfersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WebStorageSystem.Areas.Products.Data.Entities.Unit", null)
                         .WithMany()
-                        .HasForeignKey("TransferredUnitsId")
+                        .HasForeignKey("UnitsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
