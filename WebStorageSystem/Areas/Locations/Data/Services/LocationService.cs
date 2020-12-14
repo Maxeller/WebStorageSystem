@@ -123,9 +123,9 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         {
             try
             {
-                //var prev = await GetLocationAsync(location.Id);
-                //_context.Entry(prev).State = EntityState.Detached;
-                //_context.Entry(location).State = EntityState.Modified;
+                var prev = await _context.Locations.FirstAsync(l => l.Id == location.Id);
+                _context.Entry(prev).State = EntityState.Detached;
+                _context.Entry(location).State = EntityState.Modified;
                 _context.Locations.Update(location);
                 await _context.SaveChangesAsync();
                 return (true, null);

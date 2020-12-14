@@ -17,6 +17,9 @@ namespace WebStorageSystem.Areas.Locations.Data.Entities
 
         [StringLength(500)]
         public string Description { get; set; }
+        
+        [StringLength(200)]
+        public string Address { get; set; }
 
         [Required]
         [Display(Name = "Location Type")]

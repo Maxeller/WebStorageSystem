@@ -15,6 +15,10 @@ namespace WebStorageSystem.Areas.Locations.Models
         [StringLength(500)]
         [JqueryDataTableColumn(Order = 102), SearchableString, Sortable]
         public string Description { get; set; }
+        
+        [StringLength(200)]
+        [JqueryDataTableColumn(Order = 103), SearchableString, Sortable]
+        public string Address { get; set; }
 
         [Required, Display(Name = "Location Type")]
         [JqueryDataTableColumn(Exclude = true)]

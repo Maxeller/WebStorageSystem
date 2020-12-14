@@ -55,7 +55,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         // POST: Locations/Location/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description,LocationTypeId,IsDeleted")] LocationModel locationModel, [FromQuery] bool getDeleted = false)
+        public async Task<IActionResult> Create([Bind("Name,Description,Address,LocationTypeId,IsDeleted")] LocationModel locationModel, [FromQuery] bool getDeleted = false)
         {
             if (!ModelState.IsValid)
             {
@@ -92,7 +92,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         // POST: Locations/Location/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Description,LocationTypeId,Id,CreatedDate,IsDeleted,RowVersion")] LocationModel locationModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,Description,Address,LocationTypeId,Id,CreatedDate,IsDeleted,RowVersion")] LocationModel locationModel, [FromQuery] bool getDeleted)
         {
             if (id != locationModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(locationModel);
