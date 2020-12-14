@@ -11,6 +11,9 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
         [StringLength(100)]
         public string Name { get; set; }
 
+        [StringLength(500)]
+        public string Description { get; set; }
+
         public IEnumerable<Product> Products { get; set; }
         public override DateTime CreatedDate { get; set; }
         public override DateTime ModifiedDate { get; set; }

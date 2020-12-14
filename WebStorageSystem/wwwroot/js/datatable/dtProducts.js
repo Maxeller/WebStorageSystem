@@ -48,6 +48,10 @@ $(() => {
                     name: "co"
                 },
                 {
+                    data: "Description",
+                    name: "co"
+                },
+                {
                     data: "CreatedDate",
                     render: function (data, type, row) {
                         if (data)

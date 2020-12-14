@@ -51,7 +51,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Manufacturer/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name")] ManufacturerModel manufacturerModel)
+        public async Task<IActionResult> Create([Bind("Name,Description")] ManufacturerModel manufacturerModel)
         {
             if (!ModelState.IsValid) return View(manufacturerModel);
 
@@ -75,7 +75,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Manufacturer/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Id,CreatedDate,IsDeleted,RowVersion")] ManufacturerModel manufacturerModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,Description,Id,CreatedDate,IsDeleted,RowVersion")] ManufacturerModel manufacturerModel)
         {
             if (id != manufacturerModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(manufacturerModel);

@@ -12,6 +12,10 @@ namespace WebStorageSystem.Areas.Products.Models
         [JqueryDataTableColumn(Order = 70), SearchableString, Sortable(Default = true)]
         public string Name { get; set; }
 
+        [StringLength(500)]
+        [JqueryDataTableColumn(Order = 71), SearchableString, Sortable]
+        public string Description { get; set; }
+
         public IEnumerable<ProductModel> Products { get; set; }
 
         [Display(Name = "Creation Date")]
