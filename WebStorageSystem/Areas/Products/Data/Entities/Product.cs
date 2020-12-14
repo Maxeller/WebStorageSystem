@@ -13,6 +13,16 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
         public string Name { get; set; }
 
         [Required]
+        [StringLength(100)]
+        public string ProductNumber { get; set; }
+
+        [StringLength(500)]
+        public string Description { get; set; }
+        
+        [StringLength(200)]
+        public string Webpage { get; set; }
+
+        [Required]
         [Display(Name = "Product Type")]
         public ProductType ProductType { get; set; }
         public int ProductTypeId { get; set; }

@@ -74,6 +74,7 @@ namespace WebStorageSystem.Data
             });
             modelBuilder.Entity<Product>(entity =>
             {
+                entity.HasAlternateKey(product => product.ProductNumber);
                 entity
                     .HasMany(product => product.Units)
                     .WithOne(unit => unit.Product)

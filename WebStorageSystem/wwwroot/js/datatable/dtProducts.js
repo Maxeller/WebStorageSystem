@@ -392,6 +392,23 @@ $(() => {
                     name: "co"
                 },
                 {
+                    data: "ProductNumber",
+                    name: "co"
+                },
+                {
+                    data: "Description",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Webpage",
+                    name: "co",
+                    render: function (data, type, row) {
+                        return `<a href="${data}">LINK</a>`;
+                    },
+                    visible: false
+                },
+                {
                     data: "ProductType.Name",
                     name: "co"
                 },
@@ -423,6 +440,11 @@ $(() => {
                 {
                     data: "Manufacturer.Name",
                     name: "co"
+                },
+                {
+                    data: "Manufacturer.Description",
+                    name: "co",
+                    visible: false
                 },
                 {
                     data: "Manufacturer.CreatedDate",
@@ -501,8 +523,8 @@ $(() => {
                     }); // TODO: Add function to refresh when input is cleared
         });
 
-        $("#dtProduct > thead > tr:nth-child(1) > th:nth-child(2)").text("Product Type");
-        $("#dtProduct > thead > tr:nth-child(1) > th:nth-child(3)").text("Manufacturer");
+        $("#dtProduct > thead > tr:nth-child(1) > th:nth-child(3)").text("Product Type");
+        $("#dtProduct > thead > tr:nth-child(1) > th:nth-child(4)").text("Manufacturer");
     }
 });
 
@@ -676,6 +698,21 @@ $(() => {
                     name: "co"
                 },
                 {
+                    data: "Product.ProductNumber",
+                    name: "co",
+                    visible: true
+                },
+                {
+                    data: "Product.Description",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Product.Webpage",
+                    name: "co",
+                    visible: false
+                },
+                {
                     data: "Product.ProductType.Name",
                     name: "co"
                 },
@@ -707,6 +744,11 @@ $(() => {
                 {
                     data: "Product.Manufacturer.Name",
                     name: "co"
+                },
+                {
+                    data: "Product.Manufacturer.Description",
+                    name: "co",
+                    visible: false
                 },
                 {
                     data: "Product.Manufacturer.CreatedDate",
@@ -754,6 +796,11 @@ $(() => {
                 },
                 {
                     data: "Location.Description",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Location.Address",
                     name: "co",
                     visible: false
                 },
