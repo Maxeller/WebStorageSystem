@@ -284,6 +284,10 @@ $(() => {
                     name: "co"
                 },
                 {
+                    data: "Website",
+                    name: "co"
+                },
+                {
                     data: "CreatedDate",
                     render: function (data, type, row) {
                         if (data)
@@ -633,7 +637,7 @@ $(() => {
         });
 
         table.columns().every(function (index) {
-            $(`#dtVendor thead tr:last th:eq(${index}) input`)
+            $(`#dtBundle thead tr:last th:eq(${index}) input`)
                 .on("keyup",
                     function (e) {
                         if (e.keyCode === 13) {
@@ -890,6 +894,17 @@ $(() => {
                 },
                 {
                     data: "Vendor.Email",
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    },
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "Vendor.Website",
                     render: function (data, type, row) {
                         if (data)
                             return data;

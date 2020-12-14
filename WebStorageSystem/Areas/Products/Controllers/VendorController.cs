@@ -51,7 +51,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: VendorModels/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Address,Phone,Email,IsDeleted")] VendorModel vendorModel)
+        public async Task<IActionResult> Create([Bind("Name,Address,Phone,Email,Website,IsDeleted")] VendorModel vendorModel)
         {
             if (!ModelState.IsValid) return View(vendorModel);
 
@@ -75,7 +75,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: VendorModels/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Address,Phone,Email,Id,CreatedDate,IsDeleted,RowVersion")] VendorModel vendorModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,Address,Phone,Email,Website,Id,CreatedDate,IsDeleted,RowVersion")] VendorModel vendorModel)
         {
             if (id != vendorModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(vendorModel);

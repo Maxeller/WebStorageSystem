@@ -23,6 +23,10 @@ namespace WebStorageSystem.Areas.Products.Models
         [Required, EmailAddress, StringLength(200)]
         [JqueryDataTableColumn(Order = 153), SearchableString, Sortable]
         public string Email { get; set; }
+        
+        [Required, StringLength(200)]
+        [JqueryDataTableColumn(Order = 154), SearchableString, Sortable]
+        public string Website { get; set; }
 
         public IEnumerable<UnitModel> Units { get; set; }
 

@@ -24,6 +24,10 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
         [EmailAddress]
         [StringLength(200)]
         public string Email { get; set; }
+        
+        [Required]
+        [StringLength(200)]
+        public string Website { get; set; }
 
         public IEnumerable<Unit> Units { get; set; }
 
