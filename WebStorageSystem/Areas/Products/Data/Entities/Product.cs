@@ -18,7 +18,7 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
 
         [StringLength(500)]
         public string Description { get; set; }
-        
+
         [StringLength(200)]
         public string Webpage { get; set; }
 

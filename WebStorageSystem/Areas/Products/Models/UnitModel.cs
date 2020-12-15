@@ -62,7 +62,7 @@ namespace WebStorageSystem.Areas.Products.Models
         [Display(Name = "Last Modification")]
         [JqueryDataTableColumn(Order = 207)]
         public override DateTime ModifiedDate { get; set; }
-        
+
         [Display(Name = "Deleted")]
         [JqueryDataTableColumn(Order = 208)]
         public override bool IsDeleted { get; set; }

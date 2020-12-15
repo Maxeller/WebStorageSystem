@@ -38,7 +38,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Details(int? id, [FromQuery] bool getDeleted)
         {
             if (id == null) return BadRequest();
-            var bundle = await _service.GetBundleAsync((int) id, getDeleted);
+            var bundle = await _service.GetBundleAsync((int)id, getDeleted);
             if (bundle == null) return NotFound();
             var bundleModel = _mapper.Map<BundleModel>(bundle);
             return View(bundleModel);
@@ -73,7 +73,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Edit(int? id, [FromQuery] bool getDeleted)
         {
             if (id == null) return BadRequest();
-            var bundle = await _service.GetBundleAsync((int) id, getDeleted);
+            var bundle = await _service.GetBundleAsync((int)id, getDeleted);
             if (bundle == null) return NotFound();
             var bundleModel = _mapper.Map<BundleModel>(bundle);
             await CreateUnitDropdownList(getDeleted, bundleModel.BundledUnits);
@@ -95,7 +95,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
             var units = await _uService.GetUnitAsync(bundleModel.BundledUnitsIds, getDeleted);
             var bundle = _mapper.Map<Bundle>(bundleModel);
             var (success, errorMessage) = await _service.EditBundleAsync(bundle, units);
-            if(success) return RedirectToAction(nameof(Index));
+            if (success) return RedirectToAction(nameof(Index));
 
             if (await _service.GetBundleAsync(bundle.Id) == null) return NotFound();
             await CreateUnitDropdownList(getDeleted);
@@ -109,7 +109,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            (bool success, string errorMessage) = await _service.DeleteBundleAsync((int) id);
+            (bool success, string errorMessage) = await _service.DeleteBundleAsync((int)id);
             if (!success) TempData["Error"] = errorMessage;
             return RedirectToAction(nameof(Index));
         }
@@ -120,12 +120,12 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
-            await _service.RestoreBundleAsync((int) id);
+            await _service.RestoreBundleAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoadTable([FromBody]JqueryDataTablesParameters param)
+        public async Task<IActionResult> LoadTable([FromBody] JqueryDataTablesParameters param)
         {
             try
             {
@@ -142,13 +142,15 @@ namespace WebStorageSystem.Areas.Products.Controllers
                     };
                 }
 
-                return new JsonResult(new JqueryDataTablesResult<BundleModel> {
+                return new JsonResult(new JqueryDataTablesResult<BundleModel>
+                {
                     Draw = param.Draw,
                     Data = results.Items,
                     RecordsFiltered = results.TotalSize,
                     RecordsTotal = results.TotalSize
                 });
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Console.Write(e.Message);
                 return new JsonResult(new { error = "Internal Server Error" });

@@ -11,7 +11,7 @@ namespace WebStorageSystem.Areas.Products.Models
         [Required, StringLength(100)]
         [JqueryDataTableColumn(Order = 20), SearchableString, Sortable(Default = true)]
         public string Name { get; set; }
-        
+
         [Required, StringLength(100), Display(Name = "Product Number")]
         [JqueryDataTableColumn(Order = 21), SearchableString, Sortable]
         public string ProductNumber { get; set; }
@@ -19,7 +19,7 @@ namespace WebStorageSystem.Areas.Products.Models
         [StringLength(500)]
         [JqueryDataTableColumn(Order = 22), SearchableString, Sortable]
         public string Description { get; set; }
-        
+
         [StringLength(200)]
         [JqueryDataTableColumn(Order = 23), SearchableString, Sortable]
         public string Webpage { get; set; }

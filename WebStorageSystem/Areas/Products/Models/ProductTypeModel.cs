@@ -6,7 +6,7 @@ using WebStorageSystem.Models;
 
 namespace WebStorageSystem.Areas.Products.Models
 {
-    public class ProductTypeModel: BaseEntityModelWithId
+    public class ProductTypeModel : BaseEntityModelWithId
     {
         [Required, StringLength(100)]
         [JqueryDataTableColumn(Order = 40), SearchableString, Sortable(Default = true)]

@@ -46,7 +46,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var unit = await _service.GetUnitAsync((int) id, getDeleted);
+            var unit = await _service.GetUnitAsync((int)id, getDeleted);
             if (unit == null) return NotFound();
             var unitModel = _mapper.Map<UnitModel>(unit);
             return View(unitModel);
@@ -80,8 +80,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
             var unit = _mapper.Map<Unit>(unitModel);
             unit.Product = product;
             unit.Location = location;
-            if(unitModel.VendorId != null) unit.Vendor = await _vService.GetVendorAsync((int) unitModel.VendorId, getDeleted);
-            if(unitModel.PartOfBundleId != null) unit.PartOfBundle = await _bService.GetBundleAsync((int) unitModel.PartOfBundleId, getDeleted);
+            if (unitModel.VendorId != null) unit.Vendor = await _vService.GetVendorAsync((int)unitModel.VendorId, getDeleted);
+            if (unitModel.PartOfBundleId != null) unit.PartOfBundle = await _bService.GetBundleAsync((int)unitModel.PartOfBundleId, getDeleted);
             await _service.AddUnitAsync(unit);
             return RedirectToAction(nameof(Index));
         }
@@ -91,7 +91,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var unit = await _service.GetUnitAsync((int) id, getDeleted);
+            var unit = await _service.GetUnitAsync((int)id, getDeleted);
             if (unit == null) return NotFound();
             var unitModel = _mapper.Map<UnitModel>(unit);
 
@@ -118,15 +118,15 @@ namespace WebStorageSystem.Areas.Products.Controllers
             unit.Product = product;
             unit.Location = location;
             unit.Vendor = unitModel.VendorId != null
-                ? await _vService.GetVendorAsync((int) unitModel.VendorId, getDeleted)
+                ? await _vService.GetVendorAsync((int)unitModel.VendorId, getDeleted)
                 : null;
 
             unit.PartOfBundle = unitModel.PartOfBundleId != null
-                ? await _bService.GetBundleAsync((int) unitModel.PartOfBundleId, getDeleted)
+                ? await _bService.GetBundleAsync((int)unitModel.PartOfBundleId, getDeleted)
                 : null;
 
             var (success, errorMessage) = await _service.EditUnitAsync(unit);
-            if(success) return RedirectToAction(nameof(Index));
+            if (success) return RedirectToAction(nameof(Index));
 
             if (await _service.GetUnitAsync(unit.Id) == null) return NotFound();
             await CreateDropdownLists(getDeleted);
@@ -140,7 +140,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            await _service.DeleteUnitAsync((int) id);
+            await _service.DeleteUnitAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -150,13 +150,13 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
-            if (!(await _service.UnitExistsAsync((int) id, true))) return NotFound();
-            await _service.RestoreUnitAsync((int) id);
+            if (!(await _service.UnitExistsAsync((int)id, true))) return NotFound();
+            await _service.RestoreUnitAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoadTable([FromBody]JqueryDataTablesParameters param)
+        public async Task<IActionResult> LoadTable([FromBody] JqueryDataTablesParameters param)
         {
             try
             {
@@ -173,13 +173,15 @@ namespace WebStorageSystem.Areas.Products.Controllers
                     };
                 }
 
-                return new JsonResult(new JqueryDataTablesResult<UnitModel> {
+                return new JsonResult(new JqueryDataTablesResult<UnitModel>
+                {
                     Draw = param.Draw,
                     Data = results.Items,
                     RecordsFiltered = results.TotalSize,
                     RecordsTotal = results.TotalSize
                 });
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Console.Write(e.Message);
                 return new JsonResult(new { error = "Internal Server Error" });

@@ -8,8 +8,6 @@ using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using WebStorageSystem.Areas.Locations.Data.Entities;
-using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data;
@@ -147,7 +145,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
         public async Task<(bool Success, string ErrorMessage)> DeleteManufacturerAsync(int id)
         {
-            var manufacturer= await GetManufacturerAsync(id, true);
+            var manufacturer = await GetManufacturerAsync(id, true);
             return await DeleteManufacturerAsync(manufacturer);
         }
 

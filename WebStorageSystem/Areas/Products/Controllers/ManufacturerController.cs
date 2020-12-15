@@ -35,7 +35,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var manufacturer = await _service.GetManufacturerAsync((int) id, getDeleted);
+            var manufacturer = await _service.GetManufacturerAsync((int)id, getDeleted);
             if (manufacturer == null) return NotFound();
             var manufacturerModel = _mapper.Map<ManufacturerModel>(manufacturer);
 
@@ -65,7 +65,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var manufacturer = await _service.GetManufacturerAsync((int) id, getDeleted);
+            var manufacturer = await _service.GetManufacturerAsync((int)id, getDeleted);
             if (manufacturer == null) return NotFound();
             var manufacturerModel = _mapper.Map<ManufacturerModel>(manufacturer);
 
@@ -83,7 +83,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
             var manufacturer = _mapper.Map<Manufacturer>(manufacturerModel);
 
             var (success, errorMessage) = await _service.EditManufacturerAsync(manufacturer);
-            if(success) return RedirectToAction(nameof(Index));
+            if (success) return RedirectToAction(nameof(Index));
             if (await _service.GetManufacturerAsync(manufacturer.Id) == null) return NotFound();
             TempData["Error"] = errorMessage;
             return View(manufacturerModel);
@@ -95,7 +95,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            (bool success, string errorMessage) = await _service.DeleteManufacturerAsync((int) id);
+            (bool success, string errorMessage) = await _service.DeleteManufacturerAsync((int)id);
             if (!success) TempData["Error"] = errorMessage;
             return RedirectToAction(nameof(Index));
         }
@@ -106,13 +106,13 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
-            if (!(await _service.ManufacturerExistsAsync((int) id, true))) return NotFound();
-            await _service.RestoreManufacturerAsync((int) id);
+            if (!(await _service.ManufacturerExistsAsync((int)id, true))) return NotFound();
+            await _service.RestoreManufacturerAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoadTable([FromBody]JqueryDataTablesParameters param)
+        public async Task<IActionResult> LoadTable([FromBody] JqueryDataTablesParameters param)
         {
             try
             {
@@ -129,13 +129,15 @@ namespace WebStorageSystem.Areas.Products.Controllers
                     };
                 }
 
-                return new JsonResult(new JqueryDataTablesResult<ManufacturerModel> {
+                return new JsonResult(new JqueryDataTablesResult<ManufacturerModel>
+                {
                     Draw = param.Draw,
                     Data = results.Items,
                     RecordsFiltered = results.TotalSize,
                     RecordsTotal = results.TotalSize
                 });
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Console.Write(e.Message);
                 return new JsonResult(new { error = "Internal Server Error" });

@@ -62,6 +62,21 @@ $(() => {
                     visible: false
                 },
                 {
+                    data: "DestinationLocation.Description",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "OriginLocation.Address",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "DestinationLocation.Address",
+                    name: "co",
+                    visible: false
+                },
+                {
                     data: "OriginLocation.LocationType.Name",
                     name: "co",
                     visible: false
@@ -108,11 +123,6 @@ $(() => {
                 },
                 {
                     data: "OriginLocation.Action",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "DestinationLocation.Description",
                     name: "co",
                     visible: false
                 },

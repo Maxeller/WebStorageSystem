@@ -15,7 +15,7 @@ namespace WebStorageSystem.Areas.Locations.Models
         [StringLength(500)]
         [JqueryDataTableColumn(Order = 102), SearchableString, Sortable]
         public string Description { get; set; }
-        
+
         [StringLength(200)]
         [JqueryDataTableColumn(Order = 103), SearchableString, Sortable]
         public string Address { get; set; }
@@ -27,8 +27,9 @@ namespace WebStorageSystem.Areas.Locations.Models
         [JqueryDataTableColumn, NestedSearchable, NestedSortable]
         public LocationTypeModel LocationType { get; set; }
 
-        //public IEnumerable<Transfer> OriginTransfers { get; set; }
-        //public IEnumerable<Transfer> DestinationTransfers { get; set; }
+        public IEnumerable<TransferModel> OriginTransfers { get; set; }
+
+        public IEnumerable<TransferModel> DestinationTransfers { get; set; }
 
         [Display(Name = "Creation Date")]
         [JqueryDataTableColumn(Order = 146)]

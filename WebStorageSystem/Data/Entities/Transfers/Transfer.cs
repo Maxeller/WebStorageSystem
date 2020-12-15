@@ -12,7 +12,7 @@ namespace WebStorageSystem.Data.Entities.Transfers
         [Required]
         [Display(Name = "Transfer Number")]
         public string TransferNumber { get; set; }
-        
+
         [Required]
         [Display(Name = "Origin Location")]
         public Location OriginLocation { get; set; }
@@ -32,20 +32,20 @@ namespace WebStorageSystem.Data.Entities.Transfers
         [Required]
         [Display(Name = "Transfer State")]
         public TransferState State { get; set; }
-        
+
         [Required]
         [Display(Name = "Time of Transfer")]
         public DateTime TransferTime { get; set; }
-        
+
         [Required]
         [Display(Name = "Transferred Units")]
         public IEnumerable<Unit> Units { get; set; }
-        
+
         public ApplicationUser User { get; set; }
 
-        [Display(Name = "User")] 
+        [Display(Name = "User")]
         public string UserId { get; set; }
-        
+
         public override DateTime CreatedDate { get; set; }
         public override DateTime ModifiedDate { get; set; }
         public override bool IsDeleted { get; set; }

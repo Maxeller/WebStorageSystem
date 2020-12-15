@@ -35,7 +35,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         {
             if (id == null) return BadRequest();
 
-            var locationType = await _service.GetLocationTypeAsync((int) id, getDeleted);
+            var locationType = await _service.GetLocationTypeAsync((int)id, getDeleted);
             if (locationType == null) return NotFound();
             var locationTypeModel = _mapper.Map<LocationTypeModel>(locationType);
 
@@ -65,7 +65,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         {
             if (id == null) return BadRequest();
 
-            var locationType = await _service.GetLocationTypeAsync((int) id, getDeleted);
+            var locationType = await _service.GetLocationTypeAsync((int)id, getDeleted);
             if (locationType == null) return NotFound();
             var locationTypeModel = _mapper.Map<LocationTypeModel>(locationType);
 
@@ -83,7 +83,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
             var locationType = _mapper.Map<LocationType>(locationTypeModel);
 
             var (success, errorMessage) = await _service.EditLocationTypeAsync(locationType);
-            if(success) return RedirectToAction(nameof(Index));
+            if (success) return RedirectToAction(nameof(Index));
             if (await _service.GetLocationTypeAsync(locationType.Id) == null) return NotFound();
             TempData["Error"] = errorMessage;
             return View(locationTypeModel);
@@ -95,7 +95,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            (bool success, string errorMessage) = await _service.DeleteLocationTypeAsync((int) id);
+            (bool success, string errorMessage) = await _service.DeleteLocationTypeAsync((int)id);
             if (!success) TempData["Error"] = errorMessage;
             return RedirectToAction(nameof(Index));
         }
@@ -106,13 +106,13 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
-            if (!(await _service.LocationTypeExistsAsync((int) id, true))) return NotFound();
-            await _service.RestoreLocationTypeAsync((int) id);
+            if (!(await _service.LocationTypeExistsAsync((int)id, true))) return NotFound();
+            await _service.RestoreLocationTypeAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoadTable([FromBody]JqueryDataTablesParameters param)
+        public async Task<IActionResult> LoadTable([FromBody] JqueryDataTablesParameters param)
         {
             try
             {
@@ -129,13 +129,15 @@ namespace WebStorageSystem.Areas.Locations.Controllers
                     };
                 }
 
-                return new JsonResult(new JqueryDataTablesResult<LocationTypeModel> {
+                return new JsonResult(new JqueryDataTablesResult<LocationTypeModel>
+                {
                     Draw = param.Draw,
                     Data = results.Items,
                     RecordsFiltered = results.TotalSize,
                     RecordsTotal = results.TotalSize
                 });
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Console.Write(e.Message);
                 return new JsonResult(new { error = "Internal Server Error" });

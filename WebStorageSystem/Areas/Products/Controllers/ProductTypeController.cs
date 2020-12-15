@@ -35,7 +35,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var productType = await _service.GetProductTypeAsync((int) id, getDeleted);
+            var productType = await _service.GetProductTypeAsync((int)id, getDeleted);
             if (productType == null) return NotFound();
             var productTypeModel = _mapper.Map<ProductTypeModel>(productType);
 
@@ -65,7 +65,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var productType = await _service.GetProductTypeAsync((int) id, getDeleted);
+            var productType = await _service.GetProductTypeAsync((int)id, getDeleted);
             if (productType == null) return NotFound();
             var productTypeModel = _mapper.Map<ProductTypeModel>(productType);
 
@@ -83,7 +83,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
             var productType = _mapper.Map<ProductType>(productTypeModel);
 
             var (success, errorMessage) = await _service.EditProductTypeAsync(productType);
-            if(success) return RedirectToAction(nameof(Index));
+            if (success) return RedirectToAction(nameof(Index));
             if (await _service.GetProductTypeAsync(productType.Id) == null) return NotFound();
             TempData["Error"] = errorMessage;
             return View(productTypeModel);
@@ -95,7 +95,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            (bool success, string errorMessage) = await _service.DeleteProductTypeAsync((int) id);
+            (bool success, string errorMessage) = await _service.DeleteProductTypeAsync((int)id);
             if (!success) TempData["Error"] = errorMessage;
             return RedirectToAction(nameof(Index));
         }
@@ -106,13 +106,13 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
-            if (!(await _service.ProductTypeExistsAsync((int) id, true))) return NotFound();
-            await _service.RestoreProductTypeAsync((int) id);
+            if (!(await _service.ProductTypeExistsAsync((int)id, true))) return NotFound();
+            await _service.RestoreProductTypeAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoadTable([FromBody]JqueryDataTablesParameters param)
+        public async Task<IActionResult> LoadTable([FromBody] JqueryDataTablesParameters param)
         {
             try
             {
@@ -129,13 +129,15 @@ namespace WebStorageSystem.Areas.Products.Controllers
                     };
                 }
 
-                return new JsonResult(new JqueryDataTablesResult<ProductTypeModel> {
+                return new JsonResult(new JqueryDataTablesResult<ProductTypeModel>
+                {
                     Draw = param.Draw,
                     Data = results.Items,
                     RecordsFiltered = results.TotalSize,
                     RecordsTotal = results.TotalSize
                 });
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Console.Write(e.Message);
                 return new JsonResult(new { error = "Internal Server Error" });

@@ -6,7 +6,7 @@ using WebStorageSystem.Models;
 
 namespace WebStorageSystem.Areas.Products.Models
 {
-    public class VendorModel  : BaseEntityModelWithId
+    public class VendorModel : BaseEntityModelWithId
     {
         [Required, StringLength(100)]
         [JqueryDataTableColumn(Order = 150), SearchableString, Sortable(Default = true)]
@@ -23,7 +23,7 @@ namespace WebStorageSystem.Areas.Products.Models
         [Required, EmailAddress, StringLength(200)]
         [JqueryDataTableColumn(Order = 153), SearchableString, Sortable]
         public string Email { get; set; }
-        
+
         [Required, StringLength(200)]
         [JqueryDataTableColumn(Order = 154), SearchableString, Sortable]
         public string Website { get; set; }

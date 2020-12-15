@@ -35,7 +35,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var vendor = await _service.GetVendorAsync((int) id, getDeleted);
+            var vendor = await _service.GetVendorAsync((int)id, getDeleted);
             if (vendor == null) return NotFound();
             var vendorModel = _mapper.Map<VendorModel>(vendor);
 
@@ -65,7 +65,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var vendor = await _service.GetVendorAsync((int) id, getDeleted);
+            var vendor = await _service.GetVendorAsync((int)id, getDeleted);
             if (vendor == null) return NotFound();
             var vendorModel = _mapper.Map<VendorModel>(vendor);
 
@@ -83,7 +83,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
             var vendor = _mapper.Map<Vendor>(vendorModel);
 
             var (success, errorMessage) = await _service.EditVendorAsync(vendor);
-            if(success) return RedirectToAction(nameof(Index));
+            if (success) return RedirectToAction(nameof(Index));
             if (await _service.GetVendorAsync(vendor.Id) == null) return NotFound();
             TempData["Error"] = errorMessage;
             return View(vendorModel);
@@ -95,7 +95,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            await _service.DeleteVendorAsync((int) id);
+            await _service.DeleteVendorAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -105,13 +105,13 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
-            if (!(await _service.VendorExistsAsync((int) id, true))) return NotFound();
-            await _service.RestoreVendorAsync((int) id);
+            if (!(await _service.VendorExistsAsync((int)id, true))) return NotFound();
+            await _service.RestoreVendorAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoadTable([FromBody]JqueryDataTablesParameters param)
+        public async Task<IActionResult> LoadTable([FromBody] JqueryDataTablesParameters param)
         {
             try
             {
@@ -128,13 +128,15 @@ namespace WebStorageSystem.Areas.Products.Controllers
                     };
                 }
 
-                return new JsonResult(new JqueryDataTablesResult<VendorModel> {
+                return new JsonResult(new JqueryDataTablesResult<VendorModel>
+                {
                     Draw = param.Draw,
                     Data = results.Items,
                     RecordsFiltered = results.TotalSize,
                     RecordsTotal = results.TotalSize
                 });
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Console.Write(e.Message);
                 return new JsonResult(new { error = "Internal Server Error" });

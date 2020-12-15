@@ -8,7 +8,6 @@ using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data;

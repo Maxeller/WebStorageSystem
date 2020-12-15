@@ -133,7 +133,7 @@ namespace WebStorageSystem.Controllers
             catch (Exception e)
             {
                 Console.Write(e.Message);
-                return new JsonResult(new {error = "Internal Server Error"});
+                return new JsonResult(new { error = "Internal Server Error" });
             }
         }
 
