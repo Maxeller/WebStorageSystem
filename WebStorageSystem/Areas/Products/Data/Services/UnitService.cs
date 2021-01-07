@@ -18,18 +18,20 @@ namespace WebStorageSystem.Areas.Products.Data.Services
     {
         private readonly AppDbContext _context;
         private readonly IConfigurationProvider _mappingConfiguration;
+        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
         private readonly IQueryable<Unit> _getQuery;
 
-        public UnitService(AppDbContext context, IConfigurationProvider mappingConfiguration, ILoggerFactory factory)
+        public UnitService(AppDbContext context, IConfigurationProvider mappingConfiguration, IMapper mapper , ILoggerFactory factory)
         {
             _context = context;
             _mappingConfiguration = mappingConfiguration;
+            _mapper = mapper;
             _logger = factory.CreateLogger<ProductService>();
 
             _getQuery = _context
-                .Units.AsNoTracking()
+                .Units
                 .OrderBy(unit => unit.SerialNumber)
                 .Include(unit => unit.Product).ThenInclude(product => product.ProductType).AsNoTracking()
                 .Include(unit => unit.Location).ThenInclude(location => location.LocationType).AsNoTracking()
@@ -53,10 +55,10 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <summary>
         /// Gets entry from DB
         /// </summary>
-        /// <param name="id">Entity ID</param>
+        /// <param name="ids">Entity IDs</param>
         /// <param name="getDeleted">Looks through soft deleted entries</param>
         /// <returns>If found returns object, otherwise null</returns>
-        public async Task<IEnumerable<Unit>> GetUnitAsync(IEnumerable<int> ids, bool getDeleted = false)
+        public async Task<IEnumerable<Unit>> GetUnitsAsync(IEnumerable<int> ids, bool getDeleted = false)
         {
             var result = new List<Unit>();
             foreach (var id in ids)
@@ -95,13 +97,13 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             UnitModel[] items;
 
             var query = _context
-                .Units.AsNoTracking()
-                .OrderBy(unit => unit.SerialNumber)
-                .Include(unit => unit.Product).ThenInclude(product => product.ProductType).AsNoTracking()
-                .Include(unit => unit.Location).ThenInclude(location => location.LocationType).AsNoTracking()
+                .Units.OrderBy(unit => unit.SerialNumber).AsNoTracking()
+                .OrderBy(unit => unit.SerialNumber).AsNoTracking()
+                .Include(unit => unit.Product)
+                    .ThenInclude(product => product.ProductType).AsNoTracking()
+                .Include(unit => unit.Location).AsNoTracking()
                 .Include(unit => unit.Vendor).AsNoTracking()
-                .Include(unit => unit.PartOfBundle).AsNoTracking()
-                .Include(unit => unit.Transfers).AsNoTracking();
+                .Include(unit => unit.PartOfBundle).AsNoTracking();
 
             query = SearchOptionsProcessor<UnitModel, Unit>.Apply(query, table.Columns);
             query = SortOptionsProcessor<UnitModel, Unit>.Apply(query, table);
@@ -118,9 +120,13 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             }
             else
             {
+                var units = await query.ToListAsync();
+                items = units.Select(unit => _mapper.Map<UnitModel>(unit)).AsParallel().ToArray();
+                /*
                 items = await query
                     .ProjectTo<UnitModel>(_mappingConfiguration)
                     .ToArrayAsync();
+                */
             }
 
             return new JqueryDataTablesPagedResults<UnitModel>
