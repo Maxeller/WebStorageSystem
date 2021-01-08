@@ -124,7 +124,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 items = units.Select(unit => _mapper.Map<UnitModel>(unit)).AsParallel().ToArray();
                 /*
                 items = await query
-                    .ProjectTo<UnitModel>(_mappingConfiguration)
+                    .ProjectTo<UnitModel>(_mappingConfiguration) // BUG: Doesn't work looks like it stuck in some kind of infinite loop
                     .ToArrayAsync();
                 */
             }

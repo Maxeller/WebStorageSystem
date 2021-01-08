@@ -14,34 +14,41 @@ namespace WebStorageSystem.Areas.Products.Models
         [JqueryDataTableColumn(Order = 1), SearchableString, Sortable(Default = true)]
         public string SerialNumber { get; set; } //TODO: compatibility with code reader
 
+        [JqueryDataTableColumn, NestedSearchable, NestedSortable]
+        public ProductModel Product { get; set; }
+
         [Required, DisplayName("Product")]
         [JqueryDataTableColumn(Exclude = true)]
         public int ProductId { get; set; }
 
         [JqueryDataTableColumn, NestedSearchable, NestedSortable]
-        public ProductModel Product { get; set; }
+        public LocationModel Location { get; set; }
 
         [Required, DisplayName("Location")]
         [JqueryDataTableColumn(Exclude = true)]
         public int LocationId { get; set; }
 
+        [Required, DisplayName("Default Location")]
+        [JqueryDataTableColumn(Exclude = true)]
+        public int DefaultLocationId { get; set; }
+
         [JqueryDataTableColumn, NestedSearchable, NestedSortable]
-        public LocationModel Location { get; set; }
+        public LocationModel DefaultLocation { get; set; }
+
+        [JqueryDataTableColumn, NestedSearchable, NestedSortable]
+        public VendorModel Vendor { get; set; }
 
         [DisplayName("Vendor")]
         [JqueryDataTableColumn(Exclude = true)]
         public int? VendorId { get; set; }
 
+        [DisplayName("Part of Bundle")]
         [JqueryDataTableColumn, NestedSearchable, NestedSortable]
-        public VendorModel Vendor { get; set; }
+        public BundleModel PartOfBundle { get; set; }
 
         [DisplayName("Part of Bundle")]
         [JqueryDataTableColumn(Exclude = true)]
         public int? PartOfBundleId { get; set; }
-
-        [DisplayName("Part of Bundle")]
-        [JqueryDataTableColumn, NestedSearchable, NestedSortable]
-        public BundleModel PartOfBundle { get; set; }
 
         public IEnumerable<TransferModel> Transfers { get; set; }
 

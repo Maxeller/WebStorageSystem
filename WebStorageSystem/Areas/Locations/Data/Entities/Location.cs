@@ -32,6 +32,8 @@ namespace WebStorageSystem.Areas.Locations.Data.Entities
 
         public IEnumerable<Unit> Units { get; set; }
 
+        public IEnumerable<Unit> DefaultUnits { get; set; }
+
         public override DateTime CreatedDate { get; set; }
 
         public override DateTime ModifiedDate { get; set; }

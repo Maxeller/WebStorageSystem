@@ -32,6 +32,13 @@
                 <span asp-validation-for="LocationId" class="text-danger" />
             </div>
             <div class="form-group">
+                <label asp-for="DefaultLocationId" class="control-label"></label>
+                <select asp-for="DefaultLocationId" class="form-control selectTwo" asp-items="ViewBag.DefaultLocations" data-placeholder="Select Default Location">
+                    <option value="">-- Select Default Location --</option>
+                </select>
+                <span asp-validation-for="LocationId" class="text-danger" />
+            </div>
+            <div class="form-group">
                 <label asp-for="VendorId" class="control-label"></label>
                 <select asp-for="VendorId" class="form-control selectTwoAllowClear" asp-items="ViewBag.Vendors" data-placeholder="Select Vendor (optional)">
                     <option value="">-- Select Vendor --</option>

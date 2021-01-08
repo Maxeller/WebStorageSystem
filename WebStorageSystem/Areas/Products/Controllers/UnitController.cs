@@ -62,7 +62,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Products/Unit/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SerialNumber,ProductId,LocationId,VendorId,PartOfBundleId,IsDeleted")] UnitModel unitModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Create([Bind("SerialNumber,ProductId,LocationId,DefaultLocationId,VendorId,PartOfBundleId,IsDeleted")] UnitModel unitModel, [FromQuery] bool getDeleted)
         {
             if (!ModelState.IsValid)
             {
@@ -72,7 +72,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
 
             var product = await _pService.GetProductAsync(unitModel.ProductId, getDeleted);
             var location = await _lService.GetLocationAsync(unitModel.LocationId, getDeleted);
-            if (product == null || location == null)
+            var defaultLocation = await _lService.GetLocationAsync(unitModel.DefaultLocationId, getDeleted);
+            if (product == null || location == null || defaultLocation == null)
             {
                 await CreateDropdownLists(getDeleted);
                 return View(unitModel);
@@ -95,21 +96,22 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (unit == null) return NotFound();
             var unitModel = _mapper.Map<UnitModel>(unit);
 
-            await CreateDropdownLists(getDeleted, unitModel.Product, unitModel.Location, unitModel.Vendor);
+            await CreateDropdownLists(getDeleted, unitModel.Product, unitModel.Location, unitModel.DefaultLocation, unitModel.Vendor);
             return View(unitModel);
         }
 
         // POST: Products/Unit/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SerialNumber,ProductId,LocationId,VendorId,PartOfBundleId,Id,CreatedDate,IsDeleted,RowVersion")] UnitModel unitModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Edit(int id, [Bind("SerialNumber,ProductId,LocationId,DefaultLocationId,VendorId,PartOfBundleId,Id,CreatedDate,IsDeleted,RowVersion")] UnitModel unitModel, [FromQuery] bool getDeleted)
         {
             if (id != unitModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(unitModel);
 
             var product = await _pService.GetProductAsync(unitModel.ProductId, getDeleted);
             var location = await _lService.GetLocationAsync(unitModel.LocationId, getDeleted);
-            if (product == null || location == null)
+            var defaultLocation = await _lService.GetLocationAsync(unitModel.DefaultLocationId, getDeleted);
+            if (product == null || location == null || defaultLocation == null)
             {
                 await CreateDropdownLists(getDeleted);
                 return View(unitModel);
@@ -188,10 +190,11 @@ namespace WebStorageSystem.Areas.Products.Controllers
             }
         }
 
-        private async Task CreateDropdownLists(bool getDeleted = false, object selectedProduct = null, object selectedLocation = null, object selectedVendor = null, object selectedBundle = null)
+        private async Task CreateDropdownLists(bool getDeleted = false, object selectedProduct = null, object selectedLocation = null, object selectedDefaultLocation = null, object selectedVendor = null, object selectedBundle = null)
         {
             await CreateProductDropdownList(getDeleted, selectedProduct);
             await CreateLocationDropdownList(getDeleted, selectedLocation);
+            await CreateDefaultLocationDropdownList(getDeleted, selectedDefaultLocation);
             await CreateVendorDropdownList(getDeleted, selectedVendor);
             await CreateBundleDropdownList(getDeleted, selectedBundle);
         }
@@ -208,6 +211,13 @@ namespace WebStorageSystem.Areas.Products.Controllers
             var locations = await _lService.GetLocationsAsync(getDeleted);
             var lModels = _mapper.Map<IEnumerable<LocationModel>>(locations);
             ViewBag.Locations = new SelectList(lModels, "Id", "Name", selectedLocation);
+        }
+
+        private async Task CreateDefaultLocationDropdownList(bool getDeleted, object selectedLocation)
+        {
+            var locations = await _lService.GetLocationsAsync(getDeleted);
+            var lModels = _mapper.Map<IEnumerable<LocationModel>>(locations);
+            ViewBag.DefaultLocations = new SelectList(lModels, "Id", "Name", selectedLocation);
         }
 
         private async Task CreateVendorDropdownList(bool getDeleted, object selectedVendor)

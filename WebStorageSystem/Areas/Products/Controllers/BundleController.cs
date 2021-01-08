@@ -62,7 +62,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
                 return View(bundleModel);
             }
 
-            var units = await _uService.GetUnitAsync(bundleModel.BundledUnitsIds, getDeleted);
+            var units = await _uService.GetUnitsAsync(bundleModel.BundledUnitsIds, getDeleted);
             var bundle = _mapper.Map<Bundle>(bundleModel);
             await _service.AddBundleAsync(bundle, units);
 
@@ -92,7 +92,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
                 return View(bundleModel);
             }
 
-            var units = await _uService.GetUnitAsync(bundleModel.BundledUnitsIds, getDeleted);
+            var units = await _uService.GetUnitsAsync(bundleModel.BundledUnitsIds, getDeleted);
             var bundle = _mapper.Map<Bundle>(bundleModel);
             var (success, errorMessage) = await _service.EditBundleAsync(bundle, units);
             if (success) return RedirectToAction(nameof(Index));

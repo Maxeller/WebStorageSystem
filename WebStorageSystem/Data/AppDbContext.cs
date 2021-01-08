@@ -100,6 +100,11 @@ namespace WebStorageSystem.Data
                     .WithMany(location => location.Units)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
+                entity
+                    .HasOne(unit => unit.DefaultLocation)
+                    .WithMany(location => location.DefaultUnits)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
                 entity.HasAlternateKey(unit => unit.SerialNumber);
                 entity.HasQueryFilter(unit => !unit.IsDeleted);
                 entity.ToTable("Units");

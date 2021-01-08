@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes;
+using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Models;
 
 namespace WebStorageSystem.Areas.Locations.Models
@@ -30,6 +31,10 @@ namespace WebStorageSystem.Areas.Locations.Models
         public IEnumerable<TransferModel> OriginTransfers { get; set; }
 
         public IEnumerable<TransferModel> DestinationTransfers { get; set; }
+
+        public IEnumerable<UnitModel> Units { get; set; }
+
+        public IEnumerable<UnitModel> DefaultUnits { get; set; }
 
         [Display(Name = "Creation Date")]
         [JqueryDataTableColumn(Order = 146)]

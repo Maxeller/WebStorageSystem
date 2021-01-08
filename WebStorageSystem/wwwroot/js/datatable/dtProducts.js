@@ -799,7 +799,16 @@ $(() => {
                     name: "co"
                 },
                 {
+                    data: "DefaultLocation.Name",
+                    name: "co"
+                },
+                {
                     data: "Location.Description",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "DefaultLocation.Description",
                     name: "co",
                     visible: false
                 },
@@ -809,7 +818,17 @@ $(() => {
                     visible: false
                 },
                 {
+                    data: "DefaultLocation.Address",
+                    name: "co",
+                    visible: false
+                },
+                {
                     data: "Location.LocationType.Name",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "DefaultLocation.LocationType.Name",
                     name: "co",
                     visible: false
                 },
@@ -819,7 +838,17 @@ $(() => {
                     visible: false
                 },
                 {
+                    data: "DefaultLocation.LocationType.Description",
+                    name: "co",
+                    visible: false
+                },
+                {
                     data: "Location.LocationType.CreatedDate",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "DefaultLocation.LocationType.CreatedDate",
                     name: "co",
                     visible: false
                 },
@@ -829,7 +858,17 @@ $(() => {
                     visible: false
                 },
                 {
+                    data: "DefaultLocation.LocationType.ModifiedDate",
+                    name: "co",
+                    visible: false
+                },
+                {
                     data: "Location.LocationType.IsDeleted",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "DefaultLocation.LocationType.IsDeleted",
                     name: "co",
                     visible: false
                 },
@@ -839,7 +878,17 @@ $(() => {
                     visible: false
                 },
                 {
+                    data: "DefaultLocation.LocationType.Action",
+                    name: "co",
+                    visible: false
+                },
+                {
                     data: "Location.CreatedDate",
+                    name: "co",
+                    visible: false
+                },
+                {
+                    data: "DefaultLocation.CreatedDate",
                     name: "co",
                     visible: false
                 },
@@ -849,12 +898,28 @@ $(() => {
                     visible: false
                 },
                 {
+                    data: "DefaultLocation.ModifiedDate",
+                    name: "co",
+                    visible: false
+                },
+                {
                     data: "Location.IsDeleted",
                     name: "co",
                     visible: false
                 },
                 {
+                    data: "DefaultLocation.IsDeleted",
+                    name: "co",
+                    visible: false
+                },
+                {
                     data: "Location.Action",
+                    name: "co",
+                    orderable: false,
+                    visible: false
+                },
+                {
+                    data: "DefaultLocation.Action",
                     name: "co",
                     orderable: false,
                     visible: false
@@ -1094,9 +1159,10 @@ $(() => {
         });
 
         $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(2)").text("Product");
-        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(3)").text("Product Type");
-        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(4)").text("Manufacturer");
-        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(5)").text("Location");
-        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(6)").text("Bundle");
+        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(4)").text("Product Type");
+        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(5)").text("Manufacturer");
+        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(6)").text("Location");
+        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(7)").text("Default Location");
+        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(8)").text("Bundle");
     }
 });
