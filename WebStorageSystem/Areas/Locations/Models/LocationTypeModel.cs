@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes;
 using WebStorageSystem.Models;
 
@@ -16,6 +17,7 @@ namespace WebStorageSystem.Areas.Locations.Models
         [JqueryDataTableColumn(Order = 121), SearchableString, Sortable]
         public string Description { get; set; }
 
+        [JsonIgnore]
         public List<LocationModel> Locations { get; set; }
 
         [Display(Name = "Creation Date")]

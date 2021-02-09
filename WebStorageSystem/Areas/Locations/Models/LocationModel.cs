@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes;
 using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Models;
@@ -28,12 +29,16 @@ namespace WebStorageSystem.Areas.Locations.Models
         [JqueryDataTableColumn, NestedSearchable, NestedSortable]
         public LocationTypeModel LocationType { get; set; }
 
+        [JsonIgnore]
         public IEnumerable<TransferModel> OriginTransfers { get; set; }
 
+        [JsonIgnore]
         public IEnumerable<TransferModel> DestinationTransfers { get; set; }
 
+        [JsonIgnore]
         public IEnumerable<UnitModel> Units { get; set; }
 
+        [JsonIgnore]
         public IEnumerable<UnitModel> DefaultUnits { get; set; }
 
         [Display(Name = "Creation Date")]

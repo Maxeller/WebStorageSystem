@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes;
 using WebStorageSystem.Models;
 
@@ -39,6 +40,7 @@ namespace WebStorageSystem.Areas.Products.Models
         [JqueryDataTableColumn, NestedSearchable, NestedSortable]
         public ManufacturerModel Manufacturer { get; set; }
 
+        [JsonIgnore]
         public IEnumerable<UnitModel> Units { get; set; }
 
         [Display(Name = "Creation Date")]

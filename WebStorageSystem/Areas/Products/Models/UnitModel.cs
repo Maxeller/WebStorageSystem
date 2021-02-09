@@ -52,6 +52,21 @@ namespace WebStorageSystem.Areas.Products.Models
 
         public IEnumerable<TransferModel> Transfers { get; set; }
 
+        [DisplayName("Shelf Number")]
+        [JqueryDataTableColumn(Order = 150), SearchableString, Sortable]
+        public string ShelfNumber { get; set; }
+
+        [JqueryDataTableColumn(Order = 203), SearchableString, Sortable]
+        public string Notes { get; set; }
+
+        [DisplayName("Last Transfer Date")]
+        [JqueryDataTableColumn(Order = 204), SearchableDateTime, Sortable]
+        public DateTime? LastTransferTime { get; set; }
+
+        [DisplayName("Last Check Time")]
+        [JqueryDataTableColumn(Order = 205), SearchableDateTime, Sortable]
+        public DateTime? LastCheckTime { get; set; }
+
         [JqueryDataTableColumn(Exclude = true)]
         public string SerialNumberProduct
         {
