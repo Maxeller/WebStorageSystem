@@ -62,7 +62,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Products/Unit/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SerialNumber,ProductId,LocationId,DefaultLocationId,VendorId,PartOfBundleId,IsDeleted")] UnitModel unitModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Create([Bind("SerialNumber,ProductId,LocationId,DefaultLocationId,VendorId,PartOfBundleId,ShelfNumber,Notes,IsDeleted")] UnitModel unitModel, [FromQuery] bool getDeleted)
         {
             if (!ModelState.IsValid)
             {
@@ -103,7 +103,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Products/Unit/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SerialNumber,ProductId,LocationId,DefaultLocationId,VendorId,PartOfBundleId,Id,CreatedDate,IsDeleted,RowVersion")] UnitModel unitModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Edit(int id, [Bind("SerialNumber,ProductId,LocationId,DefaultLocationId,VendorId,PartOfBundleId,ShelfNumber,Notes,LastTransferTime,LastCheckTime,Id,CreatedDate,IsDeleted,RowVersion")] UnitModel unitModel, [FromQuery] bool getDeleted)
         {
             if (id != unitModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(unitModel);

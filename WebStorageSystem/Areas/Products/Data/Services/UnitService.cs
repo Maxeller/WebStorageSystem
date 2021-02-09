@@ -101,7 +101,12 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 .OrderBy(unit => unit.SerialNumber).AsNoTracking()
                 .Include(unit => unit.Product)
                     .ThenInclude(product => product.ProductType).AsNoTracking()
-                .Include(unit => unit.Location).AsNoTracking()
+                .Include(unit => unit.Product)
+                    .ThenInclude(product => product.Manufacturer).AsNoTracking()
+                .Include(unit => unit.Location)
+                    .ThenInclude(location => location.LocationType).AsNoTracking()
+                .Include(unit => unit.DefaultLocation)
+                    .ThenInclude(location => location.LocationType).AsNoTracking()
                 .Include(unit => unit.Vendor).AsNoTracking()
                 .Include(unit => unit.PartOfBundle).AsNoTracking();
 

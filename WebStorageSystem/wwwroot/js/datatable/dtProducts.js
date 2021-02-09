@@ -703,8 +703,7 @@ $(() => {
                 },
                 {
                     data: "Product.ProductNumber",
-                    name: "co",
-                    visible: true
+                    name: "co"
                 },
                 {
                     data: "Product.Description",
@@ -743,6 +742,7 @@ $(() => {
                 {
                     data: "Product.ProductType.Action",
                     name: "co",
+                    orderable: false,
                     visible: false
                 },
                 {
@@ -772,6 +772,7 @@ $(() => {
                 {
                     data: "Product.Manufacturer.Action",
                     name: "co",
+                    orderable: false,
                     visible: false
                 },
                 {
@@ -792,6 +793,7 @@ $(() => {
                 {
                     data: "Product.Action",
                     name: "co",
+                    orderable: false,
                     visible: false
                 },
                 {
@@ -875,11 +877,13 @@ $(() => {
                 {
                     data: "Location.LocationType.Action",
                     name: "co",
+                    orderable: false,
                     visible: false
                 },
                 {
                     data: "DefaultLocation.LocationType.Action",
                     name: "co",
+                    orderable: false,
                     visible: false
                 },
                 {
@@ -923,6 +927,17 @@ $(() => {
                     name: "co",
                     orderable: false,
                     visible: false
+                },
+                {
+                    data: "ShelfNumber",
+                    name: "co",
+                    visible: true,
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    }
                 },
                 {
                     data: "Vendor.Name",
@@ -1091,9 +1106,43 @@ $(() => {
                     data: "PartOfBundle.Action",
                     name: "co",
                     visible: false,
+                    orderable: false,
                     render: function (data, type, row) {
                         if (data)
                             return data;
+                        else
+                            return null;
+                    }
+                },
+                {
+                    data: "Notes",
+                    name: "co",
+                    visible: true,
+                    render: function (data, type, row) {
+                        if (data)
+                            return data;
+                        else
+                            return null;
+                    }
+                },
+                {
+                    data: "LastTransferTime",
+                    name: "co",
+                    visible: true,
+                    render: function (data, type, row) {
+                        if (data)
+                            return moment(data).local().format("DD.MM.YYYY HH:mm:ss");
+                        else
+                            return null;
+                    }
+                },
+                {
+                    data: "LastCheckTime",
+                    name: "co",
+                    visible: true,
+                    render: function (data, type, row) {
+                        if (data)
+                            return moment(data).local().format("DD.MM.YYYY HH:mm:ss");
                         else
                             return null;
                     }
@@ -1163,6 +1212,6 @@ $(() => {
         $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(5)").text("Manufacturer");
         $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(6)").text("Location");
         $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(7)").text("Default Location");
-        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(8)").text("Bundle");
+        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(9)").text("Bundle");
     }
 });

@@ -30,6 +30,14 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
         public Bundle PartOfBundle { get; set; }
         public int? PartOfBundleId { get; set; }
 
+        public string ShelfNumber { get; set; }
+
+        public string Notes { get; set; }
+
+        public DateTime? LastTransferTime { get; set; } // TODO: Set while Transfering
+
+        public DateTime? LastCheckTime { get; set; }
+
         public IEnumerable<Transfer> Transfers { get; set; }
 
         public override DateTime CreatedDate { get; set; }
