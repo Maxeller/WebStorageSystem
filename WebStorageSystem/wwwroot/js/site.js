@@ -28,6 +28,11 @@ $(document).ready(function() { // TODO: Move when select2 moved to separate part
     });
 });
 
+// Sets current time for Last Check property in Unit
+$("#set-current-time").click(function() {
+    $("#dt-lastCheck").val(moment().format("YYYY-MM-DDTHH:mm"));
+});
+
 // --- MODALS ---
 // Function for filling modal window for deleting/restoring with appropriate data
 $("#deleteRestoreModal").on("show.bs.modal", function(event) {

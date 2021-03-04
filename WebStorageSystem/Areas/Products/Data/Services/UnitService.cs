@@ -151,6 +151,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             unit.Location = _context.Locations.Attach(unit.Location).Entity;
             if (unit.Vendor != null) unit.Vendor = _context.Vendors.Attach(unit.Vendor).Entity;
             if (unit.PartOfBundle != null) unit.PartOfBundle = _context.Bundles.Attach(unit.PartOfBundle).Entity;
+            unit.LastCheckTime = DateTime.Now;
             _context.Units.Add(unit);
             await _context.SaveChangesAsync();
         }
