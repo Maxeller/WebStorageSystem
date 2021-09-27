@@ -1,111 +1,87 @@
 ﻿// --- LOCATION TYPE ---
-$(() => {
+$(document).ready(function () {
     if ($("#dtLocationType").length !== 0) {
-        const table = $("#dtLocationType").DataTable({
-            language: {
-                processing: "Loading Data...",
-                zeroRecords: "No matching records found"
+        // Column definition
+        var myColumns = [
+            {
+                 data: "Name", searchable: true, orderable: true
             },
+            {
+                 data: "Description", searchable: true, orderable: true
+            },
+            {
+                data: "CreatedDate",
+                searchable: true,
+                orderable: true,
+                render: function (data, type, row) {
+                    if (data)
+                        return moment(data).local().format("DD.MM.YYYY HH:mm:ss"); // Formats data from UTC to local time
+                    else
+                        return null;
+                }
+            },
+            {
+                data: "ModifiedDate",
+                searchable: true,
+                orderable: true,
+                render: function (data, type, row) {
+                    if (data)
+                        return moment(data).local().format("DD.MM.YYYY HH:mm:ss"); // Formats data from UTC to local time
+                    else
+                        return null;
+                }
+            },
+            {
+                 data: "IsDeleted", searchable: true, orderable: true
+            },
+            {
+                data: "Action",
+                searchable: false,
+                orderable: false,
+                render: function (data, type, row)
+                {
+                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> | `;
+                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> | `;
+                    if (!row.IsDeleted) {
+                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
+                    } else {
+                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
+                    }
+                    return s;
+                }
+            }
+        ];
+
+        // DataTable initialization 
+        var table = $("#dtLocationType").DataTable({
+            paging: false,
             processing: true,
             serverSide: true,
-            orderCellsTop: true,
-            autoWidth: true,
-            deferRender: true,
-            //lengthMenu: [[5, 10, 15, 20, -1], [5, 10, 15, 20, "All"]],
-            paging: false,
-            dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6 text-right"l>><"row"<"col-sm-12"tr>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-            buttons: [
-                {
-                    text: "Export to Excel",
-                    className: "btn btn-sm btn-dark",
-                    action: function (e, dt, node, config) {
-                        window.location.href = "/Home/GetExcel"; // TODO: Change path
-                    },
-                    init: function (api, node, config) {
-                        $(node).removeClass("dt-button");
-                    }
-                }
-            ],
             ajax: {
-                type: "POST",
                 url: "LocationType/LoadTable",
-                contentType: "application/json; charset=utf-8",
-                async: true,
-                headers: {
-                    "XSRF-TOKEN": document.querySelector('[name="__RequestVerificationToken"]').value
-                },
-                data: function (data) {
-                    //let additionalValues = [];
-                    //additionalValues[0] = "Additional Parameters 1";
-                    //additionalValues[1] = "Additional Parameters 2";
-                    //data.AdditionalValues = additionalValues;
-                    return JSON.stringify(data);
-                }
+                type: "POST"
             },
-            columns: [
-                {
-                    data: "Name",
-                    name: "co"
-                },
-                {
-                    data: "Description",
-                    name: "co"
-                },
-                {
-                    data: "CreatedDate",
-                    render: function (data, type, row) {
-                        if (data)
-                            return moment(data).local().format("DD.MM.YYYY HH:mm:ss"); // Formats data from UTC to local time
-                        else
-                            return null;
-                    },
-                    name: "gte"
-                },
-                {
-                    data: "ModifiedDate",
-                    render: function (data, type, row) {
-                        if (data)
-                            return moment(data).local().format("DD.MM.YYYY HH:mm:ss");
-                        else
-                            return null;
-                    },
-                    name: "gte"
-                },
-                {
-                    data: "IsDeleted",
-                    render: function (data, type, row) {
-                        if (data)
-                            return "Yes";
-                        else
-                            return "No";
-                    }
-                },
-                {
-                    data: "Action",
-                    orderable: false,
-                    width: 155,
-                    render: function (data, type, row) {
-                        let s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> | `;
-                        s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> | `;
-                        if (!row.IsDeleted) {
-                            s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
-                        } else {
-                            s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
-                        }
-                        return s;
-                    }
-                }
-            ]
+            columns: myColumns
         });
 
+        // Creation of search bars for searchable columns
+        $("#dtLocationType thead tr").after("<tr>");
+        var counter = 0;
+        $("#dtLocationType thead th").each(function () {
+            var title = $("#dtLocationType thead th").eq($(this).index()).text();
+            if (myColumns[counter++].searchable) {
+                $("#dtLocationType thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+            }
+        });
+        $("#dtLocationType thead th:last").after("</tr>");
+
+        // Creation of trigger for search event
         table.columns().every(function (index) {
-            $(`#dtLocationType thead tr:last th:eq(${index}) input`)
-                .on("keyup",
-                    function (e) {
-                        if (e.keyCode === 13) {
-                            table.column($(this).parent().index() + ":visible").search(this.value).draw();
-                        }
-                    }); // TODO: Add function to refresh when input is cleared
+            var column = this;
+            var elem = $(`#dtLocationType thead tr:last th:eq(${index}) input`);
+            elem.on("keyup change", function () {
+                column.search(this.value).draw();
+            });
         });
     }
 });

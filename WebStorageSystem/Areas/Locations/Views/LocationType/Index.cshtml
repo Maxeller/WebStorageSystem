@@ -12,16 +12,18 @@
 </div>
 
 @Html.AntiForgeryToken()
-<jquery-datatables id="dtLocationType"
-                   class="table"
-                   model="@Model"
-                   thead-class="text-center"
-                   enable-searching="true"
-                   search-row-th-class="p-0"
-                   search-input-class="form-control form-control-sm"
-                   search-input-style="width: 100%"
-                   search-input-placeholder-prefix="Search">
-</jquery-datatables>
+<table id="dtLocationType" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.Description)</th>
+            <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
+            <th>@Html.DisplayNameFor(model => model.ModifiedDate)</th>
+            <th>@Html.DisplayNameFor(model => model.IsDeleted)</th>
+            <th>@Html.DisplayNameFor(model => model.Action)</th>
+        </tr>
+    </thead>
+</table>
 
 <partial name="DeleteRestoreModal" />
 @if (TempData["Error"] != null)

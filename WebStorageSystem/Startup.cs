@@ -1,6 +1,6 @@
 using System;
+using System.Text.Json;
 using System.Text.Json.Serialization;
-using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -31,7 +31,7 @@ namespace WebStorageSystem
         public void ConfigureServices(IServiceCollection services)
         {
             // DATABASE
-            services.AddMyDatabaseConfiguration(Configuration.GetConnectionString("LocalDb"), _env);
+            services.AddMyDatabaseConfiguration(Configuration.GetConnectionString("SQLExpress"), _env);
 
             // IDENTITY
             services.AddMyIdentityConfiguration();
@@ -56,7 +56,7 @@ namespace WebStorageSystem
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseDatabaseErrorPage();
+                //app.UseDatabaseErrorPage(); //Works only with .NET 5 version of the package
                 app.UseMigrationsEndPoint();
                 //app.UseBrowserLink();
             }
@@ -117,8 +117,7 @@ namespace WebStorageSystem
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.AllowTrailingCommas = true; // Allows for trailing commas in JSON file
-                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); // Settings for jQueryDataTablesServerSide
-                    options.JsonSerializerOptions.PropertyNamingPolicy = null; // Settings for jQueryDataTablesServerSide
+                    options.JsonSerializerOptions.PropertyNamingPolicy = null; // Json is serialized without camelCase
                 })
                 .AddXmlSerializerFormatters(); // Adds XML serializer for input and output
 
