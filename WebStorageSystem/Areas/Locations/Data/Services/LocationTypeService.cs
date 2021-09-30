@@ -73,10 +73,10 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
                 .IgnoreQueryFilters();
 
             // SEARCH
-            query.Search(request);
+            query = query.Search(request);
 
             // ORDER
-            query.OrderBy(request);
+            query = query.OrderBy(request);
 
             var count = await query.CountAsync();
 

@@ -113,6 +113,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         }
 
         [HttpPost]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> LoadTable(DataTableRequest request)
         {
             try

@@ -4,10 +4,14 @@ $(document).ready(function () {
         // Column definition
         var myColumns = [
             {
-                 data: "Name", searchable: true, orderable: true
+                data: "Name",
+                searchable: true,
+                orderable: true
             },
             {
-                 data: "Description", searchable: true, orderable: true
+                data: "Description",
+                searchable: true,
+                orderable: true
             },
             {
                 data: "CreatedDate",
@@ -32,16 +36,22 @@ $(document).ready(function () {
                 }
             },
             {
-                 data: "IsDeleted", searchable: true, orderable: true
+                data: "IsDeleted",
+                searchable: true,
+                orderable: true,
+                render: function (data, type, row) {
+                    var s = "";
+                    if (row.IsDeleted === true) s = "checked";
+                    return `<div class="form-check"><input class="form-check-input" type="checkbox" disabled ${s}></div>`;
+                }
             },
             {
                 data: "Action",
                 searchable: false,
                 orderable: false,
-                render: function (data, type, row)
-                {
-                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> | `;
-                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> | `;
+                render: function (data, type, row) {
+                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> `;
+                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> `;
                     if (!row.IsDeleted) {
                         s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
                     } else {
@@ -69,8 +79,14 @@ $(document).ready(function () {
         var counter = 0;
         $("#dtLocationType thead th").each(function () {
             var title = $("#dtLocationType thead th").eq($(this).index()).text();
-            if (myColumns[counter++].searchable) {
-                $("#dtLocationType thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+            if (myColumns[counter].searchable) {
+                if (myColumns[counter].data == "IsDeleted") {
+                    $("#dtLocationType thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox"></div></th>`);
+                } if (myColumns[counter++].data.includes("Date")) {
+                    $("#dtLocationType thead tr:last").append(`<th><input type="datetime-local" placeholder="Search ${title}" /></th>`);
+                } else {
+                    $("#dtLocationType thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                }
             }
         });
         $("#dtLocationType thead th:last").after("</tr>");
@@ -79,8 +95,12 @@ $(document).ready(function () {
         table.columns().every(function (index) {
             var column = this;
             var elem = $(`#dtLocationType thead tr:last th:eq(${index}) input`);
-            elem.on("keyup change", function () {
-                column.search(this.value).draw();
+            elem.on("keyup change", function () { // TODO: Add datetime picker for date searching?
+                if (elem.hasClass("form-check-input")) { // If search is triggered from checkbox
+                    column.search(this.checked).draw();  // send value of checkbox
+                } else {                                 // If search is triggered from textbox
+                    column.search(this.value).draw();    // send value from textbox
+                }
             });
         });
     }
