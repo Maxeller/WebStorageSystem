@@ -2,8 +2,6 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Microsoft.VisualBasic;
-using WebStorageSystem.Models;
 using WebStorageSystem.Models.DataTables;
 
 namespace WebStorageSystem.Data
@@ -118,22 +116,21 @@ namespace WebStorageSystem.Data
             {
                 if (!column.Searchable) continue;
 
-                string colName = column.Data;
-                string searchVal = column.Search.Value;
+                string columnName = column.Data;
+                string searchValue = column.Search.Value;
 
-                if(searchVal == null) continue;
+                if (searchValue == null) continue;
 
                 ParameterExpression arg = Expression.Parameter(entityType, "x");
 
-
                 MethodInfo method;
                 ConstantExpression constant;
-                if (DateTime.TryParse(searchVal, out DateTime dt)) //TODO: Check
+                if (DateTime.TryParse(searchValue, out DateTime dt) && columnName.Contains("Date"))
                 {
-                    method = typeof(DateTime).GetMethod("Compare", new[] { typeof(DateTime) });
+                    method = typeof(DateTime).GetMethod("CompareTo", new[] { typeof(DateTime) });
                     constant = Expression.Constant(dt, typeof(DateTime));
                 }
-                else if(bool.TryParse(searchVal, out bool b))
+                else if (bool.TryParse(searchValue, out bool b))
                 {
                     method = typeof(bool).GetMethod("Equals", new[] { typeof(bool) });
                     constant = Expression.Constant(b, typeof(bool));
@@ -141,12 +138,24 @@ namespace WebStorageSystem.Data
                 else
                 {
                     method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
-                    constant = Expression.Constant(searchVal, typeof(string));
+                    constant = Expression.Constant(searchValue, typeof(string));
                 }
 
-                MemberExpression property = Expression.Property(arg, colName);
+                MemberExpression property = Expression.Property(arg, columnName);
                 MethodCallExpression expression = Expression.Call(property, method, constant);
-                Expression<Func<TSource, bool>> lambda = Expression.Lambda<Func<TSource, bool>>(expression, arg);
+
+                Expression<Func<TSource, bool>> lambda;
+                if (columnName.Contains("Date"))
+                {
+                    ConstantExpression zero = Expression.Constant(0, typeof(int));
+                    BinaryExpression binaryExpression = Expression.GreaterThanOrEqual(expression, zero); // TODO: Check CompareTo docs for diff options
+                    lambda = Expression.Lambda<Func<TSource, bool>>(binaryExpression, arg);
+                }
+                else
+                {
+                    lambda = Expression.Lambda<Func<TSource, bool>>(expression, arg);
+                }
+
                 q = q.Where(lambda);
             }
 
