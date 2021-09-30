@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using WebStorageSystem.Models.DataTables;
 
-namespace WebStorageSystem.Data
+namespace WebStorageSystem.Extensions
 {
     public static class DbServiceExtensions
     {

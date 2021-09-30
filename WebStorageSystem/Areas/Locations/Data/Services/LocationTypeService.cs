@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Data;
+using WebStorageSystem.Extensions;
 using WebStorageSystem.Models.DataTables;
 
 namespace WebStorageSystem.Areas.Locations.Data.Services
