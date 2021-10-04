@@ -30,15 +30,15 @@ namespace WebStorageSystem.Extensions
         /// <param name="propertyName"></param>
         /// <returns></returns>
         // Source: https://stackoverflow.com/questions/31955025/generate-ef-orderby-expression-by-string
+        // Source for nesting: https://www.codemag.com/Article/1607041/Simplest-Thing-Possible-Dynamic-Lambda-Expressions
         private static IOrderedQueryable<TSource> OrderBy<TSource>(this IQueryable<TSource> query, string propertyName)
         {
             Type entityType = typeof(TSource);
 
-            //Create x => x.PropName
-            PropertyInfo propertyInfo = entityType.GetProperty(propertyName);
+            //Create x => x.PropName OR x => x.ParentClass.PropName
             ParameterExpression arg = Expression.Parameter(entityType, "x");
-            MemberExpression property = Expression.Property(arg, propertyName);
-            LambdaExpression selector = Expression.Lambda(property, new ParameterExpression[] { arg });
+            MemberExpression property = GetProperty(arg, propertyName);
+            LambdaExpression selector = Expression.Lambda(property, arg);
 
             //Get System.Linq.Queryable.OrderBy() method.
             Type enumerableType = typeof(Queryable);
@@ -51,7 +51,7 @@ namespace WebStorageSystem.Extensions
                     return parameters.Count == 2;//overload that has 2 parameters
                 }).Single();
             //The linq's OrderBy<TSource, TKey> has two generic types, which provided here
-            MethodInfo genericMethod = method.MakeGenericMethod(entityType, propertyInfo.PropertyType);
+            MethodInfo genericMethod = method.MakeGenericMethod(entityType, property.Type);
 
             /*Call query.OrderBy(selector), with query and selector: x => x.PropName
               Note that we pass the selector as Expression to the method and we don't compile it.
@@ -72,11 +72,10 @@ namespace WebStorageSystem.Extensions
         {
             Type entityType = typeof(TSource);
 
-            //Create x => x.PropName
-            PropertyInfo propertyInfo = entityType.GetProperty(propertyName);
+            //Create x => x.PropName OR x => x.ParentClass.PropName
             ParameterExpression arg = Expression.Parameter(entityType, "x");
-            MemberExpression property = Expression.Property(arg, propertyName);
-            LambdaExpression selector = Expression.Lambda(property, new ParameterExpression[] { arg });
+            MemberExpression property = GetProperty(arg, propertyName);
+            LambdaExpression selector = Expression.Lambda(property, arg);
 
             //Get System.Linq.Queryable.OrderByDescending() method.
             Type enumerableType = typeof(Queryable);
@@ -89,7 +88,7 @@ namespace WebStorageSystem.Extensions
                     return parameters.Count == 2;//overload that has 2 parameters
                 }).Single();
             //The linq's OrderBy<TSource, TKey> has two generic types, which provided here
-            MethodInfo genericMethod = method.MakeGenericMethod(entityType, propertyInfo.PropertyType);
+            MethodInfo genericMethod = method.MakeGenericMethod(entityType, property.Type);
 
             /*Call query.OrderBy(selector), with query and selector: x => x.PropName
               Note that we pass the selector as Expression to the method and we don't compile it.
@@ -99,7 +98,7 @@ namespace WebStorageSystem.Extensions
         }
 
         /// <summary>
-        /// 
+        /// Searches elements based on DataTables request.
         /// </summary>
         /// <typeparam name="TSource">The type of the elements of source.</typeparam>
         /// <param name="query">A sequence of values to search</param>
@@ -128,7 +127,7 @@ namespace WebStorageSystem.Extensions
                 if (DateTime.TryParse(searchValue, out DateTime dt) && columnName.Contains("Date"))
                 {
                     method = typeof(DateTime).GetMethod("CompareTo", new[] { typeof(DateTime) });
-                    var dtUtc = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                    DateTime dtUtc = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
                     constant = Expression.Constant(dtUtc, typeof(DateTime));
                 }
                 else if (bool.TryParse(searchValue, out bool b))
@@ -142,7 +141,7 @@ namespace WebStorageSystem.Extensions
                     constant = Expression.Constant(searchValue, typeof(string));
                 }
 
-                MemberExpression property = Expression.Property(arg, columnName);
+                MemberExpression property = GetProperty(arg, columnName);
                 MethodCallExpression expression = Expression.Call(property, method, constant);
 
                 Expression<Func<TSource, bool>> lambda;
@@ -161,6 +160,19 @@ namespace WebStorageSystem.Extensions
             }
 
             return q;
+        }
+
+        private static MemberExpression GetProperty(Expression arg, string propertyName)
+        {
+            int index = propertyName.IndexOf('.');
+            while (index != -1)
+            {
+                arg = Expression.Property(arg, propertyName.Substring(0, index));
+                propertyName = propertyName.Substring(index + 1);
+                index = propertyName.IndexOf('.');
+            }
+            MemberExpression property = Expression.Property(arg, propertyName);
+            return property;
         }
     }
 }
