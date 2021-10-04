@@ -128,7 +128,8 @@ namespace WebStorageSystem.Extensions
                 if (DateTime.TryParse(searchValue, out DateTime dt) && columnName.Contains("Date"))
                 {
                     method = typeof(DateTime).GetMethod("CompareTo", new[] { typeof(DateTime) });
-                    constant = Expression.Constant(dt, typeof(DateTime));
+                    var dtUtc = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                    constant = Expression.Constant(dtUtc, typeof(DateTime));
                 }
                 else if (bool.TryParse(searchValue, out bool b))
                 {

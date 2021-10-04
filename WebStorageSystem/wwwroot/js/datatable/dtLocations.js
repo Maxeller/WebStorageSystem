@@ -71,10 +71,12 @@ $(document).ready(function () {
                 url: "LocationType/LoadTable",
                 type: "POST",
                 data: {
+                    /*
                     additionalData:
                     {
                         userTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
                     }
+                    */
                 }
             },
             columns: myColumns
@@ -89,7 +91,7 @@ $(document).ready(function () {
                 if (myColumns[counter].data.includes("IsDeleted")) {
                     $("#dtLocationType thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox"></div></th>`);
                 } else if (myColumns[counter].data.includes("Date")) {
-                    $("#dtLocationType thead tr:last").append(`<th><input type="datetime-local" placeholder="Search ${title}" /></th>`);
+                    $("#dtLocationType thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
                 } else {
                     $("#dtLocationType thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
@@ -105,6 +107,8 @@ $(document).ready(function () {
             elem.on("keyup change", function () { // TODO: Add datetime picker for date searching?
                 if (elem.hasClass("form-check-input")) { // If search is triggered from checkbox
                     column.search(this.checked).draw();  // send value of checkbox
+                } if (elem.is("#searchDate")) {
+                    column.search(moment.utc(moment(this.value).utc()).format()).draw();
                 } else {                                 // If search is triggered from textbox
                     column.search(this.value).draw();    // send value from textbox
                 }
