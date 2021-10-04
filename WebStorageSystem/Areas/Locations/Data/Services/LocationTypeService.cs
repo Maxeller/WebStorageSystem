@@ -63,7 +63,7 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         /// </summary>
         /// <param name="request">DataTableRequest with table search and sort options</param>
         /// <param name="getDeleted">Looks through soft deleted entries</param>
-        /// <returns>JqueryDataTablesPagedResults</returns>
+        /// <returns>DataTableDbResult</returns>
         public async Task<DataTableDbResult<LocationTypeModel>> GetLocationTypesAsync(DataTableRequest request, bool getDeleted = false)
         {
             LocationTypeModel[] data;

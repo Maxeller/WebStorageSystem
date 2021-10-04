@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Areas.Locations.Data.Services;
 using WebStorageSystem.Areas.Locations.Models;
+using WebStorageSystem.Models.DataTables;
 
 namespace WebStorageSystem.Areas.Locations.Controllers
 {
@@ -136,13 +137,13 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoadTable([FromBody] JqueryDataTablesParameters param)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> LoadTable(DataTableRequest request)
         {
             try
             {
-                HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), JsonSerializer.Serialize(param));
-                var results = await _service.GetLocationsAsync(param);
-                foreach (var item in results.Items)
+                var results = await _service.GetLocationsAsync(request);
+                foreach (var item in results.Data)
                 {
                     item.Action = new Dictionary<string, string>
                     {
@@ -153,12 +154,12 @@ namespace WebStorageSystem.Areas.Locations.Controllers
                     };
                 }
 
-                return new JsonResult(new JqueryDataTablesResult<LocationModel>
+                return new JsonResult(new DataTableResponse<LocationModel>
                 {
-                    Draw = param.Draw,
-                    Data = results.Items,
-                    RecordsFiltered = results.TotalSize,
-                    RecordsTotal = results.TotalSize
+                    Draw = request.Draw,
+                    Data = results.Data,
+                    RecordsFiltered = results.RecordsTotal,
+                    RecordsTotal = results.RecordsTotal
                 });
             }
             catch (Exception e)

@@ -11,6 +11,8 @@ using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Data;
+using WebStorageSystem.Extensions;
+using WebStorageSystem.Models.DataTables;
 
 namespace WebStorageSystem.Areas.Locations.Data.Services
 {
@@ -62,12 +64,12 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         /// <summary>
         /// Gets all entries from DB for jQuery Datatables
         /// </summary>
-        /// <param name="table">JqueryDataTablesParameters with table search and sort options</param>
+        /// <param name="request">DataTableRequest with table search and sort options</param>
         /// <param name="getDeleted">Looks through soft deleted entries</param>
-        /// <returns>JqueryDataTablesPagedResults</returns>
-        public async Task<JqueryDataTablesPagedResults<LocationModel>> GetLocationsAsync(JqueryDataTablesParameters table, bool getDeleted = false)
+        /// <returns>DataTableDbResult</returns>
+        public async Task<DataTableDbResult<LocationModel>> GetLocationsAsync(DataTableRequest request, bool getDeleted = false)
         {
-            LocationModel[] items;
+            LocationModel[] data;
 
             var query = _context
                 .Locations
@@ -76,30 +78,22 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
                 .AsNoTracking()
                 .IgnoreQueryFilters();
 
-            query = SearchOptionsProcessor<LocationModel, Location>.Apply(query, table.Columns);
-            query = SortOptionsProcessor<LocationModel, Location>.Apply(query, table);
+            // SEARCH
+            query = query.Search(request);
 
-            var size = await query.CountAsync();
+            // ORDER
+            query = query.OrderBy(request);
 
-            if (table.Length > 0)
-            {
-                items = await query
-                    .Skip((table.Start / table.Length) * table.Length)
-                    .Take(table.Length)
-                    .ProjectTo<LocationModel>(_mappingConfiguration)
-                    .ToArrayAsync();
-            }
-            else
-            {
-                items = await query
-                    .ProjectTo<LocationModel>(_mappingConfiguration)
-                    .ToArrayAsync();
-            }
+            var count = await query.CountAsync();
 
-            return new JqueryDataTablesPagedResults<LocationModel>
+            data = await query
+                .ProjectTo<LocationModel>(_mappingConfiguration)
+                .ToArrayAsync();
+
+            return new DataTableDbResult<LocationModel>
             {
-                Items = items,
-                TotalSize = size
+                Data = data,
+                RecordsTotal = count
             };
         }
 
