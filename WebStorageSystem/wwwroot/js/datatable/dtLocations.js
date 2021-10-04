@@ -69,7 +69,13 @@ $(document).ready(function () {
             serverSide: true,
             ajax: {
                 url: "LocationType/LoadTable",
-                type: "POST"
+                type: "POST",
+                data: {
+                    additionalData:
+                    {
+                        userTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                    }
+                }
             },
             columns: myColumns
         });
@@ -80,13 +86,14 @@ $(document).ready(function () {
         $("#dtLocationType thead th").each(function () {
             var title = $("#dtLocationType thead th").eq($(this).index()).text();
             if (myColumns[counter].searchable) {
-                if (myColumns[counter].data == "IsDeleted") {
+                if (myColumns[counter].data.includes("IsDeleted")) {
                     $("#dtLocationType thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox"></div></th>`);
-                } if (myColumns[counter++].data.includes("Date")) {
+                } else if (myColumns[counter].data.includes("Date")) {
                     $("#dtLocationType thead tr:last").append(`<th><input type="datetime-local" placeholder="Search ${title}" /></th>`);
                 } else {
                     $("#dtLocationType thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
+                counter++;
             }
         });
         $("#dtLocationType thead th:last").after("</tr>");
