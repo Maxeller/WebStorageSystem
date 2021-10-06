@@ -3,29 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
-using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data;
+using WebStorageSystem.Extensions;
+using WebStorageSystem.Models.DataTables;
 
 namespace WebStorageSystem.Areas.Products.Data.Services
 {
     public class BundleService
     {
         private readonly AppDbContext _context;
-        private readonly IConfigurationProvider _mappingConfiguration;
+        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
         private readonly IQueryable<Bundle> _getQuery;
 
-        public BundleService(AppDbContext context, IConfigurationProvider mappingConfiguration, ILoggerFactory factory)
+        public BundleService(AppDbContext context, IMapper mapper, ILoggerFactory factory)
         {
             _context = context;
-            _mappingConfiguration = mappingConfiguration;
+            _mapper = mapper;
             _logger = factory.CreateLogger<BundleService>();
 
             _getQuery = _context
@@ -64,46 +63,32 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <summary>
         /// Gets all entries from DB for jQuery Datatables
         /// </summary>
-        /// <param name="table">JqueryDataTablesParameters with table search and sort options</param>
+        /// <param name="request">DataTableRequest with table search and sort options</param>
         /// <param name="getDeleted">Looks through soft deleted entries</param>
-        /// <returns>JqueryDataTablesPagedResults</returns>
-        public async Task<JqueryDataTablesPagedResults<BundleModel>> GetBundlesAsync(JqueryDataTablesParameters table, bool getDeleted = false)
+        /// <returns>DataTableDbResult</returns>
+        public async Task<DataTableDbResult<BundleModel>> GetBundlesAsync(DataTableRequest request, bool getDeleted = false)
         {
-            BundleModel[] items;
-
             var query = _context
-                .Bundles.AsNoTracking()
-                .OrderBy(bundle => bundle.Name)
+                .Bundles
+                .AsNoTracking()
                 .Include(bundle => bundle.BundledUnits)
-                .ThenInclude(unit => unit.Product)
-                .ThenInclude(product => product.ProductType).AsNoTracking()
-                .Include(bundle => bundle.BundledUnits)
-                .ThenInclude(unit => unit.Location).AsNoTracking();
+                .IgnoreQueryFilters();
 
-            query = SearchOptionsProcessor<BundleModel, Bundle>.Apply(query, table.Columns);
-            query = SortOptionsProcessor<BundleModel, Bundle>.Apply(query, table);
+            // SEARCH
+            query = query.Search(request);
 
-            var size = await query.CountAsync();
+            // ORDER
+            query = query.OrderBy(request);
 
-            if (table.Length > 0)
+            var count = await query.CountAsync();
+
+            var data =
+                query.Select(bundle => _mapper.Map<BundleModel>(bundle)).AsParallel().ToArray();
+
+            return new DataTableDbResult<BundleModel>
             {
-                items = await query
-                    .Skip((table.Start / table.Length) * table.Length)
-                    .Take(table.Length)
-                    .ProjectTo<BundleModel>(_mappingConfiguration)
-                    .ToArrayAsync();
-            }
-            else
-            {
-                items = await query
-                    .ProjectTo<BundleModel>(_mappingConfiguration)
-                    .ToArrayAsync();
-            }
-
-            return new JqueryDataTablesPagedResults<BundleModel>
-            {
-                Items = items,
-                TotalSize = size
+                Data = data,
+                RecordsTotal = count
             };
         }
 

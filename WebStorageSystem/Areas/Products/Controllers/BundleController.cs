@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
-using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Areas.Products.Models;
+using WebStorageSystem.Models.DataTables;
 
 namespace WebStorageSystem.Areas.Products.Controllers
 {
@@ -125,13 +123,13 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoadTable([FromBody] JqueryDataTablesParameters param)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> LoadTable(DataTableRequest request)
         {
             try
             {
-                HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), JsonSerializer.Serialize(param));
-                var results = await _service.GetBundlesAsync(param);
-                foreach (var item in results.Items)
+                var results = await _service.GetBundlesAsync(request);
+                foreach (var item in results.Data)
                 {
                     item.Action = new Dictionary<string, string>
                     {
@@ -142,12 +140,12 @@ namespace WebStorageSystem.Areas.Products.Controllers
                     };
                 }
 
-                return new JsonResult(new JqueryDataTablesResult<BundleModel>
+                return new JsonResult(new DataTableResponse<BundleModel>
                 {
-                    Draw = param.Draw,
-                    Data = results.Items,
-                    RecordsFiltered = results.TotalSize,
-                    RecordsTotal = results.TotalSize
+                    Draw = request.Draw,
+                    Data = results.Data,
+                    RecordsFiltered = results.RecordsTotal,
+                    RecordsTotal = results.RecordsTotal
                 });
             }
             catch (Exception e)
