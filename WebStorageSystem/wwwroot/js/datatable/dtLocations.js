@@ -104,7 +104,7 @@ $(document).ready(function () {
         table.columns().every(function (index) {
             var column = this;
             var elem = $(`#dtLocationType thead tr:last th:eq(${index}) input`);
-            elem.on("keyup change", function () { // TODO: Add datetime picker for date searching?
+            elem.on("keyup change", function () {
                 if (elem.hasClass("form-check-input")) { // If search is triggered from checkbox
                     column.search(this.checked).draw();  // send value of checkbox
                 } if (elem.is("#searchDate")) {          // If search is triggered on "Date" column
@@ -198,15 +198,7 @@ $(document).ready(function () {
             serverSide: true,
             ajax: {
                 url: "Location/LoadTable",
-                type: "POST",
-                data: {
-                    /*
-                    additionalData:
-                    {
-                        userTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-                    }
-                    */
-                }
+                type: "POST"
             },
             columns: myColumns
         });
@@ -233,7 +225,7 @@ $(document).ready(function () {
         table.columns().every(function (index) {
             var column = this;
             var elem = $(`#dtLocation thead tr:last th:eq(${index}) input`);
-            elem.on("keyup change", function () { // TODO: Add datetime picker for date searching?
+            elem.on("keyup change", function () {
                 if (elem.hasClass("form-check-input")) { // If search is triggered from checkbox
                     column.search(this.checked).draw();  // send value of checkbox
                 } if (elem.is("#searchDate")) {          // If search is triggered on "Date" column

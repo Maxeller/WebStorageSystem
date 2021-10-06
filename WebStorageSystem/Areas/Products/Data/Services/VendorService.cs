@@ -4,13 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
-using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data;
+using WebStorageSystem.Extensions;
+using WebStorageSystem.Models.DataTables;
 
 namespace WebStorageSystem.Areas.Products.Data.Services
 {
@@ -61,43 +61,34 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <summary>
         /// Gets all entries from DB for jQuery Datatables
         /// </summary>
-        /// <param name="table">JqueryDataTablesParameters with table search and sort options</param>
+        /// <param name="request">DataTableRequest with table search and sort options</param>
         /// <param name="getDeleted">Looks through soft deleted entries</param>
-        /// <returns>JqueryDataTablesPagedResults</returns>
-        public async Task<JqueryDataTablesPagedResults<VendorModel>> GetVendorsAsync(JqueryDataTablesParameters table, bool getDeleted = false)
+        /// <returns>DataTableDbResult</returns>
+        public async Task<DataTableDbResult<VendorModel>> GetVendorsAsync(DataTableRequest request, bool getDeleted = false)
         {
-            VendorModel[] items;
+            VendorModel[] data;
 
             var query = _context
                 .Vendors
                 .AsNoTracking()
                 .IgnoreQueryFilters();
 
+            // SEARCH
+            query = query.Search(request);
 
-            query = SearchOptionsProcessor<VendorModel, Vendor>.Apply(query, table.Columns);
-            query = SortOptionsProcessor<VendorModel, Vendor>.Apply(query, table);
+            // ORDER
+            query = query.OrderBy(request);
 
-            var size = await query.CountAsync();
+            var count = await query.CountAsync();
 
-            if (table.Length > 0)
+            data = await query
+                .ProjectTo<VendorModel>(_mappingConfiguration)
+                .ToArrayAsync();
+
+            return new DataTableDbResult<VendorModel>
             {
-                items = await query
-                    .Skip((table.Start / table.Length) * table.Length)
-                    .Take(table.Length)
-                    .ProjectTo<VendorModel>(_mappingConfiguration)
-                    .ToArrayAsync();
-            }
-            else
-            {
-                items = await query
-                    .ProjectTo<VendorModel>(_mappingConfiguration)
-                    .ToArrayAsync();
-            }
-
-            return new JqueryDataTablesPagedResults<VendorModel>
-            {
-                Items = items,
-                TotalSize = size
+                Data = data,
+                RecordsTotal = count
             };
         }
 
