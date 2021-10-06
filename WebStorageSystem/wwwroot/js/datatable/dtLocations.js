@@ -230,7 +230,6 @@ $(document).ready(function () {
         $("#dtLocation thead th:last").after("</tr>");
 
         // Creation of trigger for search event
-        // Creation of trigger for search event
         table.columns().every(function (index) {
             var column = this;
             var elem = $(`#dtLocation thead tr:last th:eq(${index}) input`);
