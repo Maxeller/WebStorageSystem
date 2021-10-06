@@ -133,7 +133,10 @@ namespace WebStorageSystem
                     options.EnableSensitiveDataLogging(true);
                     options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
                 }
-                options.UseSqlServer(connectionString);
+                options.UseSqlServer(connectionString, options =>
+                {
+                    options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // Automapper ProjectTo doesnt work with this setting
+                });
             });
         }
 
