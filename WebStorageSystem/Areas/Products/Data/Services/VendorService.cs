@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Products.Data.Entities;
@@ -17,21 +16,22 @@ namespace WebStorageSystem.Areas.Products.Data.Services
     public class VendorService
     {
         private readonly AppDbContext _context;
-        private readonly IConfigurationProvider _mappingConfiguration;
+        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
         private IQueryable<Vendor> _getQuery;
 
-        public VendorService(AppDbContext context, IConfigurationProvider mappingConfiguration, ILoggerFactory factory)
+        public VendorService(AppDbContext context, IMapper mapper, ILoggerFactory factory)
         {
             _context = context;
-            _mappingConfiguration = mappingConfiguration;
+            _mapper = mapper;
             _logger = factory.CreateLogger<VendorService>();
 
             _getQuery = _context
                 .Vendors
-                .AsNoTracking()
-                .OrderBy(vendor => vendor.Name);
+                .OrderBy(vendor => vendor.Name)
+                .AsNoTracking();
+
         }
 
         /// <summary>
@@ -66,8 +66,6 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <returns>DataTableDbResult</returns>
         public async Task<DataTableDbResult<VendorModel>> GetVendorsAsync(DataTableRequest request, bool getDeleted = false)
         {
-            VendorModel[] data;
-
             var query = _context
                 .Vendors
                 .AsNoTracking()
@@ -81,9 +79,8 @@ namespace WebStorageSystem.Areas.Products.Data.Services
 
             var count = await query.CountAsync();
 
-            data = await query
-                .ProjectTo<VendorModel>(_mappingConfiguration)
-                .ToArrayAsync();
+            var data =
+                query.Select(vendor => _mapper.Map<VendorModel>(vendor)).AsParallel().ToArray();
 
             return new DataTableDbResult<VendorModel>
             {

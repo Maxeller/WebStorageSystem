@@ -30,7 +30,6 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
 
             _getQuery = _context
                 .Locations
-                .AsNoTracking()
                 .OrderBy(location => location.Name)
                 .Include(location => location.LocationType)
                 .AsNoTracking();
@@ -69,7 +68,6 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         {
             var query = _context
                 .Locations
-                .AsNoTracking()
                 .Include(location => location.LocationType)
                 .AsNoTracking()
                 .IgnoreQueryFilters();

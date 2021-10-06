@@ -29,7 +29,7 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
 
             _getQuery = _context
                 .LocationTypes
-                .AsNoTracking()
+                .OrderBy(locationType => locationType.Name)
                 .Include(locationType => locationType.Locations)
                 .AsNoTracking();
         }

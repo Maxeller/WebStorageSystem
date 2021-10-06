@@ -30,10 +30,8 @@ namespace WebStorageSystem.Areas.Products.Data.Services
 
             _getQuery = _context
                 .Products
-                .AsNoTracking()
                 .OrderBy(product => product.Name)
                 .Include(product => product.ProductType)
-                .AsNoTracking()
                 .Include(product => product.Manufacturer)
                 .AsNoTracking();
         }
@@ -71,12 +69,11 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         {
             var query = _context
                 .Products
-                .AsNoTracking()
                 .OrderBy(product => product.Name)
                 .Include(product => product.ProductType)
-                .AsNoTracking()
                 .Include(product => product.Manufacturer)
-                .AsNoTracking();
+                .AsNoTracking()
+                .IgnoreQueryFilters();
 
             // SEARCH
             query = query.Search(request);

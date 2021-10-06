@@ -30,7 +30,6 @@ namespace WebStorageSystem.Areas.Products.Data.Services
 
             _getQuery = _context
                 .Manufacturers
-                .AsNoTracking()
                 .OrderBy(manufacturer => manufacturer.Name)
                 .Include(manufacturer => manufacturer.Products)
                 .AsNoTracking();

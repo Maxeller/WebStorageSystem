@@ -28,13 +28,14 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             _logger = factory.CreateLogger<BundleService>();
 
             _getQuery = _context
-                .Bundles.AsNoTracking()
+                .Bundles
                 .OrderBy(bundle => bundle.Name)
                 .Include(bundle => bundle.BundledUnits)
                 .ThenInclude(unit => unit.Product)
-                .ThenInclude(product => product.ProductType).AsNoTracking()
+                .ThenInclude(product => product.ProductType)
                 .Include(bundle => bundle.BundledUnits)
-                .ThenInclude(unit => unit.Location).AsNoTracking();
+                .ThenInclude(unit => unit.Location)
+                .AsNoTracking();
         }
 
         /// <summary>
@@ -70,8 +71,8 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         {
             var query = _context
                 .Bundles
-                .AsNoTracking()
                 .Include(bundle => bundle.BundledUnits)
+                .AsNoTracking()
                 .IgnoreQueryFilters();
 
             // SEARCH
