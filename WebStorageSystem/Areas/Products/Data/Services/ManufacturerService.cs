@@ -4,13 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
-using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data;
+using WebStorageSystem.Extensions;
+using WebStorageSystem.Models.DataTables;
 
 namespace WebStorageSystem.Areas.Products.Data.Services
 {
@@ -63,43 +63,34 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <summary>
         /// Gets all entries from DB for jQuery Datatables
         /// </summary>
-        /// <param name="table">JqueryDataTablesParameters with table search and sort options</param>
+        /// <param name="request">DataTableRequest with table search and sort options</param>
         /// <param name="getDeleted">Looks through soft deleted entries</param>
-        /// <returns>JqueryDataTablesPagedResults</returns>
-        public async Task<JqueryDataTablesPagedResults<ManufacturerModel>> GetManufacturersAsync(JqueryDataTablesParameters table, bool getDeleted = false)
+        /// <returns>DataTableDbResult</returns>
+        public async Task<DataTableDbResult<ManufacturerModel>> GetManufacturersAsync(DataTableRequest request, bool getDeleted = false)
         {
-            ManufacturerModel[] items;
+            ManufacturerModel[] data;
 
             var query = _context
                 .Manufacturers
                 .AsNoTracking()
                 .IgnoreQueryFilters();
 
+            // SEARCH
+            query = query.Search(request);
 
-            query = SearchOptionsProcessor<ManufacturerModel, Manufacturer>.Apply(query, table.Columns);
-            query = SortOptionsProcessor<ManufacturerModel, Manufacturer>.Apply(query, table);
+            // ORDER
+            query = query.OrderBy(request);
 
-            var size = await query.CountAsync();
+            var count = await query.CountAsync();
 
-            if (table.Length > 0)
+            data = await query
+                .ProjectTo<ManufacturerModel>(_mappingConfiguration)
+                .ToArrayAsync();
+
+            return new DataTableDbResult<ManufacturerModel>
             {
-                items = await query
-                    .Skip((table.Start / table.Length) * table.Length)
-                    .Take(table.Length)
-                    .ProjectTo<ManufacturerModel>(_mappingConfiguration)
-                    .ToArrayAsync();
-            }
-            else
-            {
-                items = await query
-                    .ProjectTo<ManufacturerModel>(_mappingConfiguration)
-                    .ToArrayAsync();
-            }
-
-            return new JqueryDataTablesPagedResults<ManufacturerModel>
-            {
-                Items = items,
-                TotalSize = size
+                Data = data,
+                RecordsTotal = count
             };
         }
 
