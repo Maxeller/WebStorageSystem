@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,15 +16,15 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
     public class LocationTypeService
     {
         private readonly AppDbContext _context;
-        private readonly IConfigurationProvider _mappingConfiguration;
+        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
         private readonly IQueryable<LocationType> _getQuery;
 
-        public LocationTypeService(AppDbContext context, IConfigurationProvider mappingConfiguration, ILoggerFactory factory)
+        public LocationTypeService(AppDbContext context, IMapper mapper, ILoggerFactory factory)
         {
             _context = context;
-            _mappingConfiguration = mappingConfiguration;
+            _mapper = mapper;
             _logger = factory.CreateLogger<LocationTypeService>();
 
             _getQuery = _context
@@ -66,8 +65,6 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         /// <returns>DataTableDbResult</returns>
         public async Task<DataTableDbResult<LocationTypeModel>> GetLocationTypesAsync(DataTableRequest request, bool getDeleted = false)
         {
-            LocationTypeModel[] data;
-
             var query = _context
                 .LocationTypes
                 .AsNoTracking()
@@ -81,9 +78,8 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
 
             var count = await query.CountAsync();
 
-            data = await query
-                .ProjectTo<LocationTypeModel>(_mappingConfiguration)
-                .ToArrayAsync();
+            var data =
+                query.Select(locationType => _mapper.Map<LocationTypeModel>(locationType)).AsParallel().ToArray();
 
             return new DataTableDbResult<LocationTypeModel>
             {

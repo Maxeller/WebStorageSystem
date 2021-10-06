@@ -17,15 +17,15 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
     public class LocationService
     {
         private readonly AppDbContext _context;
-        private readonly IConfigurationProvider _mappingConfiguration;
+        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
         private readonly IQueryable<Location> _getQuery;
 
-        public LocationService(AppDbContext context, IConfigurationProvider mappingConfiguration, ILoggerFactory factory)
+        public LocationService(AppDbContext context, IMapper mapper, ILoggerFactory factory)
         {
             _context = context;
-            _mappingConfiguration = mappingConfiguration;
+            _mapper = mapper;
             _logger = factory.CreateLogger<LocationService>();
 
             _getQuery = _context
@@ -67,8 +67,6 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         /// <returns>DataTableDbResult</returns>
         public async Task<DataTableDbResult<LocationModel>> GetLocationsAsync(DataTableRequest request, bool getDeleted = false)
         {
-            LocationModel[] data;
-
             var query = _context
                 .Locations
                 .AsNoTracking()
@@ -84,9 +82,8 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
 
             var count = await query.CountAsync();
 
-            data = await query
-                .ProjectTo<LocationModel>(_mappingConfiguration)
-                .ToArrayAsync();
+            var data =
+                query.Select(location => _mapper.Map<LocationModel>(location)).AsParallel().ToArray();
 
             return new DataTableDbResult<LocationModel>
             {

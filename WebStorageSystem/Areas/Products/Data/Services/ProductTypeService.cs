@@ -17,15 +17,15 @@ namespace WebStorageSystem.Areas.Products.Data.Services
     public class ProductTypeService
     {
         private readonly AppDbContext _context;
-        private readonly IConfigurationProvider _mappingConfiguration;
+        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
         private IQueryable<ProductType> _getQuery;
 
-        public ProductTypeService(AppDbContext context, IConfigurationProvider mappingConfiguration, ILoggerFactory factory)
+        public ProductTypeService(AppDbContext context, IMapper mapper, ILoggerFactory factory)
         {
             _context = context;
-            _mappingConfiguration = mappingConfiguration;
+            _mapper = mapper;
             _logger = factory.CreateLogger<ProductTypeService>();
 
             _getQuery = _context
@@ -67,8 +67,6 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <returns>DataTableDbResult</returns>
         public async Task<DataTableDbResult<ProductTypeModel>> GetProductTypesAsync(DataTableRequest request, bool getDeleted = false)
         {
-            ProductTypeModel[] data;
-
             var query = _context
                 .ProductTypes
                 .AsNoTracking()
@@ -82,9 +80,8 @@ namespace WebStorageSystem.Areas.Products.Data.Services
 
             var count = await query.CountAsync();
 
-            data = await query
-                .ProjectTo<ProductTypeModel>(_mappingConfiguration)
-                .ToArrayAsync();
+            var data =
+                query.Select(productType => _mapper.Map<ProductTypeModel>(productType)).AsParallel().ToArray();
 
             return new DataTableDbResult<ProductTypeModel>
             {

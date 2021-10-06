@@ -17,15 +17,15 @@ namespace WebStorageSystem.Areas.Products.Data.Services
     public class ManufacturerService
     {
         private readonly AppDbContext _context;
-        private readonly IConfigurationProvider _mappingConfiguration;
+        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
         private readonly IQueryable<Manufacturer> _getQuery;
 
-        public ManufacturerService(AppDbContext context, IConfigurationProvider mappingConfiguration, ILoggerFactory factory)
+        public ManufacturerService(AppDbContext context, IMapper mapper, ILoggerFactory factory)
         {
             _context = context;
-            _mappingConfiguration = mappingConfiguration;
+            _mapper = mapper;
             _logger = factory.CreateLogger<ManufacturerService>();
 
             _getQuery = _context
@@ -68,8 +68,6 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <returns>DataTableDbResult</returns>
         public async Task<DataTableDbResult<ManufacturerModel>> GetManufacturersAsync(DataTableRequest request, bool getDeleted = false)
         {
-            ManufacturerModel[] data;
-
             var query = _context
                 .Manufacturers
                 .AsNoTracking()
@@ -83,9 +81,8 @@ namespace WebStorageSystem.Areas.Products.Data.Services
 
             var count = await query.CountAsync();
 
-            data = await query
-                .ProjectTo<ManufacturerModel>(_mappingConfiguration)
-                .ToArrayAsync();
+            var data =
+                query.Select(manufacturer => _mapper.Map<ManufacturerModel>(manufacturer)).AsParallel().ToArray();
 
             return new DataTableDbResult<ManufacturerModel>
             {
