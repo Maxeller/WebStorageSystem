@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
-using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Products.Data.Entities;
