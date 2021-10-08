@@ -594,569 +594,152 @@ $(document).ready(function () {
 });
 
 // --- UNIT ---
-$(() => {
+$(document).ready(function () {
     if ($("#dtUnit").length !== 0) {
-        const table = $("#dtUnit").DataTable({
-            language: {
-                processing: "Loading Data...",
-                zeroRecords: "No matching records found"
+        // Column definition
+        var myColumns = [
+            {
+                data: "SerialNumber",
+                searchable: true,
+                orderable: true
             },
+            {
+                data: "Product.ProductType.Name",
+                searchable: true,
+                orderable: true
+            },
+            {
+                data: "Product.Manufacturer.Name",
+                searchable: true,
+                orderable: true
+            },
+            {
+                data: "Product.Name",
+                searchable: true,
+                orderable: true
+            },
+            {
+                data: "CurrentLocation.Name",
+                searchable: true,
+                orderable: true
+            },
+            {
+                data: "DefaultLocation.Name",
+                searchable: true,
+                orderable: true
+            },
+            {
+                data: "ShelfNumber",
+                searchable: true,
+                orderable: true
+            },
+            {
+                data: "Bundle.Name",
+                searchable: true,
+                orderable: true
+            },
+            {
+                data: "Notes",
+                searchable: true,
+                orderable: true
+            },
+            {
+                data: "Vendor.Name",
+                searchable: true,
+                orderable: true
+            },
+            {
+                data: "LastTransferTime",
+                searchable: true,
+                orderable: true,
+                render: function (data, type, row) {
+                    if (data)
+                        return moment(data).local().format("DD.MM.YYYY HH:mm:ss"); // Formats data from UTC to local time
+                    else
+                        return null;
+                }
+            },
+            {
+                data: "LastCheckTime",
+                searchable: true,
+                orderable: true,
+                render: function (data, type, row) {
+                    if (data)
+                        return moment(data).local().format("DD.MM.YYYY HH:mm:ss"); // Formats data from UTC to local time
+                    else
+                        return null;
+                }
+            },
+            {
+                data: "IsDeleted",
+                searchable: true,
+                orderable: true,
+                render: function (data, type, row) {
+                    var s = "";
+                    if (row.IsDeleted === true) s = "checked";
+                    return `<div class="form-check"><input class="form-check-input" type="checkbox" disabled ${s}></div>`;
+                }
+            },
+            {
+                data: "Action",
+                searchable: false,
+                orderable: false,
+                render: function (data, type, row) {
+                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> `;
+                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> `;
+                    if (!row.IsDeleted) {
+                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
+                    } else {
+                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
+                    }
+                    return s;
+                }
+            }
+        ];
+
+        // DataTable initialization 
+        var table = $("#dtUnit").DataTable({
+            paging: false,
             processing: true,
             serverSide: true,
-            orderCellsTop: true,
-            autoWidth: true,
-            deferRender: true,
-            //lengthMenu: [[5, 10, 15, 20, -1], [5, 10, 15, 20, "All"]],
-            paging: false,
-            dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6 text-right"l>><"row"<"col-sm-12"tr>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-            buttons: [
-                {
-                    text: "Export to Excel",
-                    className: "btn btn-sm btn-dark",
-                    action: function (e, dt, node, config) {
-                        window.location.href = "/Home/GetExcel"; // TODO: Change path
-                    },
-                    init: function (api, node, config) {
-                        $(node).removeClass("dt-button");
-                    }
-                }
-            ],
             ajax: {
-                type: "POST",
                 url: "Unit/LoadTable",
-                contentType: "application/json; charset=utf-8",
-                async: true,
-                headers: {
-                    "XSRF-TOKEN": document.querySelector('[name="__RequestVerificationToken"]').value
-                },
-                data: function (data) {
-                    //let additionalValues = [];
-                    //additionalValues[0] = "Additional Parameters 1";
-                    //additionalValues[1] = "Additional Parameters 2";
-                    //data.AdditionalValues = additionalValues;
-                    return JSON.stringify(data);
-                }
+                type: "POST"
             },
-            columns: [
-                {
-                    data: "SerialNumber",
-                    name: "co"
-                },
-                {
-                    data: "Product.Name",
-                    name: "co"
-                },
-                {
-                    data: "Product.ProductNumber",
-                    name: "co"
-                },
-                {
-                    data: "Product.Description",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Product.Webpage",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Product.ProductType.Name",
-                    name: "co"
-                },
-                {
-                    data: "Product.ProductType.Description",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Product.ProductType.CreatedDate",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Product.ProductType.ModifiedDate",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Product.ProductType.IsDeleted",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Product.ProductType.Action",
-                    name: "co",
-                    orderable: false,
-                    visible: false
-                },
-                {
-                    data: "Product.Manufacturer.Name",
-                    name: "co"
-                },
-                {
-                    data: "Product.Manufacturer.Description",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Product.Manufacturer.CreatedDate",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Product.Manufacturer.ModifiedDate",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Product.Manufacturer.IsDeleted",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Product.Manufacturer.Action",
-                    name: "co",
-                    orderable: false,
-                    visible: false
-                },
-                {
-                    data: "Product.CreatedDate",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Product.ModifiedDate",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Product.IsDeleted",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Product.Action",
-                    name: "co",
-                    orderable: false,
-                    visible: false
-                },
-                {
-                    data: "Location.Name",
-                    name: "co"
-                },
-                {
-                    data: "DefaultLocation.Name",
-                    name: "co"
-                },
-                {
-                    data: "Location.Description",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "DefaultLocation.Description",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Location.Address",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "DefaultLocation.Address",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Location.LocationType.Name",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "DefaultLocation.LocationType.Name",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Location.LocationType.Description",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "DefaultLocation.LocationType.Description",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Location.LocationType.CreatedDate",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "DefaultLocation.LocationType.CreatedDate",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Location.LocationType.ModifiedDate",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "DefaultLocation.LocationType.ModifiedDate",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Location.LocationType.IsDeleted",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "DefaultLocation.LocationType.IsDeleted",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Location.LocationType.Action",
-                    name: "co",
-                    orderable: false,
-                    visible: false
-                },
-                {
-                    data: "DefaultLocation.LocationType.Action",
-                    name: "co",
-                    orderable: false,
-                    visible: false
-                },
-                {
-                    data: "Location.CreatedDate",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "DefaultLocation.CreatedDate",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Location.ModifiedDate",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "DefaultLocation.ModifiedDate",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Location.IsDeleted",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "DefaultLocation.IsDeleted",
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Location.Action",
-                    name: "co",
-                    orderable: false,
-                    visible: false
-                },
-                {
-                    data: "DefaultLocation.Action",
-                    name: "co",
-                    orderable: false,
-                    visible: false
-                },
-                {
-                    data: "ShelfNumber",
-                    name: "co",
-                    visible: true,
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    }
-                },
-                {
-                    data: "Vendor.Name",
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    },
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Vendor.Address",
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    },
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Vendor.Phone",
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    },
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Vendor.Email",
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    },
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Vendor.Website",
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    },
-                    name: "co",
-                    visible: false
-                },
-                {
-                    data: "Vendor.CreatedDate",
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    },
-                    name: "gte",
-                    visible: false
-                },
-                {
-                    data: "Vendor.ModifiedDate",
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    },
-                    name: "gte",
-                    visible: false
-                },
-                {
-                    data: "Vendor.IsDeleted",
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    },
-                    name: "eq",
-                    visible: false
-                },
-                {
-                    data: "Vendor.Action",
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    },
-                    orderable: false,
-                    visible: false
-                },
-                {
-                    data: "PartOfBundle.Name",
-                    name: "co",
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    },
-                },
-                {
-                    data: "PartOfBundle.SerialNumber",
-                    name: "co",
-                    visible: false,
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    },
-                },
-                {
-                    data: "PartOfBundle.NumberOfUnits",
-                    name: "co",
-                    visible: false,
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    }
-                },
-                {
-                    data: "PartOfBundle.CreatedDate",
-                    name: "co",
-                    visible: false,
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    }
-                },
-                {
-                    data: "PartOfBundle.ModifiedDate",
-                    name: "co",
-                    visible: false,render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    }
-                },
-                {
-                    data: "PartOfBundle.IsDeleted",
-                    name: "co",
-                    visible: false,
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    }
-                },
-                {
-                    data: "PartOfBundle.Action",
-                    name: "co",
-                    visible: false,
-                    orderable: false,
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    }
-                },
-                {
-                    data: "Notes",
-                    name: "co",
-                    visible: true,
-                    render: function (data, type, row) {
-                        if (data)
-                            return data;
-                        else
-                            return null;
-                    }
-                },
-                {
-                    data: "LastTransferTime",
-                    name: "co",
-                    visible: true,
-                    render: function (data, type, row) {
-                        if (data)
-                            return moment(data).local().format("DD.MM.YYYY HH:mm:ss");
-                        else
-                            return null;
-                    }
-                },
-                {
-                    data: "LastCheckTime",
-                    name: "co",
-                    visible: true,
-                    render: function (data, type, row) {
-                        if (data)
-                            return moment(data).local().format("DD.MM.YYYY HH:mm:ss");
-                        else
-                            return null;
-                    }
-                },
-                {
-                    data: "CreatedDate",
-                    render: function (data, type, row) {
-                        if (data)
-                            return moment(data).local().format("DD.MM.YYYY HH:mm:ss"); // Formats data from UTC to local time
-                        else
-                            return null;
-                    },
-                    name: "gte",
-                    visible: false
-                },
-                {
-                    data: "ModifiedDate",
-                    render: function (data, type, row) {
-                        if (data)
-                            return moment(data).local().format("DD.MM.YYYY HH:mm:ss");
-                        else
-                            return null;
-                    },
-                    name: "gte",
-                    visible: false
-                },
-                {
-                    data: "IsDeleted",
-                    render: function (data, type, row) {
-                        if (data)
-                            return "Yes";
-                        else
-                            return "No";
-                    },
-                    visible: false
-                },
-                {
-                    data: "Action",
-                    orderable: false,
-                    width: 155,
-                    render: function (data, type, row) {
-                        let s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> | `;
-                        s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> | `;
-                        if (!row.IsDeleted) {
-                            s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.SerialNumber}">Delete</a>`;
-                        } else {
-                            s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.SerialNumber}">Restore</a>`;
-                        }
-                        return s;
-                    }
+            columns: myColumns
+        });
+
+        // Creation of search bars for searchable columns
+        $("#dtUnit thead tr").after("<tr>");
+        var counter = 0;
+        $("#dtUnit thead th").each(function () {
+            var title = $("#dtUnit thead th").eq($(this).index()).text();
+            if (myColumns[counter].searchable) {
+                if (myColumns[counter].data.includes("IsDeleted")) {
+                    $("#dtUnit thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox"></div></th>`);
+                } else if (myColumns[counter].data.includes("Date")) {
+                    $("#dtUnit thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
+                } else {
+                    $("#dtUnit thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-            ]
+                counter++;
+            }
         });
+        $("#dtUnit thead th:last").after("</tr>");
 
+        // Creation of trigger for search event
         table.columns().every(function (index) {
-            $(`#dtUnit thead tr:last th:eq(${index}) input`)
-                .on("keyup",
-                    function (e) {
-                        if (e.keyCode === 13) {
-                            table.column($(this).parent().index() + ":visible").search(this.value).draw();
-                        }
-                    }); // TODO: Add function to refresh when input is cleared
+            var column = this;
+            var elem = $(`#dtUnit thead tr:last th:eq(${index}) input`);
+            elem.on("keyup change", function () {
+                if (elem.hasClass("form-check-input")) { // If search is triggered from checkbox
+                    column.search(this.checked).draw();  // send value of checkbox
+                } if (elem.is("#searchDate")) {          // If search is triggered on "Date" column
+                    column.search(moment.utc(moment(this.value).utc()).format()).draw(); // convert date from local time to UTC
+                } else {                                 // If search is triggered from textbox
+                    column.search(this.value).draw();    // send value from textbox
+                }
+            });
         });
-
-        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(2)").text("Product");
-        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(4)").text("Product Type");
-        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(5)").text("Manufacturer");
-        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(6)").text("Location");
-        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(7)").text("Default Location");
-        $("#dtUnit > thead > tr:nth-child(1) > th:nth-child(9)").text("Bundle");
     }
 });

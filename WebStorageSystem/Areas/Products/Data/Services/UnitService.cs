@@ -3,30 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
-using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data;
+using WebStorageSystem.Extensions;
+using WebStorageSystem.Models.DataTables;
 
 namespace WebStorageSystem.Areas.Products.Data.Services
 {
     public class UnitService
     {
         private readonly AppDbContext _context;
-        private readonly IConfigurationProvider _mappingConfiguration;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        private readonly IQueryable<Unit> _getQuery;
-
-        public UnitService(AppDbContext context, IConfigurationProvider mappingConfiguration, IMapper mapper , ILoggerFactory factory)
+        private readonly IQueryable<Unit> _getQuery; 
+        
+        public UnitService(AppDbContext context, IMapper mapper, ILoggerFactory factory)
         {
             _context = context;
-            _mappingConfiguration = mappingConfiguration;
             _mapper = mapper;
             _logger = factory.CreateLogger<ProductService>();
 
@@ -89,55 +86,39 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <summary>
         /// Gets all entries from DB for jQuery Datatables
         /// </summary>
-        /// <param name="table">JqueryDataTablesParameters with table search and sort options</param>
+        /// <param name="request">DataTableRequest with table search and sort options</param>
         /// <param name="getDeleted">Looks through soft deleted entries</param>
-        /// <returns>JqueryDataTablesPagedResults</returns>
-        public async Task<JqueryDataTablesPagedResults<UnitModel>> GetUnitsAsync(JqueryDataTablesParameters table, bool getDeleted = false)
+        /// <returns>DataTableDbResult</returns>
+        public async Task<DataTableDbResult<UnitModel>> GetUnitsAsync(DataTableRequest request, bool getDeleted = false)
         {
-            UnitModel[] items;
-
             var query = _context
-                .Units.OrderBy(unit => unit.SerialNumber).AsNoTracking()
-                .OrderBy(unit => unit.SerialNumber).AsNoTracking()
+                .Units
                 .Include(unit => unit.Product)
-                    .ThenInclude(product => product.ProductType).AsNoTracking()
+                    .ThenInclude(product => product.ProductType)
                 .Include(unit => unit.Product)
-                    .ThenInclude(product => product.Manufacturer).AsNoTracking()
+                    .ThenInclude(product => product.Manufacturer)
                 .Include(unit => unit.Location)
-                    .ThenInclude(location => location.LocationType).AsNoTracking()
                 .Include(unit => unit.DefaultLocation)
-                    .ThenInclude(location => location.LocationType).AsNoTracking()
-                .Include(unit => unit.Vendor).AsNoTracking()
-                .Include(unit => unit.PartOfBundle).AsNoTracking();
+                .Include(unit => unit.Vendor)
+                .Include(unit => unit.PartOfBundle)
+                .AsNoTracking()
+                .IgnoreQueryFilters();
 
-            query = SearchOptionsProcessor<UnitModel, Unit>.Apply(query, table.Columns);
-            query = SortOptionsProcessor<UnitModel, Unit>.Apply(query, table);
+            // SEARCH
+            query = query.Search(request);
 
-            var size = await query.CountAsync();
+            // ORDER
+            query = query.OrderBy(request);
 
-            if (table.Length > 0)
+            var count = await query.CountAsync();
+
+            var data =
+                query.Select(unit => _mapper.Map<UnitModel>(unit)).AsParallel().ToArray();
+
+            return new DataTableDbResult<UnitModel>
             {
-                items = await query
-                    .Skip((table.Start / table.Length) * table.Length)
-                    .Take(table.Length)
-                    .ProjectTo<UnitModel>(_mappingConfiguration)
-                    .ToArrayAsync();
-            }
-            else
-            {
-                var units = await query.ToListAsync();
-                items = units.Select(unit => _mapper.Map<UnitModel>(unit)).AsParallel().ToArray();
-                /*
-                items = await query
-                    .ProjectTo<UnitModel>(_mappingConfiguration) // BUG: Doesn't work looks like it stuck in some kind of infinite loop
-                    .ToArrayAsync();
-                */
-            }
-
-            return new JqueryDataTablesPagedResults<UnitModel>
-            {
-                Items = items,
-                TotalSize = size
+                Data = data,
+                RecordsTotal = count
             };
         }
 
