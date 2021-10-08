@@ -19,22 +19,27 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        private readonly IQueryable<Unit> _getQuery; 
-        
+        private readonly IQueryable<Unit> _getQuery;
+
         public UnitService(AppDbContext context, IMapper mapper, ILoggerFactory factory)
         {
             _context = context;
             _mapper = mapper;
             _logger = factory.CreateLogger<ProductService>();
 
-            _getQuery = _context
-                .Units
-                .OrderBy(unit => unit.SerialNumber)
-                .Include(unit => unit.Product).ThenInclude(product => product.ProductType).AsNoTracking()
-                .Include(unit => unit.Location).ThenInclude(location => location.LocationType).AsNoTracking()
-                .Include(unit => unit.Vendor).AsNoTracking()
-                .Include(unit => unit.PartOfBundle).AsNoTracking()
-                .Include(unit => unit.Transfers).AsNoTracking();
+            _getQuery = _context.Units
+                .Include(unit => unit.Product)
+                    .ThenInclude(product => product.ProductType)
+                .Include(unit => unit.Product)
+                    .ThenInclude(product => product.Manufacturer)
+                .Include(unit => unit.Location)
+                    .ThenInclude(location => location.LocationType)
+                .Include(unit => unit.DefaultLocation)
+                    .ThenInclude(location => location.LocationType)
+                .Include(unit => unit.Vendor)
+                .Include(unit => unit.PartOfBundle)
+                .AsNoTracking()
+                .IgnoreQueryFilters();
         }
 
         /// <summary>
