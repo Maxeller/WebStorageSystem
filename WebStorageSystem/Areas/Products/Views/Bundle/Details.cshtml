@@ -28,7 +28,7 @@
         <dd class="col-sm-10">
             @foreach (var unit in Model.BundledUnits) @* TODO: Make all parts of this link*@
             {
-                <p><a href=@Url.Action("Details", "Unit", new {Id = unit.Id})>@unit.SerialNumber</a> - @unit.Product.Name (@unit.Product.ProductType.Name) - @unit.Location.Name</p>
+                <p><a href=@Url.Action("Details", "Unit", new {Id = unit.Id})>@unit.InventoryNumber</a> - @unit.Product.Name (@unit.Product.ProductType.Name) - @unit.Location.Name</p>
             }
         </dd>
         <dt class="col-sm-2">
