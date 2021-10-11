@@ -355,13 +355,14 @@ namespace WebStorageSystem.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SerialNumber = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    InventoryNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    SerialNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     LocationId = table.Column<int>(type: "int", nullable: false),
                     DefaultLocationId = table.Column<int>(type: "int", nullable: false),
                     VendorId = table.Column<int>(type: "int", nullable: true),
                     PartOfBundleId = table.Column<int>(type: "int", nullable: true),
-                    ShelfNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ShelfNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastTransferTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastCheckTime = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -373,7 +374,7 @@ namespace WebStorageSystem.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Units", x => x.Id);
-                    table.UniqueConstraint("AK_Units_SerialNumber", x => x.SerialNumber);
+                    table.UniqueConstraint("AK_Units_InventoryNumber", x => x.InventoryNumber);
                     table.ForeignKey(
                         name: "FK_Units_Bundles_PartOfBundleId",
                         column: x => x.PartOfBundleId,

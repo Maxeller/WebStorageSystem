@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Areas.Locations.Models;
-using WebStorageSystem.Data;
+using WebStorageSystem.Data.Database;
 using WebStorageSystem.Extensions;
 using WebStorageSystem.Models.DataTables;
 

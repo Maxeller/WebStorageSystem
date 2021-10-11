@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Data.Entities.Identities;
 
-namespace WebStorageSystem.Data
+namespace WebStorageSystem.Data.Database
 {
     public static class DbInitializer
     {

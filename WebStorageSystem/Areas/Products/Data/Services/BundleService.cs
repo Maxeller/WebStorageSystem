@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Models;
-using WebStorageSystem.Data;
+using WebStorageSystem.Data.Database;
 using WebStorageSystem.Extensions;
 using WebStorageSystem.Models.DataTables;
 

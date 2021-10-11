@@ -10,7 +10,7 @@ using WebStorageSystem.Data.Entities;
 using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Data.Entities.Transfers;
 
-namespace WebStorageSystem.Data
+namespace WebStorageSystem.Data.Database
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
     {

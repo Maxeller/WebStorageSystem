@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WebStorageSystem.Data;
+using WebStorageSystem.Data.Database;
 
 namespace WebStorageSystem.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211011165733_UnitSerialToInventory")]
-    partial class UnitSerialToInventory
+    [Migration("20211011210012_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

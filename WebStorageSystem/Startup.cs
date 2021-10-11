@@ -1,6 +1,4 @@
 using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Locations.Data.Services;
 using WebStorageSystem.Areas.Products.Data.Services;
-using WebStorageSystem.Data;
+using WebStorageSystem.Data.Database;
 using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Data.Services;
 

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WebStorageSystem.Data;
+using WebStorageSystem.Data.Database;
 
 namespace WebStorageSystem.Data.Migrations
 {
