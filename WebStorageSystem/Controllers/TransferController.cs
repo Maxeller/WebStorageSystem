@@ -144,12 +144,12 @@ namespace WebStorageSystem.Controllers
             var unitsAtLoc = units
                 .ToList()
                 .FindAll(unit => unit.Location.Id == loc &&
-                                 unit.SerialNumber.Contains(sn ?? "", StringComparison.OrdinalIgnoreCase))
+                                 unit.InventoryNumber.Contains(sn ?? "", StringComparison.OrdinalIgnoreCase))
                 .AsParallel()
                 .ToList();
             foreach (var unit in unitsAtLoc) // TODO: Change to Parallel.ForEach ?
             {
-                result.Results.Add(new Select2AjaxPartResult(unit.Id, unit.SerialNumber));
+                result.Results.Add(new Select2AjaxPartResult(unit.Id, unit.InventoryNumber));
             }
 
             return result;

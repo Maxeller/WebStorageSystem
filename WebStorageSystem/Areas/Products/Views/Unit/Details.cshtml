@@ -1,7 +1,7 @@
 ﻿@model UnitModel
 
 @{
-    ViewData["Title"] = "Details " + @Model.SerialNumber;
+    ViewData["Title"] = "Details " + @Model.InventoryNumber;
 }
 
 <h1>Details</h1>
@@ -10,6 +10,12 @@
     <h4>Unit</h4>
     <hr />
     <dl class="row">
+        <dt class="col-sm-2">
+            Inventory Number
+        </dt>
+        <dd class="col-sm-10">
+            @Model.InventoryNumber
+        </dd>
         <dt class="col-sm-2">
             Serial Number
         </dt>
@@ -100,13 +106,13 @@
     <a class="text-primary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     @if (!Model.IsDeleted)
     {
-        <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Delete", new {Id = Model.Id})" data-name="@Model.SerialNumber">
+        <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Delete", new {Id = Model.Id})" data-name="@Model.InventoryNumber">
             Delete
         </a>
     }
     @if (Model.IsDeleted)
     {
-        <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Restore", new {Id = Model.Id})" data-name="@Model.SerialNumber">
+        <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Restore", new {Id = Model.Id})" data-name="@Model.InventoryNumber">
             Restore
         </a>
     }

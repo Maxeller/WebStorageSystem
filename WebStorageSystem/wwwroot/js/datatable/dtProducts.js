@@ -599,7 +599,7 @@ $(document).ready(function () {
         // Column definition
         var myColumns = [
             {
-                data: "SerialNumber",
+                data: "InventoryNumber",
                 searchable: true,
                 orderable: true
             },
@@ -619,7 +619,12 @@ $(document).ready(function () {
                 orderable: true
             },
             {
-                data: "CurrentLocation.Name",
+                data: "SerialNumber",
+                searchable: true,
+                orderable: true
+            },
+            {
+                data: "Location.Name",
                 searchable: true,
                 orderable: true
             },
@@ -634,9 +639,10 @@ $(document).ready(function () {
                 orderable: true
             },
             {
-                data: "Bundle.Name",
+                data: "PartOfBundle.Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                defaultContent: ""
             },
             {
                 data: "Notes",
@@ -646,7 +652,8 @@ $(document).ready(function () {
             {
                 data: "Vendor.Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                defaultContent: ""
             },
             {
                 data: "LastTransferTime",

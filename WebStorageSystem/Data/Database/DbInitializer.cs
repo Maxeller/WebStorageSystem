@@ -67,13 +67,13 @@ namespace WebStorageSystem.Data
 
             var units = new[]
             {
-                new Unit {Product = products[0], SerialNumber = "3000-1", Location = locations[0], Vendor = vendors[0]},
-                new Unit {Product = products[0], SerialNumber = "3000-2", Location = locations[0], Vendor = vendors[0]},
-                new Unit {Product = products[0], SerialNumber = "3000-3", Location = locations[1], Vendor = vendors[0]},
-                new Unit {Product = products[0], SerialNumber = "3000-4", Location = locations[2], Vendor = vendors[0]},
-                new Unit {Product = products[1], SerialNumber = "5000-1", Location = locations[2], Vendor = vendors[1]},
-                new Unit {Product = products[2], SerialNumber = "PSM2-1", Location = locations[1], Vendor = vendors[1]},
-                new Unit {Product = products[2], SerialNumber = "PSM2-2", Location = locations[2], Vendor = vendors[1]}
+                new Unit {Product = products[0], InventoryNumber = "3000-1", Location = locations[0], Vendor = vendors[0]},
+                new Unit {Product = products[0], InventoryNumber = "3000-2", Location = locations[0], Vendor = vendors[0]},
+                new Unit {Product = products[0], InventoryNumber = "3000-3", Location = locations[1], Vendor = vendors[0]},
+                new Unit {Product = products[0], InventoryNumber = "3000-4", Location = locations[2], Vendor = vendors[0]},
+                new Unit {Product = products[1], InventoryNumber = "5000-1", Location = locations[2], Vendor = vendors[1]},
+                new Unit {Product = products[2], InventoryNumber = "PSM2-1", Location = locations[1], Vendor = vendors[1]},
+                new Unit {Product = products[2], InventoryNumber = "PSM2-2", Location = locations[2], Vendor = vendors[1]}
             };
             context.Units.AddRange(units);
             context.SaveChanges();

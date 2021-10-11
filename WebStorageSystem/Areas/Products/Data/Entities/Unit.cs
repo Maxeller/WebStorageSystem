@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Data.Entities;
@@ -9,8 +10,11 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
 {
     public class Unit : BaseEntityWithId
     {
-        [Required]
-        public string SerialNumber { get; set; } //TODO: compatibility with code reader
+        [Required, DisplayName("Inventory Number"), StringLength(100)]
+        public string InventoryNumber { get; set; } //TODO: compatibility with code reader
+
+        [DisplayName("Serial Number"), StringLength(100)]
+        public string SerialNumber { get; set; }
 
         [Required]
         public Product Product { get; set; }
@@ -30,6 +34,7 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
         public Bundle PartOfBundle { get; set; }
         public int? PartOfBundleId { get; set; }
 
+        [DisplayName("Shelf Number"), StringLength(100)]
         public string ShelfNumber { get; set; }
 
         public string Notes { get; set; }

@@ -105,7 +105,7 @@ namespace WebStorageSystem.Data
                     .WithMany(location => location.DefaultUnits)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasAlternateKey(unit => unit.SerialNumber);
+                entity.HasAlternateKey(unit => unit.InventoryNumber);
                 entity.HasQueryFilter(unit => !unit.IsDeleted);
                 entity.ToTable("Units");
             });

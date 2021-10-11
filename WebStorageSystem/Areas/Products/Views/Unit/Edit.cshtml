@@ -1,7 +1,7 @@
 ﻿@model UnitModel
 
 @{
-    ViewData["Title"] = "Edit " + @Model.SerialNumber;
+    ViewData["Title"] = "Edit " + @Model.InventoryNumber;
 }
 
 <h1>Edit</h1>
@@ -12,6 +12,11 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="InventoryNumber" class="control-label"></label>
+                <input asp-for="InventoryNumber" class="form-control" />
+                <span asp-validation-for="InventoryNumber" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="SerialNumber" class="control-label"></label>
                 <input asp-for="SerialNumber" class="form-control" />
@@ -64,7 +69,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="LastCheckTime" class="control-label"></label>
-                <input asp-for="LastCheckTime" class="form-control" readonly="readonly" id="dt-lastCheck"/>
+                <input asp-for="LastCheckTime" class="form-control" readonly="readonly" id="dt-lastCheck" />
                 <button type="button" class="btn btn-secondary" id="set-current-time">Now</button>
                 <span asp-validation-for="LastCheckTime" class="text-danger"></span>
             </div>

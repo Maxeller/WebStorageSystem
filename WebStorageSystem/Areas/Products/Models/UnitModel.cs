@@ -9,8 +9,11 @@ namespace WebStorageSystem.Areas.Products.Models
 {
     public class UnitModel : BaseEntityModelWithId
     {
-        [Required, DisplayName("Serial Number")]
-        public string SerialNumber { get; set; } //TODO: compatibility with code reader
+        [Required, DisplayName("Inventory Number"), StringLength(100)]
+        public string InventoryNumber { get; set; } //TODO: compatibility with code reader
+
+        [DisplayName("Serial Number"), StringLength(100)]
+        public string SerialNumber { get; set; }
 
         public ProductModel Product { get; set; }
 
@@ -40,7 +43,7 @@ namespace WebStorageSystem.Areas.Products.Models
 
         public IEnumerable<TransferModel> Transfers { get; set; }
 
-        [DisplayName("Shelf Number")]
+        [DisplayName("Shelf Number"), StringLength(100)]
         public string ShelfNumber { get; set; }
 
         public string Notes { get; set; }
@@ -51,12 +54,12 @@ namespace WebStorageSystem.Areas.Products.Models
         [DisplayName("Last Check Time")]
         public DateTime? LastCheckTime { get; set; }
 
-        public string SerialNumberProduct
+        public string InventoryNumberProduct
         {
             get
             {
-                if (Product == null) return SerialNumber;
-                return SerialNumber + " (" + Product.Name + ")";
+                if (Product == null) return InventoryNumber;
+                return InventoryNumber + " (" + Product.Name + ")";
             }
         }
 

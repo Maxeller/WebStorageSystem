@@ -159,7 +159,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             var units = await _uService.GetUnitsAsync(getDeleted);
             var unitModels = _mapper.Map<ICollection<UnitModel>>(units);
-            ViewBag.Units = new MultiSelectList(unitModels, "Id", "SerialNumberProduct", (selectedValues ?? Array.Empty<UnitModel>()).Select(s => s.Id).ToList());
+            ViewBag.Units = new MultiSelectList(unitModels, "Id", "InventoryNumberProduct", (selectedValues ?? Array.Empty<UnitModel>()).Select(s => s.Id).ToList());
         }
     }
 }
