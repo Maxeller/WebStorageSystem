@@ -29,10 +29,10 @@ namespace WebStorageSystem.Data
         // Folder: Transfer
         public DbSet<Transfer> Transfers { get; set; }
 
-        //public DbSet<TransferUnit> TransferUnits { get; set; }
-
         // Folder: Identity
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+
+        //public DbSet<ImageEntity> Images { get; set; } TODO: FINISH
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
