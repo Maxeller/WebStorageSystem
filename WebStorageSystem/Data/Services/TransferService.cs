@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
-using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,35 +10,42 @@ using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Data.Entities.Transfers;
+using WebStorageSystem.Extensions;
 using WebStorageSystem.Models;
+using WebStorageSystem.Models.DataTables;
 
 namespace WebStorageSystem.Data.Services
 {
     public class TransferService
     {
         private readonly AppDbContext _context;
-        private readonly IConfigurationProvider _mappingConfiguration;
+        private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger _logger;
 
         private readonly IQueryable<Transfer> _getQuery;
 
-        public TransferService(AppDbContext context, IConfigurationProvider mappingConfiguration, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, ILoggerFactory factory)
+        public TransferService(AppDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, ILoggerFactory factory)
         {
             _context = context;
-            _mappingConfiguration = mappingConfiguration;
+            _mapper = mapper;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
             _logger = factory.CreateLogger<TransferService>();
 
             _getQuery = _context
-                .Transfers.AsNoTracking()
+                .Transfers
                 .OrderByDescending(transfer => transfer.ModifiedDate)
-                .Include(transfer => transfer.OriginLocation).ThenInclude(location => location.LocationType).AsNoTracking()
-                .Include(transfer => transfer.User).AsNoTracking()
-                .Include(transfer => transfer.DestinationLocation).ThenInclude(location => location.LocationType).AsNoTracking()
-                .Include(transfer => transfer.Units).ThenInclude(unit => unit.Product).ThenInclude(product => product.ProductType).AsNoTracking();
+                .Include(transfer => transfer.OriginLocation)
+                    .ThenInclude(location => location.LocationType)
+                .Include(transfer => transfer.DestinationLocation)
+                    .ThenInclude(location => location.LocationType)
+                .Include(transfer => transfer.User)
+                .Include(transfer => transfer.Units)
+                    .ThenInclude(unit => unit.Product)
+                        .ThenInclude(product => product.ProductType)
+                .AsNoTracking();
         }
 
         /// <summary>
@@ -70,45 +74,38 @@ namespace WebStorageSystem.Data.Services
         /// <summary>
         /// Gets all entries from DB for jQuery Datatables
         /// </summary>
-        /// <param name="table">JqueryDataTablesParameters with table search and sort options</param>
+        /// <param name="request">DataTableRequest with table search and sort options</param>
         /// <param name="getDeleted">Looks through soft deleted entries</param>
-        /// <returns>JqueryDataTablesPagedResults</returns>
-        public async Task<JqueryDataTablesPagedResults<TransferModel>> GetTransfersAsync(JqueryDataTablesParameters table, bool getDeleted = false)
+        /// <returns>DataTableDbResult</returns>
+        public async Task<DataTableDbResult<TransferModel>> GetTransfersAsync(DataTableRequest request, bool getDeleted = false)
         {
-            TransferModel[] items;
-
             var query = _context
-                .Transfers.AsNoTracking()
-                .OrderByDescending(transfer => transfer.TransferTime)
-                .Include(transfer => transfer.OriginLocation).ThenInclude(location => location.LocationType).AsNoTracking()
-                .Include(transfer => transfer.DestinationLocation).ThenInclude(location => location.LocationType).AsNoTracking()
-                .Include(transfer => transfer.User).AsNoTracking()
-                .Include(transfer => transfer.Units).ThenInclude(unit => unit.Product).ThenInclude(product => product.ProductType).AsNoTracking();
-                
-            query = SearchOptionsProcessor<TransferModel, Transfer>.Apply(query, table.Columns);
-            query = SortOptionsProcessor<TransferModel, Transfer>.Apply(query, table);
+                .Transfers
+                .Include(transfer => transfer.OriginLocation)
+                    .ThenInclude(location => location.LocationType)
+                .Include(transfer => transfer.DestinationLocation)
+                    .ThenInclude(location => location.LocationType)
+                .Include(transfer => transfer.User)
+                .Include(transfer => transfer.Units)
+                    .ThenInclude(unit => unit.Product)
+                        .ThenInclude(product => product.ProductType)
+                .AsNoTracking();
 
-            var size = await query.CountAsync();
+            // SEARCH
+            query = query.Search(request);
 
-            if (table.Length > 0)
-            {
-                items = await query
-                    .Skip((table.Start / table.Length) * table.Length)
-                    .Take(table.Length)
-                    .ProjectTo<TransferModel>(_mappingConfiguration)
-                    .ToArrayAsync();
-            }
-            else
-            {
-                items = await query
-                    .ProjectTo<TransferModel>(_mappingConfiguration)
-                    .ToArrayAsync();
-            }
+            // ORDER
+            query = query.OrderBy(request);
 
-            return new JqueryDataTablesPagedResults<TransferModel>
+            var count = await query.CountAsync();
+
+            var data =
+                query.Select(transfer => _mapper.Map<TransferModel>(transfer)).AsParallel().ToArray();
+
+            return new DataTableDbResult<TransferModel>
             {
-                Items = items,
-                TotalSize = size
+                Data = data,
+                RecordsTotal = count
             };
         }
 
