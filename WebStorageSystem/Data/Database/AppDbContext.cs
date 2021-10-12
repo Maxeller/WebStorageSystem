@@ -32,7 +32,8 @@ namespace WebStorageSystem.Data.Database
         // Folder: Identity
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
-        //public DbSet<ImageEntity> Images { get; set; } TODO: FINISH
+        // Folder: Root
+        public DbSet<ImageEntity> Images { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -154,6 +155,15 @@ namespace WebStorageSystem.Data.Database
             modelBuilder.Entity<ApplicationUser>(entity =>
             {
                 entity.ToTable("Users");
+            });
+
+            // Folder: Root
+            modelBuilder.Entity<ImageEntity>(entity =>
+            {
+                entity
+                    .HasMany(image => image.Products)
+                    .WithOne(product => product.Image);
+                entity.ToTable("Images");
             });
         }
 

@@ -32,6 +32,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 .OrderBy(product => product.Name)
                 .Include(product => product.ProductType)
                 .Include(product => product.Manufacturer)
+                .Include(product => product.Image)
                 .AsNoTracking();
         }
 
@@ -100,6 +101,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         {
             product.Manufacturer = _context.Manufacturers.Attach(product.Manufacturer).Entity;
             product.ProductType = _context.ProductTypes.Attach(product.ProductType).Entity;
+            product.Image = _context.Images.Attach(product.Image).Entity;
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
         }

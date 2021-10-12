@@ -23,20 +23,16 @@ namespace WebStorageSystem.Areas.Products.Models
         [Required, Display(Name = "Product Type")]
         public int ProductTypeId { get; set; }
 
-        [Display(Name = "Product Type")]
+        [Display(Name = "Product Type")] 
         public ProductTypeModel ProductType { get; set; }
 
         [Required, Display(Name = "Manufacturer")]
         public int ManufacturerId { get; set; }
 
         public ManufacturerModel Manufacturer { get; set; }
-       
-        /* //TODO FINISH IMAGE
-        [Required]
-        public ImageEntityModel Image { get; set; }
 
+        public ImageEntityModel Image { get; set; }
         public int? ImageId { get; set; }
-        */
 
         [JsonIgnore]
         public IEnumerable<UnitModel> Units { get; set; }

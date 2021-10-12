@@ -1,0 +1,12 @@
+﻿@model ImageEntityModel
+
+<div class="form-group">
+    <label asp-for="Title" class="control-label"></label>
+    <input asp-for="Title" class="form-control" />
+    <span asp-validation-for="Title" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="ImageFile" class="control-label"></label>
+    <input asp-for="ImageFile" type="file" class="form-control-file" accept="image/*" />
+    <span asp-validation-for="ImageFile" class="text-danger"></span>
+</div>

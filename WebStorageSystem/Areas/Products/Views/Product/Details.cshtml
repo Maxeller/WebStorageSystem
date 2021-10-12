@@ -10,6 +10,7 @@
     <h4>Product</h4>
     <hr />
     <dl class="row">
+        @await Html.PartialAsync("ImageUpload/View", Model.Image)
         <dt class="col-sm-2">
             Name
         </dt>

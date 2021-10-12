@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Areas.Products.Models;
+using WebStorageSystem.Data.Services;
+using WebStorageSystem.Models;
 using WebStorageSystem.Models.DataTables;
 
 namespace WebStorageSystem.Areas.Products.Controllers
@@ -14,16 +17,20 @@ namespace WebStorageSystem.Areas.Products.Controllers
     [Area("Products")]
     public class ProductController : Controller
     {
-        private readonly ProductService _service;
-        private readonly ProductTypeService _ptService;
-        private readonly ManufacturerService _mService;
+        private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly ProductService _productService;
+        private readonly ProductTypeService _productTypeService;
+        private readonly ManufacturerService _manufacturerService;
+        private readonly ImageService _imageService;
         private readonly IMapper _mapper;
 
-        public ProductController(ProductService service, ProductTypeService productTypeService, ManufacturerService manufacturerService, IMapper mapper)
+        public ProductController(IWebHostEnvironment hostEnvironment, ProductService productService, ProductTypeService productTypeService, ManufacturerService manufacturerService, ImageService imageService, IMapper mapper)
         {
-            _service = service;
-            _ptService = productTypeService;
-            _mService = manufacturerService;
+            _hostEnvironment = hostEnvironment;
+            _productService = productService;
+            _productTypeService = productTypeService;
+            _manufacturerService = manufacturerService;
+            _imageService = imageService;
             _mapper = mapper;
         }
 
@@ -38,7 +45,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var product = await _service.GetProductAsync((int)id, getDeleted);
+            var product = await _productService.GetProductAsync((int)id, getDeleted);
             if (product == null) return NotFound();
             var productModel = _mapper.Map<ProductModel>(product);
 
@@ -55,7 +62,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Products/Product/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,ProductNumber,Description,Webpage,IsDeleted,ManufacturerId,ProductTypeId")] ProductModel productModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Create([Bind("Name,ProductNumber,Description,Webpage,IsDeleted,ManufacturerId,ProductTypeId,Image")] ProductModel productModel, [Bind("Title,ImageFile")] ImageEntityModel imageModel, [FromQuery] bool getDeleted)
         {
             if (!ModelState.IsValid)
             {
@@ -63,9 +70,10 @@ namespace WebStorageSystem.Areas.Products.Controllers
                 return View(productModel);
             }
 
-            var manufacturer = await _mService.GetManufacturerAsync(productModel.ManufacturerId, getDeleted);
-            var productType = await _ptService.GetProductTypeAsync(productModel.ProductTypeId, getDeleted);
-            if (manufacturer == null || productType == null)
+            var manufacturer = await _manufacturerService.GetManufacturerAsync(productModel.ManufacturerId, getDeleted);
+            var productType = await _productTypeService.GetProductTypeAsync(productModel.ProductTypeId, getDeleted);
+            var image = await _imageService.AddImageAsync(imageModel, _hostEnvironment.WebRootPath);
+            if (manufacturer == null || productType == null || image == null)
             {
                 await CreateDropdownLists(getDeleted);
                 return View(productModel);
@@ -73,7 +81,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
             var product = _mapper.Map<Product>(productModel);
             product.Manufacturer = manufacturer;
             product.ProductType = productType;
-            await _service.AddProductAsync(product);
+            product.Image = image;
+            await _productService.AddProductAsync(product);
             return RedirectToAction(nameof(Index));
         }
 
@@ -82,7 +91,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var product = await _service.GetProductAsync((int)id, getDeleted);
+            var product = await _productService.GetProductAsync((int)id, getDeleted);
             if (product == null) return NotFound();
             var productModel = _mapper.Map<ProductModel>(product);
 
@@ -99,8 +108,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (id != productModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(productModel);
 
-            var manufacturer = await _mService.GetManufacturerAsync(productModel.ManufacturerId, getDeleted);
-            var productType = await _ptService.GetProductTypeAsync(productModel.ProductTypeId, getDeleted);
+            var manufacturer = await _manufacturerService.GetManufacturerAsync(productModel.ManufacturerId, getDeleted);
+            var productType = await _productTypeService.GetProductTypeAsync(productModel.ProductTypeId, getDeleted);
             if (manufacturer == null || productType == null)
             {
                 await CreateDropdownLists(getDeleted);
@@ -110,10 +119,10 @@ namespace WebStorageSystem.Areas.Products.Controllers
             product.Manufacturer = manufacturer;
             product.ProductType = productType;
 
-            var (success, errorMessage) = await _service.EditProductAsync(product);
+            var (success, errorMessage) = await _productService.EditProductAsync(product);
             if (success) return RedirectToAction(nameof(Index));
 
-            if (await _service.GetProductAsync(product.Id) == null) return NotFound();
+            if (await _productService.GetProductAsync(product.Id) == null) return NotFound();
             await CreateDropdownLists(getDeleted);
             TempData["Error"] = errorMessage;
             return View(productModel);
@@ -125,7 +134,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            await _service.DeleteProductAsync((int)id);
+            await _productService.DeleteProductAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -135,8 +144,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
-            if (!(await _service.ProductExistsAsync((int)id, true))) return NotFound();
-            await _service.RestoreProductAsync((int)id);
+            if (!(await _productService.ProductExistsAsync((int)id, true))) return NotFound();
+            await _productService.RestoreProductAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -146,7 +155,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             try
             {
-                var results = await _service.GetProductsAsync(request);
+                var results = await _productService.GetProductsAsync(request);
                 foreach (var item in results.Data)
                 {
                     item.Action = new Dictionary<string, string>
@@ -181,14 +190,14 @@ namespace WebStorageSystem.Areas.Products.Controllers
 
         private async Task CreateManufacturerDropdownList(bool getDeleted = false, object selectedManufacturer = null)
         {
-            var manufacturers = await _mService.GetManufacturersAsync(getDeleted);
+            var manufacturers = await _manufacturerService.GetManufacturersAsync(getDeleted);
             var mModels = _mapper.Map<ICollection<ManufacturerModel>>(manufacturers);
             ViewBag.Manufacturers = new SelectList(mModels, "Id", "Name", selectedManufacturer);
         }
 
         private async Task CreateProductTypeDropdownList(bool getDeleted = false, object selectedType = null)
         {
-            var productTypes = await _ptService.GetProductTypesAsync(getDeleted);
+            var productTypes = await _productTypeService.GetProductTypesAsync(getDeleted);
             var ptModels = _mapper.Map<ICollection<ProductTypeModel>>(productTypes);
             ViewBag.ProductTypes = new SelectList(ptModels, "Id", "Name", selectedType);
         }

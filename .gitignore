@@ -377,3 +377,6 @@ FodyWeavers.xsd
 .history
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
+
+# Project Specific
+**/wwwroot/upload/images/*

@@ -215,6 +215,9 @@ namespace WebStorageSystem
 
             // Transfer Services
             services.AddScoped<TransferService>();
+
+            // Misc Services
+            services.AddScoped<ImageService>();
         }
 
         public static void UpdateMigrations(this IApplicationBuilder app)

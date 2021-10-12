@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebStorageSystem.Data.Database;
 
 namespace WebStorageSystem.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211012142910_AddedImagesTable")]
+    partial class AddedImagesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -334,9 +336,6 @@ namespace WebStorageSystem.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int?>("ImageId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -371,8 +370,6 @@ namespace WebStorageSystem.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasAlternateKey("ProductNumber");
-
-                    b.HasIndex("ImageId");
 
                     b.HasIndex("ManufacturerId");
 
@@ -775,10 +772,6 @@ namespace WebStorageSystem.Data.Migrations
 
             modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.Product", b =>
                 {
-                    b.HasOne("WebStorageSystem.Data.Entities.ImageEntity", "Image")
-                        .WithMany("Products")
-                        .HasForeignKey("ImageId");
-
                     b.HasOne("WebStorageSystem.Areas.Products.Data.Entities.Manufacturer", "Manufacturer")
                         .WithMany("Products")
                         .HasForeignKey("ManufacturerId")
@@ -790,8 +783,6 @@ namespace WebStorageSystem.Data.Migrations
                         .HasForeignKey("ProductTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Image");
 
                     b.Navigation("Manufacturer");
 
@@ -910,11 +901,6 @@ namespace WebStorageSystem.Data.Migrations
             modelBuilder.Entity("WebStorageSystem.Data.Entities.Identities.ApplicationUser", b =>
                 {
                     b.Navigation("Transfers");
-                });
-
-            modelBuilder.Entity("WebStorageSystem.Data.Entities.ImageEntity", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }
