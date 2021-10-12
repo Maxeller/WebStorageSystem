@@ -3,7 +3,7 @@ using AutoMapper;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Models;
 
-namespace WebStorageSystem.Areas.Products.Data
+namespace WebStorageSystem.Areas.Products.Data.Automapper
 {
     public class ProductsMappingProfile : Profile
     {

@@ -3,7 +3,7 @@ using AutoMapper;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Areas.Locations.Models;
 
-namespace WebStorageSystem.Areas.Locations.Data
+namespace WebStorageSystem.Areas.Locations.Data.Automapper
 {
     public class LocationsMappingProfile : Profile
     {

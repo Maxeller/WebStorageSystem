@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using AutoMapper;
+using WebStorageSystem.Data.Entities;
 using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Data.Entities.Transfers;
 using WebStorageSystem.Models;
 
-namespace WebStorageSystem.Data
+namespace WebStorageSystem.Data.Automapper
 {
     public class MappingProfile : Profile
     {
@@ -15,6 +13,7 @@ namespace WebStorageSystem.Data
         {
             TransferMapping();
             ApplicationUserMapping();
+            ImageMapping();
         }
 
         private void TransferMapping()
@@ -31,6 +30,14 @@ namespace WebStorageSystem.Data
             CreateMap<List<ApplicationUser>, List<ApplicationUserModel>>();
             CreateMap<ApplicationUserModel, ApplicationUser>();
             CreateMap<List<ApplicationUserModel>, List<ApplicationUser>>();
+        }
+
+        private void ImageMapping()
+        {
+            CreateMap<ImageEntity, ImageEntityModel>();
+            CreateMap<List<ImageEntity>, List<ImageEntityModel>>();
+            CreateMap<ImageEntityModel, ImageEntity>();
+            CreateMap<List<ImageEntityModel>, List<ImageEntity>>();
         }
     }
 }
