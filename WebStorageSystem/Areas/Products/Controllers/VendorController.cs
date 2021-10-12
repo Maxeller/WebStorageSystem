@@ -13,12 +13,12 @@ namespace WebStorageSystem.Areas.Products.Controllers
     [Area("Products")]
     public class VendorController : Controller
     {
-        private readonly VendorService _service;
+        private readonly VendorService _vendorService;
         private readonly IMapper _mapper;
 
-        public VendorController(VendorService service, IMapper mapper)
+        public VendorController(VendorService vendorService, IMapper mapper)
         {
-            _service = service;
+            _vendorService = vendorService;
             _mapper = mapper;
         }
 
@@ -33,7 +33,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var vendor = await _service.GetVendorAsync((int)id, getDeleted);
+            var vendor = await _vendorService.GetVendorAsync((int)id, getDeleted);
             if (vendor == null) return NotFound();
             var vendorModel = _mapper.Map<VendorModel>(vendor);
 
@@ -54,7 +54,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (!ModelState.IsValid) return View(vendorModel);
 
             var vendor = _mapper.Map<Vendor>(vendorModel);
-            await _service.AddVendorAsync(vendor);
+            await _vendorService.AddVendorAsync(vendor);
             return RedirectToAction(nameof(Index));
         }
 
@@ -63,7 +63,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var vendor = await _service.GetVendorAsync((int)id, getDeleted);
+            var vendor = await _vendorService.GetVendorAsync((int)id, getDeleted);
             if (vendor == null) return NotFound();
             var vendorModel = _mapper.Map<VendorModel>(vendor);
 
@@ -80,9 +80,9 @@ namespace WebStorageSystem.Areas.Products.Controllers
 
             var vendor = _mapper.Map<Vendor>(vendorModel);
 
-            var (success, errorMessage) = await _service.EditVendorAsync(vendor);
+            var (success, errorMessage) = await _vendorService.EditVendorAsync(vendor);
             if (success) return RedirectToAction(nameof(Index));
-            if (await _service.GetVendorAsync(vendor.Id) == null) return NotFound();
+            if (await _vendorService.GetVendorAsync(vendor.Id) == null) return NotFound();
             TempData["Error"] = errorMessage;
             return View(vendorModel);
         }
@@ -93,7 +93,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            await _service.DeleteVendorAsync((int)id);
+            await _vendorService.DeleteVendorAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -103,8 +103,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
-            if (!(await _service.VendorExistsAsync((int)id, true))) return NotFound();
-            await _service.RestoreVendorAsync((int)id);
+            if (!(await _vendorService.VendorExistsAsync((int)id, true))) return NotFound();
+            await _vendorService.RestoreVendorAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -114,7 +114,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             try
             {
-                var results = await _service.GetVendorsAsync(request);
+                var results = await _vendorService.GetVendorsAsync(request);
                 foreach (var item in results.Data)
                 {
                     item.Action = new Dictionary<string, string>

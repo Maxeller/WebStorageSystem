@@ -20,17 +20,17 @@ namespace WebStorageSystem.Controllers
     //[Authorize]
     public class TransferController : Controller
     {
-        private readonly TransferService _service;
-        private readonly LocationService _lService;
-        private readonly UnitService _uService;
+        private readonly TransferService _transferService;
+        private readonly LocationService _locationService;
+        private readonly UnitService _unitService;
         private readonly IMapper _mapper;
 
-        public TransferController(TransferService service, LocationService lService, UnitService uService,
+        public TransferController(TransferService transferService, LocationService locationService, UnitService unitService,
             IMapper mapper)
         {
-            _service = service;
-            _lService = lService;
-            _uService = uService;
+            _transferService = transferService;
+            _locationService = locationService;
+            _unitService = unitService;
             _mapper = mapper;
         }
 
@@ -62,12 +62,12 @@ namespace WebStorageSystem.Controllers
             var units = new List<Unit>(transferModel.UnitsIds.ToArray().Length);
             foreach (var unitId in transferModel.UnitsIds)
             {
-                units.Add(await _uService.GetUnitAsync(unitId));
+                units.Add(await _unitService.GetUnitAsync(unitId));
             }
 
             transfer.Units = units;
             transfer.State = state;
-            await _service.AddTransferAsync(transfer);
+            await _transferService.AddTransferAsync(transfer);
             return RedirectToAction(nameof(Index));
         }
 
@@ -108,7 +108,7 @@ namespace WebStorageSystem.Controllers
         {
             try
             {
-                var results = await _service.GetTransfersAsync(request);
+                var results = await _transferService.GetTransfersAsync(request);
                 foreach (var item in results.Data)
                 {
                     item.Action = new Dictionary<string, string>
@@ -140,7 +140,7 @@ namespace WebStorageSystem.Controllers
         {
             var result = new Select2AjaxResult();
 
-            var units = await _uService.GetUnitsAsync();
+            var units = await _unitService.GetUnitsAsync();
             var unitsAtLoc = units
                 .ToList()
                 .FindAll(unit => unit.Location.Id == loc &&
@@ -157,7 +157,7 @@ namespace WebStorageSystem.Controllers
 
         private async Task CreateLocationDropdownList(bool getDeleted = false, object selectedUnits = null)
         {
-            var locations = await _lService.GetLocationsAsync(getDeleted);
+            var locations = await _locationService.GetLocationsAsync(getDeleted);
             var lModels = _mapper.Map<ICollection<LocationModel>>(locations);
             ViewBag.Locations = new SelectList(lModels, "Id", "Name", selectedUnits);
         }

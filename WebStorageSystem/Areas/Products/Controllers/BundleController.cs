@@ -15,14 +15,14 @@ namespace WebStorageSystem.Areas.Products.Controllers
     [Area("Products")]
     public class BundleController : Controller
     {
-        private readonly BundleService _service;
-        private readonly UnitService _uService;
+        private readonly BundleService _bundleService;
+        private readonly UnitService _unitService;
         private readonly IMapper _mapper;
 
-        public BundleController(BundleService service, UnitService uService, IMapper mapper)
+        public BundleController(BundleService bundleService, UnitService unitService, IMapper mapper)
         {
-            _service = service;
-            _uService = uService;
+            _bundleService = bundleService;
+            _unitService = unitService;
             _mapper = mapper;
         }
 
@@ -36,7 +36,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Details(int? id, [FromQuery] bool getDeleted)
         {
             if (id == null) return BadRequest();
-            var bundle = await _service.GetBundleAsync((int)id, getDeleted);
+            var bundle = await _bundleService.GetBundleAsync((int)id, getDeleted);
             if (bundle == null) return NotFound();
             var bundleModel = _mapper.Map<BundleModel>(bundle);
             return View(bundleModel);
@@ -60,9 +60,9 @@ namespace WebStorageSystem.Areas.Products.Controllers
                 return View(bundleModel);
             }
 
-            var units = await _uService.GetUnitsAsync(bundleModel.BundledUnitsIds, getDeleted);
+            var units = await _unitService.GetUnitsAsync(bundleModel.BundledUnitsIds, getDeleted);
             var bundle = _mapper.Map<Bundle>(bundleModel);
-            await _service.AddBundleAsync(bundle, units);
+            await _bundleService.AddBundleAsync(bundle, units);
 
             return RedirectToAction(nameof(Index));
         }
@@ -71,7 +71,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Edit(int? id, [FromQuery] bool getDeleted)
         {
             if (id == null) return BadRequest();
-            var bundle = await _service.GetBundleAsync((int)id, getDeleted);
+            var bundle = await _bundleService.GetBundleAsync((int)id, getDeleted);
             if (bundle == null) return NotFound();
             var bundleModel = _mapper.Map<BundleModel>(bundle);
             await CreateUnitDropdownList(getDeleted, bundleModel.BundledUnits);
@@ -90,12 +90,12 @@ namespace WebStorageSystem.Areas.Products.Controllers
                 return View(bundleModel);
             }
 
-            var units = await _uService.GetUnitsAsync(bundleModel.BundledUnitsIds, getDeleted);
+            var units = await _unitService.GetUnitsAsync(bundleModel.BundledUnitsIds, getDeleted);
             var bundle = _mapper.Map<Bundle>(bundleModel);
-            var (success, errorMessage) = await _service.EditBundleAsync(bundle, units);
+            var (success, errorMessage) = await _bundleService.EditBundleAsync(bundle, units);
             if (success) return RedirectToAction(nameof(Index));
 
-            if (await _service.GetBundleAsync(bundle.Id) == null) return NotFound();
+            if (await _bundleService.GetBundleAsync(bundle.Id) == null) return NotFound();
             await CreateUnitDropdownList(getDeleted);
             TempData["Error"] = errorMessage;
             return View(bundleModel);
@@ -107,7 +107,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            (bool success, string errorMessage) = await _service.DeleteBundleAsync((int)id);
+            (bool success, string errorMessage) = await _bundleService.DeleteBundleAsync((int)id);
             if (!success) TempData["Error"] = errorMessage;
             return RedirectToAction(nameof(Index));
         }
@@ -118,7 +118,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
-            await _service.RestoreBundleAsync((int)id);
+            await _bundleService.RestoreBundleAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -128,7 +128,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             try
             {
-                var results = await _service.GetBundlesAsync(request);
+                var results = await _bundleService.GetBundlesAsync(request);
                 foreach (var item in results.Data)
                 {
                     item.Action = new Dictionary<string, string>
@@ -157,7 +157,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
 
         private async Task CreateUnitDropdownList(bool getDeleted = false, IEnumerable<UnitModel> selectedValues = null)
         {
-            var units = await _uService.GetUnitsAsync(getDeleted);
+            var units = await _unitService.GetUnitsAsync(getDeleted);
             var unitModels = _mapper.Map<ICollection<UnitModel>>(units);
             ViewBag.Units = new MultiSelectList(unitModels, "Id", "InventoryNumberProduct", (selectedValues ?? Array.Empty<UnitModel>()).Select(s => s.Id).ToList());
         }

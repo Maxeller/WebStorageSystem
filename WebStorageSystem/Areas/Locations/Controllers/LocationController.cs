@@ -14,14 +14,14 @@ namespace WebStorageSystem.Areas.Locations.Controllers
     [Area("Locations")]
     public class LocationController : Controller
     {
-        private readonly LocationService _service;
-        private readonly LocationTypeService _ltService;
+        private readonly LocationService _locationService;
+        private readonly LocationTypeService _locationTypeService;
         private readonly IMapper _mapper;
 
-        public LocationController(LocationService service, LocationTypeService ltService, IMapper mapper)
+        public LocationController(LocationService locationService, LocationTypeService locationTypeService, IMapper mapper)
         {
-            _service = service;
-            _ltService = ltService;
+            _locationService = locationService;
+            _locationTypeService = locationTypeService;
             _mapper = mapper;
         }
 
@@ -36,7 +36,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         {
             if (id == null) return BadRequest();
 
-            var location = await _service.GetLocationAsync((int)id, getDeleted);
+            var location = await _locationService.GetLocationAsync((int)id, getDeleted);
             if (location == null) return NotFound();
             var locationModel = _mapper.Map<LocationModel>(location);
 
@@ -61,7 +61,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
                 return View(locationModel);
             }
 
-            var locationType = await _ltService.GetLocationTypeAsync(locationModel.LocationTypeId, getDeleted);
+            var locationType = await _locationTypeService.GetLocationTypeAsync(locationModel.LocationTypeId, getDeleted);
             if (locationType == null)
             {
                 await CreateLocationTypeDropdownList(getDeleted);
@@ -69,7 +69,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
             }
             var location = _mapper.Map<Location>(locationModel);
             location.LocationType = locationType;
-            await _service.AddLocationAsync(location);
+            await _locationService.AddLocationAsync(location);
             return RedirectToAction(nameof(Index));
         }
 
@@ -78,7 +78,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         {
             if (id == null) return BadRequest();
 
-            var location = await _service.GetLocationAsync((int)id, getDeleted);
+            var location = await _locationService.GetLocationAsync((int)id, getDeleted);
             if (location == null) return NotFound();
             var locationModel = _mapper.Map<LocationModel>(location);
 
@@ -95,7 +95,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
             if (id != locationModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(locationModel);
 
-            var locationType = await _ltService.GetLocationTypeAsync(locationModel.LocationTypeId, getDeleted);
+            var locationType = await _locationTypeService.GetLocationTypeAsync(locationModel.LocationTypeId, getDeleted);
             if (locationType == null)
             {
                 await CreateLocationTypeDropdownList(getDeleted);
@@ -104,9 +104,9 @@ namespace WebStorageSystem.Areas.Locations.Controllers
             var location = _mapper.Map<Location>(locationModel);
             location.LocationType = locationType;
 
-            var (success, errorMessage) = await _service.EditLocationAsync(location);
+            var (success, errorMessage) = await _locationService.EditLocationAsync(location);
             if (success) return RedirectToAction(nameof(Index));
-            if (await _service.GetLocationAsync(location.Id) == null) return NotFound();
+            if (await _locationService.GetLocationAsync(location.Id) == null) return NotFound();
             await CreateLocationTypeDropdownList(getDeleted);
             TempData["Error"] = errorMessage;
             return View(locationModel);
@@ -118,7 +118,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            await _service.DeleteLocationAsync((int)id);
+            await _locationService.DeleteLocationAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -128,8 +128,8 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
-            if (!(await _service.LocationExistsAsync((int)id, true))) return NotFound();
-            await _service.RestoreLocationAsync((int)id);
+            if (!(await _locationService.LocationExistsAsync((int)id, true))) return NotFound();
+            await _locationService.RestoreLocationAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -139,7 +139,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         {
             try
             {
-                var results = await _service.GetLocationsAsync(request);
+                var results = await _locationService.GetLocationsAsync(request);
                 foreach (var item in results.Data)
                 {
                     item.Action = new Dictionary<string, string>
@@ -168,7 +168,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
 
         private async Task CreateLocationTypeDropdownList(bool getDeleted = false, object selectedType = null)
         {
-            var locationTypes = await _ltService.GetLocationTypesAsync(getDeleted);
+            var locationTypes = await _locationTypeService.GetLocationTypesAsync(getDeleted);
             var ltModels = _mapper.Map<ICollection<LocationTypeModel>>(locationTypes);
             ViewBag.LocationTypes = new SelectList(ltModels, "Id", "Name", selectedType);
         }

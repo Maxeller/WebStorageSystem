@@ -13,12 +13,12 @@ namespace WebStorageSystem.Areas.Products.Controllers
     [Area("Products")]
     public class ProductTypeController : Controller
     {
-        private readonly ProductTypeService _service;
+        private readonly ProductTypeService _productTypeService;
         private readonly IMapper _mapper;
 
-        public ProductTypeController(ProductTypeService service, IMapper mapper)
+        public ProductTypeController(ProductTypeService productTypeService, IMapper mapper)
         {
-            _service = service;
+            _productTypeService = productTypeService;
             _mapper = mapper;
         }
 
@@ -33,7 +33,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var productType = await _service.GetProductTypeAsync((int)id, getDeleted);
+            var productType = await _productTypeService.GetProductTypeAsync((int)id, getDeleted);
             if (productType == null) return NotFound();
             var productTypeModel = _mapper.Map<ProductTypeModel>(productType);
 
@@ -54,7 +54,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (!ModelState.IsValid) return View(productTypeModel);
 
             var productType = _mapper.Map<ProductType>(productTypeModel);
-            await _service.AddProductTypeAsync(productType);
+            await _productTypeService.AddProductTypeAsync(productType);
             return RedirectToAction(nameof(Index));
         }
 
@@ -63,7 +63,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var productType = await _service.GetProductTypeAsync((int)id, getDeleted);
+            var productType = await _productTypeService.GetProductTypeAsync((int)id, getDeleted);
             if (productType == null) return NotFound();
             var productTypeModel = _mapper.Map<ProductTypeModel>(productType);
 
@@ -80,9 +80,9 @@ namespace WebStorageSystem.Areas.Products.Controllers
 
             var productType = _mapper.Map<ProductType>(productTypeModel);
 
-            var (success, errorMessage) = await _service.EditProductTypeAsync(productType);
+            var (success, errorMessage) = await _productTypeService.EditProductTypeAsync(productType);
             if (success) return RedirectToAction(nameof(Index));
-            if (await _service.GetProductTypeAsync(productType.Id) == null) return NotFound();
+            if (await _productTypeService.GetProductTypeAsync(productType.Id) == null) return NotFound();
             TempData["Error"] = errorMessage;
             return View(productTypeModel);
         }
@@ -93,7 +93,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            (bool success, string errorMessage) = await _service.DeleteProductTypeAsync((int)id);
+            (bool success, string errorMessage) = await _productTypeService.DeleteProductTypeAsync((int)id);
             if (!success) TempData["Error"] = errorMessage;
             return RedirectToAction(nameof(Index));
         }
@@ -104,8 +104,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
-            if (!(await _service.ProductTypeExistsAsync((int)id, true))) return NotFound();
-            await _service.RestoreProductTypeAsync((int)id);
+            if (!(await _productTypeService.ProductTypeExistsAsync((int)id, true))) return NotFound();
+            await _productTypeService.RestoreProductTypeAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -115,7 +115,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             try
             {
-                var results = await _service.GetProductTypesAsync(request);
+                var results = await _productTypeService.GetProductTypesAsync(request);
                 foreach (var item in results.Data)
                 {
                     item.Action = new Dictionary<string, string>

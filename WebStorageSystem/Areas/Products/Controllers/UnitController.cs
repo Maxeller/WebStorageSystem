@@ -16,20 +16,20 @@ namespace WebStorageSystem.Areas.Products.Controllers
     [Area("Products")]
     public class UnitController : Controller
     {
-        private readonly UnitService _service;
-        private readonly ProductService _pService;
-        private readonly LocationService _lService;
-        private readonly VendorService _vService;
-        private readonly BundleService _bService;
+        private readonly UnitService _unitService;
+        private readonly ProductService _productService;
+        private readonly LocationService _locationService;
+        private readonly VendorService _vendorService;
+        private readonly BundleService _bundleService;
         private readonly IMapper _mapper;
 
-        public UnitController(UnitService service, ProductService pService, LocationService lService, VendorService vService, BundleService bService, IMapper mapper)
+        public UnitController(UnitService unitService, ProductService productService, LocationService locationService, VendorService vendorService, BundleService bundleService, IMapper mapper)
         {
-            _service = service;
-            _pService = pService;
-            _lService = lService;
-            _vService = vService;
-            _bService = bService;
+            _unitService = unitService;
+            _productService = productService;
+            _locationService = locationService;
+            _vendorService = vendorService;
+            _bundleService = bundleService;
             _mapper = mapper;
         }
 
@@ -44,7 +44,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var unit = await _service.GetUnitAsync((int)id, getDeleted);
+            var unit = await _unitService.GetUnitAsync((int)id, getDeleted);
             if (unit == null) return NotFound();
             var unitModel = _mapper.Map<UnitModel>(unit);
             return View(unitModel);
@@ -68,9 +68,9 @@ namespace WebStorageSystem.Areas.Products.Controllers
                 return View(unitModel);
             }
 
-            var product = await _pService.GetProductAsync(unitModel.ProductId, getDeleted);
-            var location = await _lService.GetLocationAsync(unitModel.LocationId, getDeleted);
-            var defaultLocation = await _lService.GetLocationAsync(unitModel.DefaultLocationId, getDeleted);
+            var product = await _productService.GetProductAsync(unitModel.ProductId, getDeleted);
+            var location = await _locationService.GetLocationAsync(unitModel.LocationId, getDeleted);
+            var defaultLocation = await _locationService.GetLocationAsync(unitModel.DefaultLocationId, getDeleted);
             if (product == null || location == null || defaultLocation == null)
             {
                 await CreateDropdownLists(getDeleted);
@@ -79,9 +79,9 @@ namespace WebStorageSystem.Areas.Products.Controllers
             var unit = _mapper.Map<Unit>(unitModel);
             unit.Product = product;
             unit.Location = location;
-            if (unitModel.VendorId != null) unit.Vendor = await _vService.GetVendorAsync((int)unitModel.VendorId, getDeleted);
-            if (unitModel.PartOfBundleId != null) unit.PartOfBundle = await _bService.GetBundleAsync((int)unitModel.PartOfBundleId, getDeleted);
-            await _service.AddUnitAsync(unit);
+            if (unitModel.VendorId != null) unit.Vendor = await _vendorService.GetVendorAsync((int)unitModel.VendorId, getDeleted);
+            if (unitModel.PartOfBundleId != null) unit.PartOfBundle = await _bundleService.GetBundleAsync((int)unitModel.PartOfBundleId, getDeleted);
+            await _unitService.AddUnitAsync(unit);
             return RedirectToAction(nameof(Index));
         }
 
@@ -90,7 +90,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var unit = await _service.GetUnitAsync((int)id, getDeleted);
+            var unit = await _unitService.GetUnitAsync((int)id, getDeleted);
             if (unit == null) return NotFound();
             var unitModel = _mapper.Map<UnitModel>(unit);
 
@@ -106,9 +106,9 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (id != unitModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(unitModel);
 
-            var product = await _pService.GetProductAsync(unitModel.ProductId, getDeleted);
-            var location = await _lService.GetLocationAsync(unitModel.LocationId, getDeleted);
-            var defaultLocation = await _lService.GetLocationAsync(unitModel.DefaultLocationId, getDeleted);
+            var product = await _productService.GetProductAsync(unitModel.ProductId, getDeleted);
+            var location = await _locationService.GetLocationAsync(unitModel.LocationId, getDeleted);
+            var defaultLocation = await _locationService.GetLocationAsync(unitModel.DefaultLocationId, getDeleted);
             if (product == null || location == null || defaultLocation == null)
             {
                 await CreateDropdownLists(getDeleted);
@@ -118,17 +118,17 @@ namespace WebStorageSystem.Areas.Products.Controllers
             unit.Product = product;
             unit.Location = location;
             unit.Vendor = unitModel.VendorId != null
-                ? await _vService.GetVendorAsync((int)unitModel.VendorId, getDeleted)
+                ? await _vendorService.GetVendorAsync((int)unitModel.VendorId, getDeleted)
                 : null;
 
             unit.PartOfBundle = unitModel.PartOfBundleId != null
-                ? await _bService.GetBundleAsync((int)unitModel.PartOfBundleId, getDeleted)
+                ? await _bundleService.GetBundleAsync((int)unitModel.PartOfBundleId, getDeleted)
                 : null;
 
-            var (success, errorMessage) = await _service.EditUnitAsync(unit);
+            var (success, errorMessage) = await _unitService.EditUnitAsync(unit);
             if (success) return RedirectToAction(nameof(Index));
 
-            if (await _service.GetUnitAsync(unit.Id) == null) return NotFound();
+            if (await _unitService.GetUnitAsync(unit.Id) == null) return NotFound();
             await CreateDropdownLists(getDeleted);
             TempData["Error"] = errorMessage;
             return View(unitModel);
@@ -140,7 +140,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            await _service.DeleteUnitAsync((int)id);
+            await _unitService.DeleteUnitAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -150,8 +150,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
-            if (!(await _service.UnitExistsAsync((int)id, true))) return NotFound();
-            await _service.RestoreUnitAsync((int)id);
+            if (!(await _unitService.UnitExistsAsync((int)id, true))) return NotFound();
+            await _unitService.RestoreUnitAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -161,7 +161,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             try
             {
-                var results = await _service.GetUnitsAsync(request);
+                var results = await _unitService.GetUnitsAsync(request);
                 foreach (var item in results.Data)
                 {
                     item.Action = new Dictionary<string, string>
@@ -199,35 +199,35 @@ namespace WebStorageSystem.Areas.Products.Controllers
 
         private async Task CreateProductDropdownList(bool getDeleted, object selectedProduct)
         {
-            var products = await _pService.GetProductsAsync(getDeleted);
+            var products = await _productService.GetProductsAsync(getDeleted);
             var pModels = _mapper.Map<IEnumerable<ProductModel>>(products);
             ViewBag.Products = new SelectList(pModels, "Id", "Name", selectedProduct);
         }
 
         private async Task CreateLocationDropdownList(bool getDeleted, object selectedLocation)
         {
-            var locations = await _lService.GetLocationsAsync(getDeleted);
+            var locations = await _locationService.GetLocationsAsync(getDeleted);
             var lModels = _mapper.Map<IEnumerable<LocationModel>>(locations);
             ViewBag.Locations = new SelectList(lModels, "Id", "Name", selectedLocation);
         }
 
         private async Task CreateDefaultLocationDropdownList(bool getDeleted, object selectedLocation)
         {
-            var locations = await _lService.GetLocationsAsync(getDeleted);
+            var locations = await _locationService.GetLocationsAsync(getDeleted);
             var lModels = _mapper.Map<IEnumerable<LocationModel>>(locations);
             ViewBag.DefaultLocations = new SelectList(lModels, "Id", "Name", selectedLocation);
         }
 
         private async Task CreateVendorDropdownList(bool getDeleted, object selectedVendor)
         {
-            var vendors = await _vService.GetVendorsAsync(getDeleted);
+            var vendors = await _vendorService.GetVendorsAsync(getDeleted);
             var vModels = _mapper.Map<IEnumerable<VendorModel>>(vendors);
             ViewBag.Vendors = new SelectList(vModels, "Id", "Name", selectedVendor);
         }
 
         private async Task CreateBundleDropdownList(bool getDeleted, object selectedBundle)
         {
-            var bundles = await _bService.GetBundlesAsync(getDeleted);
+            var bundles = await _bundleService.GetBundlesAsync(getDeleted);
             var bModels = _mapper.Map<IEnumerable<BundleModel>>(bundles);
             ViewBag.Bundles = new SelectList(bModels, "Id", "Name", selectedBundle);
         }

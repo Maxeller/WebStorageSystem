@@ -13,12 +13,12 @@ namespace WebStorageSystem.Areas.Products.Controllers
     [Area("Products")]
     public class ManufacturerController : Controller
     {
-        private readonly ManufacturerService _service;
+        private readonly ManufacturerService _manufacturerService;
         private readonly IMapper _mapper;
 
-        public ManufacturerController(ManufacturerService service, IMapper mapper)
+        public ManufacturerController(ManufacturerService manufacturerService, IMapper mapper)
         {
-            _service = service;
+            _manufacturerService = manufacturerService;
             _mapper = mapper;
         }
 
@@ -33,7 +33,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var manufacturer = await _service.GetManufacturerAsync((int)id, getDeleted);
+            var manufacturer = await _manufacturerService.GetManufacturerAsync((int)id, getDeleted);
             if (manufacturer == null) return NotFound();
             var manufacturerModel = _mapper.Map<ManufacturerModel>(manufacturer);
 
@@ -54,7 +54,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (!ModelState.IsValid) return View(manufacturerModel);
 
             var manufacturer = _mapper.Map<Manufacturer>(manufacturerModel);
-            await _service.AddManufacturerAsync(manufacturer);
+            await _manufacturerService.AddManufacturerAsync(manufacturer);
             return RedirectToAction(nameof(Index));
         }
 
@@ -63,7 +63,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             if (id == null) return BadRequest();
 
-            var manufacturer = await _service.GetManufacturerAsync((int)id, getDeleted);
+            var manufacturer = await _manufacturerService.GetManufacturerAsync((int)id, getDeleted);
             if (manufacturer == null) return NotFound();
             var manufacturerModel = _mapper.Map<ManufacturerModel>(manufacturer);
 
@@ -80,9 +80,9 @@ namespace WebStorageSystem.Areas.Products.Controllers
 
             var manufacturer = _mapper.Map<Manufacturer>(manufacturerModel);
 
-            var (success, errorMessage) = await _service.EditManufacturerAsync(manufacturer);
+            var (success, errorMessage) = await _manufacturerService.EditManufacturerAsync(manufacturer);
             if (success) return RedirectToAction(nameof(Index));
-            if (await _service.GetManufacturerAsync(manufacturer.Id) == null) return NotFound();
+            if (await _manufacturerService.GetManufacturerAsync(manufacturer.Id) == null) return NotFound();
             TempData["Error"] = errorMessage;
             return View(manufacturerModel);
         }
@@ -93,7 +93,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            (bool success, string errorMessage) = await _service.DeleteManufacturerAsync((int)id);
+            (bool success, string errorMessage) = await _manufacturerService.DeleteManufacturerAsync((int)id);
             if (!success) TempData["Error"] = errorMessage;
             return RedirectToAction(nameof(Index));
         }
@@ -104,8 +104,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
-            if (!(await _service.ManufacturerExistsAsync((int)id, true))) return NotFound();
-            await _service.RestoreManufacturerAsync((int)id);
+            if (!(await _manufacturerService.ManufacturerExistsAsync((int)id, true))) return NotFound();
+            await _manufacturerService.RestoreManufacturerAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -115,7 +115,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             try
             {
-                var results = await _service.GetManufacturersAsync(request);
+                var results = await _manufacturerService.GetManufacturersAsync(request);
                 foreach (var item in results.Data)
                 {
                     item.Action = new Dictionary<string, string>

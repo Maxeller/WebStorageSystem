@@ -13,12 +13,12 @@ namespace WebStorageSystem.Areas.Locations.Controllers
     [Area("Locations")]
     public class LocationTypeController : Controller
     {
-        private readonly LocationTypeService _service;
+        private readonly LocationTypeService _locationTypeService;
         private readonly IMapper _mapper;
 
-        public LocationTypeController(LocationTypeService service, IMapper mapper)
+        public LocationTypeController(LocationTypeService locationTypeService, IMapper mapper)
         {
-            _service = service;
+            _locationTypeService = locationTypeService;
             _mapper = mapper;
         }
 
@@ -33,7 +33,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         {
             if (id == null) return BadRequest();
 
-            var locationType = await _service.GetLocationTypeAsync((int)id, getDeleted);
+            var locationType = await _locationTypeService.GetLocationTypeAsync((int)id, getDeleted);
             if (locationType == null) return NotFound();
             var locationTypeModel = _mapper.Map<LocationTypeModel>(locationType);
 
@@ -54,7 +54,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
             if (!ModelState.IsValid) return View(locationTypeModel);
 
             var locationType = _mapper.Map<LocationType>(locationTypeModel);
-            await _service.AddLocationTypeAsync(locationType);
+            await _locationTypeService.AddLocationTypeAsync(locationType);
             return RedirectToAction(nameof(Index));
         }
 
@@ -63,7 +63,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         {
             if (id == null) return BadRequest();
 
-            var locationType = await _service.GetLocationTypeAsync((int)id, getDeleted);
+            var locationType = await _locationTypeService.GetLocationTypeAsync((int)id, getDeleted);
             if (locationType == null) return NotFound();
             var locationTypeModel = _mapper.Map<LocationTypeModel>(locationType);
 
@@ -80,9 +80,9 @@ namespace WebStorageSystem.Areas.Locations.Controllers
 
             var locationType = _mapper.Map<LocationType>(locationTypeModel);
 
-            var (success, errorMessage) = await _service.EditLocationTypeAsync(locationType);
+            var (success, errorMessage) = await _locationTypeService.EditLocationTypeAsync(locationType);
             if (success) return RedirectToAction(nameof(Index));
-            if (await _service.GetLocationTypeAsync(locationType.Id) == null) return NotFound();
+            if (await _locationTypeService.GetLocationTypeAsync(locationType.Id) == null) return NotFound();
             TempData["Error"] = errorMessage;
             return View(locationTypeModel);
         }
@@ -93,7 +93,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            (bool success, string errorMessage) = await _service.DeleteLocationTypeAsync((int)id);
+            (bool success, string errorMessage) = await _locationTypeService.DeleteLocationTypeAsync((int)id);
             if (!success) TempData["Error"] = errorMessage;
             return RedirectToAction(nameof(Index));
         }
@@ -104,8 +104,8 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
-            if (!(await _service.LocationTypeExistsAsync((int)id, true))) return NotFound();
-            await _service.RestoreLocationTypeAsync((int)id);
+            if (!(await _locationTypeService.LocationTypeExistsAsync((int)id, true))) return NotFound();
+            await _locationTypeService.RestoreLocationTypeAsync((int)id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -115,7 +115,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         {
             try
             {
-                var results = await _service.GetLocationTypesAsync(request);
+                var results = await _locationTypeService.GetLocationTypesAsync(request);
                 foreach (var item in results.Data)
                 {
                     item.Action = new Dictionary<string, string>
