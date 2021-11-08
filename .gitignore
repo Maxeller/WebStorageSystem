@@ -380,3 +380,4 @@ FodyWeavers.xsd
 
 # Project Specific
 **/wwwroot/upload/images/*
+appsettings.release.json

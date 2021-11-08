@@ -1,5 +1,4 @@
-﻿@using WebStorageSystem.Models
-@model ProductModel
+﻿@model ProductModel
 
 @{
     ViewData["Title"] = "Create Product";
@@ -47,7 +46,7 @@
                 </select>
                 <span asp-validation-for="ProductTypeId" class="text-danger" />
             </div>
-            @await Html.PartialAsync("ImageUpload/Upload")
+            <partial for="Image" name="ImageUpload/Upload"/>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
