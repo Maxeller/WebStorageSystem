@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WebStorageSystem.Areas.Defects.Data.Entities;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Data.Entities;
@@ -25,6 +26,9 @@ namespace WebStorageSystem.Data.Database
         // Folder: Location
         public DbSet<Location> Locations { get; set; }
         public DbSet<LocationType> LocationTypes { get; set; }
+
+        // Folder: Defects
+        public DbSet<Defect> Defects { get; set; }
 
         // Folder: Transfer
         public DbSet<Transfer> Transfers { get; set; }
@@ -151,6 +155,28 @@ namespace WebStorageSystem.Data.Database
                 entity.ToTable("Transfers");
             });
 
+            // Folder: Defect
+            modelBuilder.Entity<Defect>(entity =>
+            {
+                entity.HasAlternateKey(defect => defect.DefectNumber);
+                entity
+                    .HasOne(defect => defect.Unit)
+                    .WithMany(unit => unit.Defects)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity
+                    .HasOne(defect => defect.ReportedByUser)
+                    .WithMany(user => user.ReportedDefects)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity
+                    .HasOne(defect => defect.CausedByUser)
+                    .WithMany(user => user.CausedDefects)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasQueryFilter(defect => !defect.IsDeleted);
+                entity.ToTable("Defects");
+            });
+
             // Folder: Identity
             modelBuilder.Entity<ApplicationUser>(entity =>
             {
@@ -160,9 +186,13 @@ namespace WebStorageSystem.Data.Database
             // Folder: Root
             modelBuilder.Entity<ImageEntity>(entity =>
             {
+                entity.HasAlternateKey(image => image.ImageName);
                 entity
                     .HasMany(image => image.Products)
                     .WithOne(product => product.Image);
+                entity
+                    .HasMany(image => image.Defects)
+                    .WithOne(defect => defect.Image);
                 entity.ToTable("Images");
             });
         }

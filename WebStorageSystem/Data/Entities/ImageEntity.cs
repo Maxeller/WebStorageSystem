@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using WebStorageSystem.Areas.Defects.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Entities;
 
 namespace WebStorageSystem.Data.Entities
@@ -13,6 +12,8 @@ namespace WebStorageSystem.Data.Entities
         public string ImageName { get; set; }
 
         public IEnumerable<Product> Products { get; set; }
+
+        public IEnumerable<Defect> Defects { get; set; }
 
         public override DateTime CreatedDate { get; set; }
         public override DateTime ModifiedDate { get; set; }

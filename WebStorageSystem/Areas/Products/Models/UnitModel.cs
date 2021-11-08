@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using WebStorageSystem.Areas.Defects.Models;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Models;
 
@@ -41,8 +42,6 @@ namespace WebStorageSystem.Areas.Products.Models
         [DisplayName("Part of Bundle")]
         public int? PartOfBundleId { get; set; }
 
-        public IEnumerable<TransferModel> Transfers { get; set; }
-
         [DisplayName("Shelf Number"), StringLength(100)]
         public string ShelfNumber { get; set; }
 
@@ -53,6 +52,10 @@ namespace WebStorageSystem.Areas.Products.Models
 
         [DisplayName("Last Check Time")]
         public DateTime? LastCheckTime { get; set; }
+
+        public IEnumerable<TransferModel> Transfers { get; set; }
+
+        public IEnumerable<DefectModel> Defects { get; set; }
 
         public string InventoryNumberProduct
         {

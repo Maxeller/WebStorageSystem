@@ -1,0 +1,95 @@
+﻿@model DefectModel
+
+@{
+    ViewData["Title"] = "Details "+Model.DefectNumber;
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Defect</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Defect Number
+        </dt>
+        <dd class="col-sm-10">
+            @Model.DefectNumber
+        </dd>
+        <dt class="col-sm-2">
+            Unit
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Unit.InventoryNumberProduct
+        </dd>
+        <dt class="col-sm-2">
+            Description
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Description
+        </dd>
+        <dt class="col-sm-2">
+            Notes
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Notes
+        </dd>
+        <dt class="col-sm-2">
+            State
+        </dt>
+        <dd class="col-sm-10">
+            @Model.State
+        </dd>
+        <dt class="col-sm-2">
+            Reported by
+        </dt>
+        <dd class="col-sm-10">
+            @Model.ReportedByUser.UserName
+        </dd>
+        <dt class="col-sm-2">
+            Cause by
+        </dt>
+        <dd class="col-sm-10">
+            @Model.CausedByUser.UserName
+        </dd>
+        <partial name="ImageUpload/View" model="Model.Image"/>
+        <dt class="col-sm-2">
+            Created Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.CreatedDate
+        </dd>
+        <dt class="col-sm-2">
+            Last Modified
+        </dt>
+        <dd class="col-sm-10">
+            @Model.ModifiedDate
+        </dd>
+        <dt class="col-sm-2">
+            Deleted
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IsDeleted)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="text-primary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    @if (!Model.IsDeleted)
+    {
+        <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Delete", new {Id = Model.Id})" data-name="@Model.DefectNumber">
+            Delete</a>
+    }
+    @if (Model.IsDeleted)
+    {
+        <a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="@Url.Action("Restore", new {Id = Model.Id})" data-name="@Model.DefectNumber">
+            Restore</a>
+    }
+    | <a class="text-primary" asp-action="Index">Back to List</a>
+</div>
+
+<partial name="DeleteRestoreModal" />
+@if (TempData["Error"] != null)
+{
+    await Html.RenderPartialAsync("ErrorModal", TempData["Error"]);
+}

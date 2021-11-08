@@ -14,7 +14,7 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
+            <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WebStorageSystem</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -53,16 +53,17 @@
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" role="button" asp-area="" asp-controller="Transfer" asp-action="Index">
-                                Transfers
-                            </a>
+                            <a class="nav-link text-dark" role="button" asp-area="" asp-controller="Transfer" asp-action="Index">Transfers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" role="button" asp-area="Defects" asp-controller="Defect" asp-action="Index">Defects</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container-fluid">
         @*<partial name="LayoutPartial/_CookieConsentPartial"/>*@
         <main role="main" class="pb-3">
             @RenderBody()
@@ -70,7 +71,7 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
+        <div class="container-fluid">
             &copy; 2020 - WebStorageSystem - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>

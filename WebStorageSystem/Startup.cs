@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using WebStorageSystem.Areas.Defects.Data.Services;
 using WebStorageSystem.Areas.Locations.Data.Services;
 using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Data.Database;
@@ -215,6 +216,9 @@ namespace WebStorageSystem
 
             // Transfer Services
             services.AddScoped<TransferService>();
+
+            // Defect Services
+            services.AddScoped<DefectService>();
 
             // Misc Services
             services.AddScoped<ImageService>();

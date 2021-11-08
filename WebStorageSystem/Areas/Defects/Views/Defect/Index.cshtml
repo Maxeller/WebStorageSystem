@@ -1,0 +1,38 @@
+﻿@model DefectModel
+
+@{
+    ViewData["Title"] = "Defects";
+}
+
+<h1>List of Defects</h1>
+<div>
+    <p>
+        <a asp-action="Create">Create New Defect</a>
+    </p>
+</div>
+
+@Html.AntiForgeryToken()
+<table id="dtDefect" class="table table-striped table-bordered table-dark">
+    <thead>
+    <tr>
+        <th>@Html.DisplayNameFor(model => model.DefectNumber)</th>
+        <th>@Html.DisplayNameFor(model => model.Unit.InventoryNumber)</th>
+        <th>Product Type</th>
+        <th>Manufacturer</th>
+        <th>Product</th>
+        <th>Location</th>
+        <th>@Html.DisplayNameFor(model => model.State)</th>
+        <th>@Html.DisplayNameFor(model => model.Description)</th>
+        <th>Reported by</th>
+        <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
+        <th>@Html.DisplayNameFor(model => model.ModifiedDate)</th>
+        <th>@Html.DisplayNameFor(model => model.Action)</th>
+    </tr>
+    </thead>
+</table>
+
+<partial name="DeleteRestoreModal" />
+@if (TempData["Error"] != null)
+{
+    await Html.RenderPartialAsync("ErrorModal", TempData["Error"]);
+}
