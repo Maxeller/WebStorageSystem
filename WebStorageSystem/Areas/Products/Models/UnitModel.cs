@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using WebStorageSystem.Areas.Defects.Models;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Models;
@@ -53,10 +54,13 @@ namespace WebStorageSystem.Areas.Products.Models
         [DisplayName("Last Check Time")]
         public DateTime? LastCheckTime { get; set; }
 
+        [JsonIgnore]
         public IEnumerable<TransferModel> Transfers { get; set; }
 
+        [JsonIgnore]
         public IEnumerable<DefectModel> Defects { get; set; }
 
+        [JsonIgnore]
         public string InventoryNumberProduct
         {
             get
@@ -74,7 +78,11 @@ namespace WebStorageSystem.Areas.Products.Models
 
         [Display(Name = "Deleted")]
         public override bool IsDeleted { get; set; }
+
+        [JsonIgnore]
         public override byte[] RowVersion { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public override Dictionary<string, string> Action { get; set; }
         public override int Id { get; set; }
     }

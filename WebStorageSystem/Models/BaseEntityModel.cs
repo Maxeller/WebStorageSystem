@@ -20,6 +20,7 @@ namespace WebStorageSystem.Models
         [JsonIgnore]
         public abstract byte[] RowVersion { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public abstract Dictionary<string, string> Action { get; set; }
     }
 

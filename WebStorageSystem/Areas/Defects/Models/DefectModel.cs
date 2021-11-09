@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using WebStorageSystem.Areas.Defects.Data.Entities;
 using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Models;
@@ -10,8 +11,6 @@ namespace WebStorageSystem.Areas.Defects.Models
 {
     public class DefectModel : BaseEntityModelWithId
     {
-        public override int Id { get; set; }
-
         [Required, StringLength(100), DisplayName("Defect Number")]
         public string DefectNumber { get; set; }
 
@@ -45,7 +44,13 @@ namespace WebStorageSystem.Areas.Defects.Models
 
         [Display(Name = "Deleted")]
         public override bool IsDeleted { get; set; }
+
+        [JsonIgnore]
         public override byte[] RowVersion { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public override Dictionary<string, string> Action { get; set; }
+
+        public override int Id { get; set; }
     }
 }
