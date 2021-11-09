@@ -18,10 +18,7 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 render: function (data, type, row) {
-                    if (data)
-                        return moment(data).local().format("DD.MM.YYYY HH:mm:ss"); // Formats data from UTC to local time
-                    else
-                        return null;
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
                 }
             },
             {
@@ -29,10 +26,7 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 render: function (data, type, row) {
-                    if (data)
-                        return moment(data).local().format("DD.MM.YYYY HH:mm:ss"); // Formats data from UTC to local time
-                    else
-                        return null;
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("D TT") // Formats data from UTC to local time
                 }
             },
             {
@@ -71,12 +65,6 @@ $(document).ready(function () {
                 url: "LocationType/LoadTable",
                 type: "POST",
                 data: {
-                    /*
-                    additionalData:
-                    {
-                        userTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-                    }
-                    */
                 }
             },
             columns: myColumns
@@ -108,7 +96,7 @@ $(document).ready(function () {
                 if (elem.hasClass("form-check-input")) { // If search is triggered from checkbox
                     column.search(this.checked).draw();  // send value of checkbox
                 } if (elem.is("#searchDate")) {          // If search is triggered on "Date" column
-                    column.search(moment.utc(moment(this.value).utc()).format()).draw(); // convert date from local time to UTC
+                    column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
                 } else {                                 // If search is triggered from textbox
                     column.search(this.value).draw();    // send value from textbox
                 }
@@ -147,10 +135,7 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 render: function (data, type, row) {
-                    if (data)
-                        return moment(data).local().format("DD.MM.YYYY HH:mm:ss"); // Formats data from UTC to local time
-                    else
-                        return null;
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
                 }
             },
             {
@@ -158,10 +143,7 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 render: function (data, type, row) {
-                    if (data)
-                        return moment(data).local().format("DD.MM.YYYY HH:mm:ss"); // Formats data from UTC to local time
-                    else
-                        return null;
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
                 }
             },
             {
@@ -229,7 +211,7 @@ $(document).ready(function () {
                 if (elem.hasClass("form-check-input")) { // If search is triggered from checkbox
                     column.search(this.checked).draw();  // send value of checkbox
                 } if (elem.is("#searchDate")) {          // If search is triggered on "Date" column
-                    column.search(moment.utc(moment(this.value).utc()).format()).draw(); // convert date from local time to UTC
+                    column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
                 } else {                                 // If search is triggered from textbox
                     column.search(this.value).draw();    // send value from textbox
                 }

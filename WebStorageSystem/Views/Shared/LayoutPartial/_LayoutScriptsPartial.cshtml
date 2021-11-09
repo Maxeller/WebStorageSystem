@@ -7,7 +7,7 @@
     <script src="~/lib/select2/js/select2.js"></script>
     <script src="~/lib/datatables/js/jquery.dataTables.js"></script>
     <script src="~/lib/datatables/js/dataTables.bootstrap4.js"></script>
-    <script src="~/lib/moment.js/moment-with-locales.js"></script>
+    <script src="~/lib/luxon/luxon.js"></script>
     @*--- My Scripts ---*@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/datatable/dtLocations.js" asp-append-version="true"></script>
@@ -15,54 +15,56 @@
     <script src="~/js/datatable/dtDefects.js" asp-append-version="true"></script>
     <script src="~/js/datatable/dtTransfers.js" asp-append-version="true"></script>
 </environment>
-    <environment exclude="Development">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
-                asp-fallback-src="~/lib/jquery/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==">
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.2/umd/popper.min.js"
-                asp-fallback-src="~/lib/popper.js/umd/popper.min.js"
-                asp-fallback-test="window.Popper"
-                integrity="sha512-Jen3K+iRN4thSYDEyHwUGYFxNslAUCTV9P/g0k836eaoq/tplAUCzRPUyDxKUjBlKdJhamW7S3u7NWSGEEdIQw=="
-                crossorigin="anonymous">
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha512-8qmis31OQi6hIRgvkht0s6mCOittjMa9GMqtK9hes5iEQBQE/Ca6yGE5FsW36vyipGoWQswBj/QBm2JR086Rkw==">
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.2.6/tippy-bundle.umd.min.js"
-                asp-fallback-src="~/lib/tippy.js/tippy-bundle.umd.min.js"
-                asp-fallback-test="window.tippy"
-                integrity="sha512-YzXpZ5qzuFVorXTs8wt0gHSo9+T5qwqM6iWKXQLEWNOEr83116QvCEqH5tsEthpGbrYAcUCXGpNJomYagvlFVw=="
-                crossorigin="anonymous">
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
-                asp-fallback-src="~/lib/select2/js/select2.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.select2"
-                integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
-                crossorigin="anonymous">
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"
-                asp-fallback-src="~/lib/datatables/js/jquery.dataTables.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.DataTable"
-                integrity="sha512-BkpSL20WETFylMrcirBahHfSnY++H2O1W+UnEEO4yNIl+jI2+zowyoGJpbtk6bx97fBXf++WJHSSK2MV4ghPcg=="
-                crossorigin="anonymous">
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap4.min.js"
-                asp-fallback-src="~/lib/datatables/js/dataTables.bootstrap4.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.DataTable && window.jQuery.fn.DataTable.ext.renderer.pageButton.bootstrap"
-                integrity="sha512-OQlawZneA7zzfI6B1n1tjUuo3C5mtYuAWpQdg+iI9mkDoo7iFzTqnQHf+K5ThOWNJ9AbXL4+ZDwH7ykySPQc+A=="
-                crossorigin="anonymous">
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"
-                asp-fallback-src="~/lib/moment.js/moment-with-locales.min.js"
-                asp-fallback-test="window.moment"
-                integrity="sha512-LGXaggshOkD/at6PFNcp2V2unf9LzFq6LE+sChH7ceMTDP0g2kn6Vxwgg7wkPP7AAtX+lmPqPdxB47A0Nz0cMQ=="
-                crossorigin="anonymous">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
-    </environment>
+<environment exclude="Development">
+    @*--- 3rd party scripts ---*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+            asp-fallback-src="~/lib/jquery/jquery.min.js"
+            asp-fallback-test="window.jQuery"
+            crossorigin="anonymous"
+            integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.2/umd/popper.min.js"
+            asp-fallback-src="~/lib/popper.js/umd/popper.min.js"
+            asp-fallback-test="window.Popper"
+            integrity="sha512-Jen3K+iRN4thSYDEyHwUGYFxNslAUCTV9P/g0k836eaoq/tplAUCzRPUyDxKUjBlKdJhamW7S3u7NWSGEEdIQw=="
+            crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.min.js"
+            asp-fallback-src="~/lib/bootstrap/js/bootstrap.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+            crossorigin="anonymous"
+            integrity="sha512-8qmis31OQi6hIRgvkht0s6mCOittjMa9GMqtK9hes5iEQBQE/Ca6yGE5FsW36vyipGoWQswBj/QBm2JR086Rkw==">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.2.6/tippy-bundle.umd.min.js"
+            asp-fallback-src="~/lib/tippy.js/tippy-bundle.umd.min.js"
+            asp-fallback-test="window.tippy"
+            integrity="sha512-YzXpZ5qzuFVorXTs8wt0gHSo9+T5qwqM6iWKXQLEWNOEr83116QvCEqH5tsEthpGbrYAcUCXGpNJomYagvlFVw=="
+            crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
+            asp-fallback-src="~/lib/select2/js/select2.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.select2"
+            integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
+            crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"
+            asp-fallback-src="~/lib/datatables/js/jquery.dataTables.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.DataTable"
+            integrity="sha512-BkpSL20WETFylMrcirBahHfSnY++H2O1W+UnEEO4yNIl+jI2+zowyoGJpbtk6bx97fBXf++WJHSSK2MV4ghPcg=="
+            crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap4.min.js"
+            asp-fallback-src="~/lib/datatables/js/dataTables.bootstrap4.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.DataTable && window.jQuery.fn.DataTable.ext.renderer.pageButton.bootstrap"
+            integrity="sha512-OQlawZneA7zzfI6B1n1tjUuo3C5mtYuAWpQdg+iI9mkDoo7iFzTqnQHf+K5ThOWNJ9AbXL4+ZDwH7ykySPQc+A=="
+            crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/2.1.1/luxon.min.js"
+            asp-fallback-src="~/lib/luxon/luxon.min.js"
+            asp-fallback-test="window.luxon"
+            integrity="sha512-R3qVfQx4LUWixeZgtptH0NDb+/FB8qVflpPQUKzDQlz1zKE3BiN4wG3aBUwzabgMo/45MXHucjcC2/BWBxMJwQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer">
+    </script>
+    @*--- My Scripts ---*@
+    <script src="~/js/site.min.js" asp-append-version="true"></script>
+</environment>
