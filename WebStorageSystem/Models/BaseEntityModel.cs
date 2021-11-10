@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace WebStorageSystem.Models
 {
@@ -17,10 +18,10 @@ namespace WebStorageSystem.Models
         public abstract bool IsDeleted { get; set; }
 
         [Timestamp]
-        [JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public abstract byte[] RowVersion { get; set; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull), XmlIgnore]
         public abstract Dictionary<string, string> Action { get; set; }
     }
 

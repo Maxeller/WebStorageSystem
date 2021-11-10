@@ -112,6 +112,8 @@ namespace WebStorageSystem
                 {
                     //TODO: Add Filters
                     //options.Filters.Add<>()
+
+                    options.RespectBrowserAcceptHeader = true;
                 })
                 .AddJsonOptions(options =>
                 {
@@ -134,7 +136,7 @@ namespace WebStorageSystem
                 }
                 options.UseSqlServer(connectionString, options =>
                 {
-                    options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // Automapper ProjectTo doesnt work with this setting
+                    options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
                 });
             });
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Models;
 
@@ -23,16 +24,16 @@ namespace WebStorageSystem.Areas.Locations.Models
 
         public LocationTypeModel LocationType { get; set; }
 
-        [JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public IEnumerable<TransferModel> OriginTransfers { get; set; }
 
-        [JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public IEnumerable<TransferModel> DestinationTransfers { get; set; }
 
-        [JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public IEnumerable<UnitModel> Units { get; set; }
 
-        [JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public IEnumerable<UnitModel> DefaultUnits { get; set; }
 
         [Display(Name = "Creation Date")]
@@ -44,10 +45,10 @@ namespace WebStorageSystem.Areas.Locations.Models
         [Display(Name = "Deleted")]
         public override bool IsDeleted { get; set; }
 
-        [JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public override byte[] RowVersion { get; set; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull), XmlIgnore]
         public override Dictionary<string, string> Action { get; set; }
         public override int Id { get; set; }
     }
