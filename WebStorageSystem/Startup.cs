@@ -13,6 +13,7 @@ using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Data.Database;
 using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Data.Services;
+using WebStorageSystem.Filters;
 
 namespace WebStorageSystem
 {
@@ -110,8 +111,7 @@ namespace WebStorageSystem
 
             services.AddControllersWithViews(options =>
                 {
-                    //TODO: Add Filters
-                    //options.Filters.Add<>()
+                    options.Filters.Add<ValidateModelFilter>();
 
                     options.RespectBrowserAcceptHeader = true;
                 })
