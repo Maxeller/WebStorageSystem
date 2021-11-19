@@ -131,7 +131,7 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         public async Task<(bool Success, string ErrorMessage)> DeleteLocationTypeAsync(int id)
         {
             var locationType = await GetLocationTypeAsync(id, true);
-            return await DeleteLocationTypeAsync(locationType);
+            return locationType == null ? (false, $"Entry with ID {id} not found") : await DeleteLocationTypeAsync(locationType);
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
         public async Task<(bool Success, string ErrorMessage)> DeleteLocationTypeAsync(LocationType locationType)
         {
-            if (locationType.Locations.Count(location => !location.IsDeleted) != 0) return (false, "Location Type cannot be deleted.<br/>It's used as type in existing Location.");
+            if (locationType.Locations.Any(location => !location.IsDeleted)) return (false, "Location Type cannot be deleted.<br/>It's used as type in existing Location.");
             _context.LocationTypes.Remove(locationType);
             await _context.SaveChangesAsync();
             return (true, null);

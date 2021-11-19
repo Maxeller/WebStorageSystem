@@ -18,7 +18,6 @@ namespace WebStorageSystem.Models
         public abstract bool IsDeleted { get; set; }
 
         [Timestamp]
-        [JsonIgnore, XmlIgnore]
         public abstract byte[] RowVersion { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull), XmlIgnore]
@@ -27,7 +26,6 @@ namespace WebStorageSystem.Models
 
     public abstract class BaseEntityModelWithId : BaseEntityModel
     {
-        [JsonIgnore]
         public abstract int Id { get; set; }
     }
 }

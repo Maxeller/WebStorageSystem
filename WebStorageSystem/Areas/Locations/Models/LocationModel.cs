@@ -45,7 +45,6 @@ namespace WebStorageSystem.Areas.Locations.Models
         [Display(Name = "Deleted")]
         public override bool IsDeleted { get; set; }
 
-        [JsonIgnore, XmlIgnore]
         public override byte[] RowVersion { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull), XmlIgnore]
