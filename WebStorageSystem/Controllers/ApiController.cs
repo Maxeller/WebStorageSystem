@@ -20,14 +20,23 @@ namespace WebStorageSystem.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Returns version of API
+        /// </summary>
+        /// <returns>Version of API</returns>
         [HttpGet("version", Name = "Version")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<string> Version()
         {
-            return Ok("0.5"); //TODO: Move to DB or config
+            return Ok("v1"); //TODO: Move to DB or config
         }
 
+        /// <summary>
+        /// Returns HTTP Status Code 500 for testing purpose
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("error", Name = "Error")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult Error()
         {
             return Problem("Something went wrong!");

@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using WebStorageSystem.Areas.Defects.Data.Services;
 using WebStorageSystem.Areas.Locations.Data.Services;
 using WebStorageSystem.Areas.Products.Data.Services;
@@ -59,6 +62,9 @@ namespace WebStorageSystem
                 //app.UseDatabaseErrorPage(); //Works only with .NET 5 version of the package
                 app.UseMigrationsEndPoint();
                 //app.UseBrowserLink();
+
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
             else
             {
@@ -123,6 +129,19 @@ namespace WebStorageSystem
                 .AddXmlSerializerFormatters(); // Adds XML serializer for input and output
 
             services.AddRazorPages(); // Identity Core Scaffolding uses Razor Pages
+
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "WebStorageSystem API",
+                    Description = "API for WebStorageSystem"
+                });
+
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            });
         }
 
         public static void AddMyDatabaseConfiguration(this IServiceCollection services, string connectionString, IWebHostEnvironment env)
