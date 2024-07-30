@@ -3,10 +3,10 @@
     <script src="~/lib/jquery/jquery.js"></script>
     <script src="~/lib/popper.js/umd/popper.js"></script>
     <script src="~/lib/bootstrap/js/bootstrap.js"></script>
-    <script src="~/lib/tippy.js/tippy-bundle.umd.js"></script> @*//TODO: Split into diff files, load only when needed*@
+    <script src="~/lib/tippy.js/tippy-bundle.umd.js"></script>
     <script src="~/lib/select2/js/select2.js"></script>
-    <script src="~/lib/datatables/js/jquery.dataTables.js"></script>
-    <script src="~/lib/datatables/js/dataTables.bootstrap4.js"></script>
+    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.bootstrap4.js"></script>
     <script src="~/lib/luxon/luxon.js"></script>
     @*--- My Scripts ---*@
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -17,11 +17,11 @@
 </environment>
 <environment exclude="Development">
     @*--- 3rd party scripts ---*@
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
             asp-fallback-src="~/lib/jquery/jquery.min.js"
             asp-fallback-test="window.jQuery"
             crossorigin="anonymous"
-            integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==">
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==">
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.2/umd/popper.min.js"
             asp-fallback-src="~/lib/popper.js/umd/popper.min.js"
@@ -47,18 +47,8 @@
             integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
             crossorigin="anonymous">
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"
-            asp-fallback-src="~/lib/datatables/js/jquery.dataTables.min.js"
-            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.DataTable"
-            integrity="sha512-BkpSL20WETFylMrcirBahHfSnY++H2O1W+UnEEO4yNIl+jI2+zowyoGJpbtk6bx97fBXf++WJHSSK2MV4ghPcg=="
-            crossorigin="anonymous">
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap4.min.js"
-            asp-fallback-src="~/lib/datatables/js/dataTables.bootstrap4.min.js"
-            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.DataTable && window.jQuery.fn.DataTable.ext.renderer.pageButton.bootstrap"
-            integrity="sha512-OQlawZneA7zzfI6B1n1tjUuo3C5mtYuAWpQdg+iI9mkDoo7iFzTqnQHf+K5ThOWNJ9AbXL4+ZDwH7ykySPQc+A=="
-            crossorigin="anonymous">
-    </script>
+    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/2.1.1/luxon.min.js"
             asp-fallback-src="~/lib/luxon/luxon.min.js"
             asp-fallback-test="window.luxon"
