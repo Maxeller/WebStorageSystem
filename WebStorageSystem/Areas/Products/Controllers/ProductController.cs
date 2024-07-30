@@ -62,7 +62,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Products/Product/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,ProductNumber,Description,Webpage,IsDeleted,ManufacturerId,ProductTypeId,Image")] ProductModel productModel, [Bind("Title,ImageFile")] ImageEntityModel imageModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Create([Bind("Name,ProductNumber,Description,Webpage,IsDeleted,ManufacturerId,ProductTypeId,Image")] ProductModel productModel, [FromQuery] bool getDeleted)
         {
             if (!ModelState.IsValid)
             {
@@ -72,7 +72,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
 
             var manufacturer = await _manufacturerService.GetManufacturerAsync(productModel.ManufacturerId, getDeleted);
             var productType = await _productTypeService.GetProductTypeAsync(productModel.ProductTypeId, getDeleted);
-            var image = await _imageService.AddImageAsync(imageModel, _hostEnvironment.WebRootPath);
+            var image = await _imageService.AddImageAsync(productModel.Image, _hostEnvironment.WebRootPath);
             if (manufacturer == null || productType == null || image == null)
             {
                 await CreateDropdownLists(getDeleted);
