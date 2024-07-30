@@ -34,7 +34,7 @@ namespace WebStorageSystem
         public void ConfigureServices(IServiceCollection services)
         {
             // DATABASE
-            services.AddMyDatabaseConfiguration(Configuration.GetConnectionString("SQLExpress"), _env);
+            services.AddMyDatabaseConfiguration(Configuration.GetConnectionString("LocalDb"), _env);
 
             // IDENTITY
             services.AddMyIdentityConfiguration();
@@ -59,7 +59,7 @@ namespace WebStorageSystem
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseDatabaseErrorPage(); //Works only with .NET 5 version of the package
+                //app.UseDatabaseErrorPage(); //Works only with >.NET 5 version of the package
                 app.UseMigrationsEndPoint();
                 //app.UseBrowserLink();
 

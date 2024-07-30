@@ -1,19 +1,10 @@
 {
   "dependencies": {
-    "secrets1": {
-      "type": "secrets.user"
-    },
     "mssql1": {
-      "resourceId": null,
+      "serviceConnectorResourceId": "",
+      "secretStore": "LocalSecretsFile",
       "type": "mssql.local",
-      "connectionId": "LocalDbTest",
-      "secretStore": "LocalSecretsFile"
-    },
-    "mssql2": {
-      "resourceId": null,
-      "type": "mssql.onprem",
-      "connectionId": "tommalik.cz",
-      "secretStore": "LocalSecretsFile"
+      "connectionId": "ConnectionStrings:LocalDb"
     }
   }
 }

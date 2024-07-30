@@ -1,15 +1,8 @@
 {
   "dependencies": {
-    "secrets1": {
-      "type": "secrets"
-    },
     "mssql1": {
       "type": "mssql",
-      "connectionId": "LocalDbTest"
-    },
-    "mssql2": {
-      "type": "mssql",
-      "connectionId": "tommalik.cz"
+      "connectionId": "ConnectionStrings:LocalDb"
     }
   }
 }
