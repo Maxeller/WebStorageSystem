@@ -67,6 +67,9 @@ $(document).ready(function () {
                 data: {
                 }
             },
+            layout: {
+                topEnd: null
+            },
             columns: myColumns
         });
 
@@ -181,6 +184,9 @@ $(document).ready(function () {
             ajax: {
                 url: "Location/LoadTable",
                 type: "POST"
+            },
+            layout: {
+                topEnd: null
             },
             columns: myColumns
         });

@@ -97,6 +97,9 @@ $(document).ready(function () {
                 url: "Defect/LoadTable",
                 type: "POST"
             },
+            layout: {
+                topEnd: null
+            },
             columns: myColumns
         });
 

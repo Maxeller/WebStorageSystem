@@ -65,6 +65,9 @@ $(document).ready(function () {
                 url: "Manufacturer/LoadTable",
                 type: "POST"
             },
+            layout: {
+                topEnd: null
+            },
             columns: myColumns
         });
 
@@ -169,6 +172,9 @@ $(document).ready(function () {
             ajax: {
                 url: "ProductType/LoadTable",
                 type: "POST"
+            },
+            layout: {
+                topEnd: null
             },
             columns: myColumns
         });
@@ -289,6 +295,9 @@ $(document).ready(function () {
             ajax: {
                 url: "Vendor/LoadTable",
                 type: "POST"
+            },
+            layout: {
+                topEnd: null
             },
             columns: myColumns
         });
@@ -415,6 +424,9 @@ $(document).ready(function () {
                 url: "Product/LoadTable",
                 type: "POST"
             },
+            layout: {
+                topEnd: null
+            },
             columns: myColumns
         });
 
@@ -524,6 +536,9 @@ $(document).ready(function () {
             ajax: {
                 url: "Bundle/LoadTable",
                 type: "POST"
+            },
+            layout: {
+                topEnd: null
             },
             columns: myColumns
         });
@@ -682,6 +697,9 @@ $(document).ready(function () {
             ajax: {
                 url: "Unit/LoadTable",
                 type: "POST"
+            },
+            layout: {
+                topEnd: null
             },
             columns: myColumns
         });
