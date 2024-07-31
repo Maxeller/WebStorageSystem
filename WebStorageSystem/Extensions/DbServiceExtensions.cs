@@ -17,9 +17,14 @@ namespace WebStorageSystem.Extensions
         /// <returns>Ordered query based on DataTableRequest</returns>
         public static IOrderedQueryable<TSource> OrderBy<TSource>(this IQueryable<TSource> query, DataTableRequest request)
         {
-            int col = request.Order[0].Column;
-            string name = request.Columns[col].Data;
-            return request.Order[0].Dir == DataTableRequestOrderDirection.asc ? query.OrderBy(name) : query.OrderByDescending(name);
+            if (request.Order == null) // Datatables has possibility of unordered 
+            {
+                return (IOrderedQueryable<TSource>)query;
+            }
+            int columnNumber = request.Order[0].Column;
+            string columnName = request.Columns[columnNumber].Data;
+            if (columnName == null) columnName = request.Columns[columnNumber + 1].Data; // Crutch for Transfer table
+            return request.Order[0].Dir == DataTableRequestOrderDirection.asc ? query.OrderBy(columnName) : query.OrderByDescending(columnName);
         }
 
         /// <summary>
