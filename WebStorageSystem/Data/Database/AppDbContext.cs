@@ -31,7 +31,8 @@ namespace WebStorageSystem.Data.Database
         public DbSet<Defect> Defects { get; set; }
 
         // Folder: Transfer
-        public DbSet<Transfer> Transfers { get; set; }
+        public DbSet<MainTransfer> MainTransfers { get; set; }
+        public DbSet<SubTransfer> SubTransfers { get; set; }
 
         // Folder: Identity
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
@@ -94,7 +95,7 @@ namespace WebStorageSystem.Data.Database
                     .HasMany(bundle => bundle.BundledUnits)
                     .WithOne(unit => unit.PartOfBundle)
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasAlternateKey(bundle => bundle.SerialNumber);
+                entity.HasAlternateKey(bundle => bundle.InventoryNumber);
                 entity.HasQueryFilter(bundle => !bundle.IsDeleted);
                 entity.ToTable("Bundles");
             });
@@ -133,26 +134,51 @@ namespace WebStorageSystem.Data.Database
             });
 
             // Folder: Transfer
-            modelBuilder.Entity<Transfer>(entity =>
+
+            modelBuilder.Entity<MainTransfer>(entity =>
             {
-                entity.HasAlternateKey(transfer => transfer.TransferNumber);
+                entity.HasAlternateKey(mainTransfer => mainTransfer.TransferNumber);
                 entity
-                    .HasOne(transfer => transfer.User)
+                    .HasOne(mainTransfer => mainTransfer.User)
                     .WithMany(user => user.Transfers)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
                 entity
-                    .HasOne(transfer => transfer.OriginLocation)
+                    .HasMany(mainTransfer => mainTransfer.SubTransfers)
+                    .WithOne(subTransfer => subTransfer.MainTransfer)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity
+                    .HasOne(mainTransfer => mainTransfer.DestinationLocation)
+                    .WithMany(location => location.DestinationMainTransfers)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasQueryFilter(mainTransfer => !mainTransfer.IsDeleted);
+                entity.ToTable("MainTransfers");
+            });
+
+            modelBuilder.Entity<SubTransfer>(entity =>
+            {
+                entity
+                    .HasOne(subTransfer => subTransfer.OriginLocation)
                     .WithMany(location => location.OriginTransfers)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
                 entity
-                    .HasOne(transfer => transfer.DestinationLocation)
+                    .HasOne(subTransfer => subTransfer.DestinationLocation)
                     .WithMany(location => location.DestinationTransfers)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasQueryFilter(transfer => !transfer.IsDeleted);
-                entity.ToTable("Transfers");
+                entity
+                    .HasOne(subTransfer => subTransfer.Unit)
+                    .WithMany(unit => unit.SubTransfers)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity
+                    .HasOne(subTransfer => subTransfer.Bundle)
+                    .WithMany(bundle => bundle.SubTransfers)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasQueryFilter(subTransfer => !subTransfer.IsDeleted);
+                entity.ToTable("SubTransfers");
             });
 
             // Folder: Defect

@@ -41,6 +41,25 @@ namespace WebStorageSystem.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageName = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.UniqueConstraint("AK_Images_ImageName", x => x.ImageName);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "LocationTypes",
                 columns: table => new
                 {
@@ -200,6 +219,7 @@ namespace WebStorageSystem.Data.Migrations
                     Webpage = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     ProductTypeId = table.Column<int>(type: "int", nullable: false),
                     ManufacturerId = table.Column<int>(type: "int", nullable: false),
+                    ImageId = table.Column<int>(type: "int", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -209,6 +229,12 @@ namespace WebStorageSystem.Data.Migrations
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                     table.UniqueConstraint("AK_Products_ProductNumber", x => x.ProductNumber);
+                    table.ForeignKey(
+                        name: "FK_Products_Images_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Images",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Products_Manufacturers_ManufacturerId",
                         column: x => x.ManufacturerId,
@@ -309,14 +335,12 @@ namespace WebStorageSystem.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transfers",
+                name: "MainTransfers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TransferNumber = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OriginLocationId = table.Column<int>(type: "int", nullable: false),
-                    DestinationLocationId = table.Column<int>(type: "int", nullable: false),
                     State = table.Column<int>(type: "int", nullable: false),
                     TransferTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -327,22 +351,10 @@ namespace WebStorageSystem.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transfers", x => x.Id);
-                    table.UniqueConstraint("AK_Transfers_TransferNumber", x => x.TransferNumber);
+                    table.PrimaryKey("PK_MainTransfers", x => x.Id);
+                    table.UniqueConstraint("AK_MainTransfers_TransferNumber", x => x.TransferNumber);
                     table.ForeignKey(
-                        name: "FK_Transfers_Locations_DestinationLocationId",
-                        column: x => x.DestinationLocationId,
-                        principalTable: "Locations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Transfers_Locations_OriginLocationId",
-                        column: x => x.OriginLocationId,
-                        principalTable: "Locations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Transfers_Users_UserId",
+                        name: "FK_MainTransfers_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -408,23 +420,109 @@ namespace WebStorageSystem.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TransferUnit",
+                name: "SubTransfers",
                 columns: table => new
                 {
-                    TransfersId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MainTransferId = table.Column<int>(type: "int", nullable: false),
+                    OriginLocationId = table.Column<int>(type: "int", nullable: false),
+                    DestinationLocationId = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubTransfers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SubTransfers_Locations_DestinationLocationId",
+                        column: x => x.DestinationLocationId,
+                        principalTable: "Locations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_SubTransfers_Locations_OriginLocationId",
+                        column: x => x.OriginLocationId,
+                        principalTable: "Locations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_SubTransfers_MainTransfers_MainTransferId",
+                        column: x => x.MainTransferId,
+                        principalTable: "MainTransfers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Defects",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DefectNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UnitId = table.Column<int>(type: "int", nullable: false),
+                    ReportedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CausedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageId = table.Column<int>(type: "int", nullable: true),
+                    State = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Defects", x => x.Id);
+                    table.UniqueConstraint("AK_Defects_DefectNumber", x => x.DefectNumber);
+                    table.ForeignKey(
+                        name: "FK_Defects_Images_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Images",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Defects_Units_UnitId",
+                        column: x => x.UnitId,
+                        principalTable: "Units",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Defects_Users_CausedByUserId",
+                        column: x => x.CausedByUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Defects_Users_ReportedByUserId",
+                        column: x => x.ReportedByUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SubTransferUnit",
+                columns: table => new
+                {
+                    SubTransfersId = table.Column<int>(type: "int", nullable: false),
                     UnitsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TransferUnit", x => new { x.TransfersId, x.UnitsId });
+                    table.PrimaryKey("PK_SubTransferUnit", x => new { x.SubTransfersId, x.UnitsId });
                     table.ForeignKey(
-                        name: "FK_TransferUnit_Transfers_TransfersId",
-                        column: x => x.TransfersId,
-                        principalTable: "Transfers",
+                        name: "FK_SubTransferUnit_SubTransfers_SubTransfersId",
+                        column: x => x.SubTransfersId,
+                        principalTable: "SubTransfers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TransferUnit_Units_UnitsId",
+                        name: "FK_SubTransferUnit_Units_UnitsId",
                         column: x => x.UnitsId,
                         principalTable: "Units",
                         principalColumn: "Id",
@@ -459,9 +557,39 @@ namespace WebStorageSystem.Data.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Defects_CausedByUserId",
+                table: "Defects",
+                column: "CausedByUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Defects_ImageId",
+                table: "Defects",
+                column: "ImageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Defects_ReportedByUserId",
+                table: "Defects",
+                column: "ReportedByUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Defects_UnitId",
+                table: "Defects",
+                column: "UnitId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Locations_LocationTypeId",
                 table: "Locations",
                 column: "LocationTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MainTransfers_UserId",
+                table: "MainTransfers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_ImageId",
+                table: "Products",
+                column: "ImageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_ManufacturerId",
@@ -474,23 +602,23 @@ namespace WebStorageSystem.Data.Migrations
                 column: "ProductTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transfers_DestinationLocationId",
-                table: "Transfers",
+                name: "IX_SubTransfers_DestinationLocationId",
+                table: "SubTransfers",
                 column: "DestinationLocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transfers_OriginLocationId",
-                table: "Transfers",
+                name: "IX_SubTransfers_MainTransferId",
+                table: "SubTransfers",
+                column: "MainTransferId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SubTransfers_OriginLocationId",
+                table: "SubTransfers",
                 column: "OriginLocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transfers_UserId",
-                table: "Transfers",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TransferUnit_UnitsId",
-                table: "TransferUnit",
+                name: "IX_SubTransferUnit_UnitsId",
+                table: "SubTransferUnit",
                 column: "UnitsId");
 
             migrationBuilder.CreateIndex(
@@ -549,19 +677,22 @@ namespace WebStorageSystem.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "TransferUnit");
+                name: "Defects");
+
+            migrationBuilder.DropTable(
+                name: "SubTransferUnit");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Transfers");
+                name: "SubTransfers");
 
             migrationBuilder.DropTable(
                 name: "Units");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "MainTransfers");
 
             migrationBuilder.DropTable(
                 name: "Bundles");
@@ -576,7 +707,13 @@ namespace WebStorageSystem.Data.Migrations
                 name: "Vendors");
 
             migrationBuilder.DropTable(
+                name: "Users");
+
+            migrationBuilder.DropTable(
                 name: "LocationTypes");
+
+            migrationBuilder.DropTable(
+                name: "Images");
 
             migrationBuilder.DropTable(
                 name: "Manufacturers");

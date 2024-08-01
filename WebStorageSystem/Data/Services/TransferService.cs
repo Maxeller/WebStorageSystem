@@ -12,8 +12,8 @@ using WebStorageSystem.Data.Database;
 using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Data.Entities.Transfers;
 using WebStorageSystem.Extensions;
-using WebStorageSystem.Models;
 using WebStorageSystem.Models.DataTables;
+using WebStorageSystem.Models.Transfers;
 
 namespace WebStorageSystem.Data.Services
 {
@@ -25,8 +25,8 @@ namespace WebStorageSystem.Data.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger _logger;
 
-        private readonly IQueryable<Transfer> _getQuery;
-
+        private readonly IQueryable<MainTransfer> _getQuery;
+        
         public TransferService(AppDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, ILoggerFactory factory)
         {
             _context = context;
@@ -36,17 +36,22 @@ namespace WebStorageSystem.Data.Services
             _logger = factory.CreateLogger<TransferService>();
 
             _getQuery = _context
-                .Transfers
-                .OrderByDescending(transfer => transfer.ModifiedDate)
-                .Include(transfer => transfer.OriginLocation)
-                    .ThenInclude(location => location.LocationType)
-                .Include(transfer => transfer.DestinationLocation)
-                    .ThenInclude(location => location.LocationType)
-                .Include(transfer => transfer.User)
-                .Include(transfer => transfer.Units)
-                    .ThenInclude(unit => unit.Product)
-                        .ThenInclude(product => product.ProductType)
-                .AsNoTracking();
+                .MainTransfers
+                .OrderByDescending(mainTransfer => mainTransfer.TransferTime)
+                .Include(mainTransfer => mainTransfer.SubTransfers)
+                    .ThenInclude(subTransfer => subTransfer.OriginLocation)
+                        .ThenInclude(originLocation => originLocation.LocationType)
+                .Include(mainTransfer => mainTransfer.SubTransfers)
+                    .ThenInclude(subTransfer => subTransfer.DestinationLocation)
+                        .ThenInclude(destinationLocation => destinationLocation.LocationType)
+                .Include(mainTransfer => mainTransfer.SubTransfers)
+                    .ThenInclude(subTransfer => subTransfer.Unit)
+                        .ThenInclude(unit => unit.Product)
+                            .ThenInclude(product => product.ProductType)
+                .Include(mainTransfer => mainTransfer.SubTransfers)
+                    .ThenInclude(subTransfer => subTransfer.Unit)
+                        .ThenInclude(unit => unit.Vendor)
+                .Include(mainTransfer => mainTransfer.User);
         }
 
         /// <summary>
@@ -55,7 +60,7 @@ namespace WebStorageSystem.Data.Services
         /// <param name="id">Entity ID</param>
         /// <param name="getDeleted">Looks through soft deleted entries</param>
         /// <returns>If found returns object, otherwise null</returns>
-        public async Task<Transfer> GetTransferAsync(int id, bool getDeleted = false)
+        public async Task<MainTransfer> GetTransferAsync(int id, bool getDeleted = false)
         {
             if (getDeleted) return await _getQuery.IgnoreQueryFilters().FirstOrDefaultAsync(transfer => transfer.Id == id);
             return await _getQuery.FirstOrDefaultAsync(transfer => transfer.Id == id);
@@ -66,7 +71,7 @@ namespace WebStorageSystem.Data.Services
         /// </summary>
         /// <param name="getDeleted">Looks through soft deleted entries</param>
         /// <returns>Collection of entities</returns>
-        public async Task<IEnumerable<Transfer>> GetTransfersAsync(bool getDeleted = false)
+        public async Task<IEnumerable<MainTransfer>> GetTransfersAsync(bool getDeleted = false)
         {
             if (getDeleted) return await _getQuery.IgnoreQueryFilters().ToListAsync();
             return await _getQuery.ToListAsync();
@@ -78,18 +83,21 @@ namespace WebStorageSystem.Data.Services
         /// <param name="request">DataTableRequest with table search and sort options</param>
         /// <param name="getDeleted">Looks through soft deleted entries</param>
         /// <returns>DataTableDbResult</returns>
-        public async Task<DataTableDbResult<TransferModel>> GetTransfersAsync(DataTableRequest request, bool getDeleted = false)
+        public async Task<DataTableDbResult<SubTransferModel>> GetTransfersAsync(DataTableRequest request, bool getDeleted = false)
         {
             var query = _context
-                .Transfers
-                .Include(transfer => transfer.OriginLocation)
+                .SubTransfers
+                .Include(subTransfer => subTransfer.MainTransfer)
+                    .ThenInclude(mainTransfer => mainTransfer.User)
+                .Include(subTransfer => subTransfer.OriginLocation)
                     .ThenInclude(location => location.LocationType)
-                .Include(transfer => transfer.DestinationLocation)
+                .Include(st => st.DestinationLocation)
                     .ThenInclude(location => location.LocationType)
-                .Include(transfer => transfer.User)
-                .Include(transfer => transfer.Units)
+                .Include(st => st.Unit)
                     .ThenInclude(unit => unit.Product)
                         .ThenInclude(product => product.ProductType)
+                .Include(subTransfer => subTransfer.Unit)
+                    .ThenInclude(unit => unit.Vendor)
                 .AsNoTracking();
 
             // SEARCH
@@ -101,9 +109,9 @@ namespace WebStorageSystem.Data.Services
             var count = await query.CountAsync();
 
             var data =
-                query.Select(transfer => _mapper.Map<TransferModel>(transfer)).AsParallel().ToArray();
+                query.Select(transfer => _mapper.Map<SubTransferModel>(transfer)).AsParallel().ToArray();
 
-            return new DataTableDbResult<TransferModel>
+            return new DataTableDbResult<SubTransferModel>
             {
                 Data = data,
                 RecordsTotal = count
@@ -114,8 +122,9 @@ namespace WebStorageSystem.Data.Services
         /// Adds object to DB
         /// </summary>
         /// <param name="transfer">Object for adding</param>
-        public async Task AddTransferAsync(Transfer transfer)
+        public async Task AddTransferAsync(MainTransfer transfer)
         {
+            /*
             var dbUnits = new List<Unit>();
             foreach (var unit in transfer.Units) // Moves all transferred units to destination location
             {
@@ -131,69 +140,54 @@ namespace WebStorageSystem.Data.Services
             transfer.TransferTime = DateTime.UtcNow; // Sets transfer time
             _context.Transfers.Add(transfer);
             await _context.SaveChangesAsync();
+            */
         }
 
+        /*
         /// <summary>
-        /// Edits entry in DB
+        /// Gets all entries from DB for jQuery Datatables
         /// </summary>
-        /// <param name="transfer">Object for editing</param>
-        /// <returns>Return tuple if editing was successful, if not error message is provided</returns>
-        public async Task<(bool Success, string ErrorMessage)> EditTransferAsync(Transfer transfer)
+        /// <param name="request">DataTableRequest with table search and sort options</param>
+        /// <param name="getDeleted">Looks through soft deleted entries</param>
+        /// <returns>DataTableDbResult</returns>
+        public async Task<DataTableDbResult<MainTransferModel>> GetTransfersAsync(DataTableRequest request, bool getDeleted = false)
         {
-            try
+            var query = _context
+                .MainTransfers
+                .OrderByDescending(mainTransfer => mainTransfer.TransferTime)
+                .Include(mainTransfer => mainTransfer.SubTransfers)
+                    .ThenInclude(subTransfer => subTransfer.OriginLocation)
+                        //.ThenInclude(originLocation => originLocation.LocationType)
+                .Include(mainTransfer => mainTransfer.SubTransfers)
+                    .ThenInclude(subTransfer => subTransfer.DestinationLocation)
+                        //.ThenInclude(destinationLocation => destinationLocation.LocationType)
+                .Include(mainTransfer => mainTransfer.SubTransfers)
+                    .ThenInclude(subTransfer => subTransfer.Unit)
+                        .ThenInclude(unit => unit.Product)
+                            .ThenInclude(product => product.ProductType)
+                .Include(mainTransfer => mainTransfer.SubTransfers)
+                    .ThenInclude(subTransfer => subTransfer.Unit)
+                        .ThenInclude(unit => unit.Vendor)
+                .Include(mainTransfer => mainTransfer.User)
+                .AsNoTracking();
+
+            // SEARCH
+            query = query.Search(request);
+
+            // ORDER
+            query = query.OrderBy(request);
+
+            var count = await query.CountAsync();
+
+            var data =
+                query.Select(transfer => _mapper.Map<MainTransferModel>(transfer)).AsParallel().ToArray();
+
+            return new DataTableDbResult<MainTransferModel>
             {
-                //var prev = await GetLocationAsync(transfer.Id);
-                //_context.Entry(prev).State = EntityState.Detached;
-                //_context.Entry(transfer).State = EntityState.Modified;
-                _context.Transfers.Update(transfer);
-                await _context.SaveChangesAsync();
-                return (true, null);
-            }
-            catch (DbUpdateConcurrencyException concurrencyException)
-            {
-                // TODO: log
-                return (false, concurrencyException.Message); // TODO: Change to more friendly message
-            }
-            catch (Exception ex)
-            {
-                // TODO: log
-                return (false, ex.Message); // TODO: Change to more friendly message
-            }
+                Data = data,
+                RecordsTotal = count
+            };
         }
-
-        /// <summary>
-        /// Soft deletes entry based on entry ID
-        /// </summary>
-        /// <param name="id">Entry ID</param>
-        /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
-        public async Task<(bool Success, string ErrorMessage)> DeleteTransferAsync(int id)
-        {
-            var location = await GetTransferAsync(id, true);
-            return await DeleteTransferAsync(location);
-        }
-
-        /// <summary>
-        /// Soft deletes entry based on object
-        /// </summary>
-        /// <param name="transfer">Object for deletion</param>
-        /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
-        public async Task<(bool Success, string ErrorMessage)> DeleteTransferAsync(Transfer transfer)
-        {
-            _context.Transfers.Remove(transfer); // TODO: Determine if cascading
-            await _context.SaveChangesAsync();
-            return (true, null);
-        }
-
-        /// <summary>
-        /// Restores soft deleted entry
-        /// </summary>
-        /// <param name="id">Entry ID</param>
-        public async Task RestoreTransferAsync(int id)
-        {
-            var location = await GetTransferAsync(id, true);
-            location.IsDeleted = false;
-            _context.Update(location);
-            await _context.SaveChangesAsync();
-        }
+        */
     }
 }

@@ -44,7 +44,7 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
 
         public DateTime? LastCheckTime { get; set; }
 
-        public IEnumerable<Transfer> Transfers { get; set; }
+        public IEnumerable<SubTransfer> SubTransfers { get; set; }
         public IEnumerable<Defect> Defects { get; set; }
         public override DateTime CreatedDate { get; set; }
         public override DateTime ModifiedDate { get; set; }

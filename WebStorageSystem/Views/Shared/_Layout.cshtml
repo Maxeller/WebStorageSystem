@@ -58,6 +58,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" role="button" asp-area="Defects" asp-controller="Defect" asp-action="Index">Defects</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" role="button" asp-area="Admin" asp-controller="Defect" asp-action="Index">Admin</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -69,13 +72,13 @@
             @RenderBody()
         </main>
     </div>
-
+    <!--
     <footer class="border-top footer text-muted">
         <div class="container-fluid">
             &copy; 2020 - WebStorageSystem - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-
+    -->
     <partial name="LayoutPartial/_LayoutScriptsPartial"/>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

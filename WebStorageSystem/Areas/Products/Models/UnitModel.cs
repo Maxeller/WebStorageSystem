@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using WebStorageSystem.Areas.Defects.Models;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Models;
+using WebStorageSystem.Models.Transfers;
 
 namespace WebStorageSystem.Areas.Products.Models
 {
@@ -55,12 +56,11 @@ namespace WebStorageSystem.Areas.Products.Models
         public DateTime? LastCheckTime { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<TransferModel> Transfers { get; set; }
+        public IEnumerable<SubTransferModel> Transfers { get; set; }
 
         [JsonIgnore]
         public IEnumerable<DefectModel> Defects { get; set; }
 
-        [JsonIgnore]
         public string InventoryNumberProduct
         {
             get

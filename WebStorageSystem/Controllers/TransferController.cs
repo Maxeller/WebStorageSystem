@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebStorageSystem.Areas.Locations.Data.Services;
 using WebStorageSystem.Areas.Locations.Models;
-using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Data.Entities.Transfers;
 using WebStorageSystem.Data.Services;
 using WebStorageSystem.Models;
 using WebStorageSystem.Models.DataTables;
+using WebStorageSystem.Models.Transfers;
 
 namespace WebStorageSystem.Controllers
 {
@@ -37,7 +36,7 @@ namespace WebStorageSystem.Controllers
         // GET: Transfer/Index
         public IActionResult Index()
         {
-            return View(new TransferModel());
+            return View(new SubTransferModel());
         }
 
         // GET: Transfer/Create
@@ -50,14 +49,14 @@ namespace WebStorageSystem.Controllers
         // POST: Transfer/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TransferNumber,OriginLocationId,DestinationLocationId,UnitsIds,IsDeleted")] TransferModel transferModel, TransferState state)
+        public async Task<IActionResult> Create([Bind("TransferNumber,OriginLocationId,DestinationLocationId,UnitsIds,IsDeleted")] MainTransferModel mainTransferModel, TransferState state)
         {
             if (!ModelState.IsValid)
             {
                 await CreateLocationDropdownList();
                 return View();
             }
-
+            /*
             var transfer = _mapper.Map<Transfer>(transferModel);
             var units = new List<Unit>(transferModel.UnitsIds.ToArray().Length);
             foreach (var unitId in transferModel.UnitsIds)
@@ -68,36 +67,15 @@ namespace WebStorageSystem.Controllers
             transfer.Units = units;
             transfer.State = state;
             await _transferService.AddTransferAsync(transfer);
+            */
             return RedirectToAction(nameof(Index));
+            
         }
 
         // GET: Transfer/Details/5
         public IActionResult Details()
         {
             //return View();
-            return RedirectToAction(nameof(Index));
-        }
-
-        // GET: Transfer/Edit/5
-        public IActionResult Edit()
-        {
-            //return View();
-            return RedirectToAction(nameof(Index));
-        }
-
-        // POST: Transfer/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            return RedirectToAction(nameof(Index));
-        }
-
-        // POST: Transfer/Restore/5
-        [HttpPost, ActionName("Restore")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Restore(int? id)
-        {
             return RedirectToAction(nameof(Index));
         }
 
@@ -113,14 +91,11 @@ namespace WebStorageSystem.Controllers
                 {
                     item.Action = new Dictionary<string, string>
                     {
-                        {"Edit", Url.Action(nameof(Edit), new {item.Id})},
-                        {"Details", Url.Action(nameof(Details), new {item.Id})},
-                        {"Delete", Url.Action(nameof(Delete), new {item.Id})},
-                        {"Restore", Url.Action(nameof(Restore), new {item.Id})}
+                        {"Details", Url.Action(nameof(Details), new {item.MainTransferId})}
                     };
                 }
 
-                return new JsonResult(new DataTableResponse<TransferModel>
+                return new JsonResult(new DataTableResponse<SubTransferModel>
                 {
                     Draw = request.Draw,
                     Data = results.Data,
@@ -154,7 +129,7 @@ namespace WebStorageSystem.Controllers
 
             return result;
         }
-
+        
         private async Task CreateLocationDropdownList(bool getDeleted = false, object selectedUnits = null)
         {
             var locations = await _locationService.GetLocationsAsync(getDeleted);

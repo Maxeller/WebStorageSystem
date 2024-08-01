@@ -106,8 +106,8 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 .Include(unit => unit.DefaultLocation)
                 .Include(unit => unit.Vendor)
                 .Include(unit => unit.PartOfBundle)
-                .AsNoTracking()
-                .IgnoreQueryFilters();
+                .IgnoreQueryFilters()
+                .AsNoTracking();
 
             // SEARCH
             query = query.Search(request);
@@ -121,6 +121,39 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 query.Select(unit => _mapper.Map<UnitModel>(unit)).AsParallel().ToArray();
 
             return new DataTableDbResult<UnitModel>
+            {
+                Data = data,
+                RecordsTotal = count
+            };
+        }
+
+        public async Task<DataTableDbResult<UnitBundleModel>> GetUnitBundlesAsync(DataTableRequest request, bool getDeleted = false)
+        {
+            var query = _context
+                .Units
+                .Include(unit => unit.Product)
+                .ThenInclude(product => product.ProductType)
+                .Include(unit => unit.Product)
+                .ThenInclude(product => product.Manufacturer)
+                .Include(unit => unit.Location)
+                .Include(unit => unit.DefaultLocation)
+                .Include(unit => unit.Vendor)
+                .Include(unit => unit.PartOfBundle)
+                .AsNoTracking();
+
+
+            // SEARCH
+            query = query.Search(request);
+
+            // ORDER
+            query = query.OrderBy(request);
+
+            var count = await query.CountAsync();
+
+            var data =
+                query.Select(unit => _mapper.Map<UnitBundleModel>(unit)).AsParallel().ToArray();
+
+            return new DataTableDbResult<UnitBundleModel>
             {
                 Data = data,
                 RecordsTotal = count

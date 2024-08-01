@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Models;
+using WebStorageSystem.Models.Transfers;
 
 namespace WebStorageSystem.Areas.Locations.Models
 {
@@ -25,10 +26,13 @@ namespace WebStorageSystem.Areas.Locations.Models
         public LocationTypeModel LocationType { get; set; }
 
         [JsonIgnore, XmlIgnore]
-        public IEnumerable<TransferModel> OriginTransfers { get; set; }
+        public IEnumerable<SubTransferModel> OriginTransfers { get; set; }
 
         [JsonIgnore, XmlIgnore]
-        public IEnumerable<TransferModel> DestinationTransfers { get; set; }
+        public IEnumerable<SubTransferModel> DestinationTransfers { get; set; }
+
+        [JsonIgnore, XmlIgnore]
+        public IEnumerable<MainTransferModel> DestinationMainTransfers { get; set; }
 
         [JsonIgnore, XmlIgnore]
         public IEnumerable<UnitModel> Units { get; set; }

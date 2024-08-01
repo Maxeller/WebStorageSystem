@@ -9,7 +9,7 @@ namespace WebStorageSystem.Data.Entities.Identities
     {
         public bool IsAdmin { get; set; }
 
-        public IEnumerable<Transfer> Transfers { get; set; }
+        public IEnumerable<MainTransfer> Transfers { get; set; }
         public IEnumerable<Defect> ReportedDefects { get; set; }
         public IEnumerable<Defect> CausedDefects { get; set; }
     }

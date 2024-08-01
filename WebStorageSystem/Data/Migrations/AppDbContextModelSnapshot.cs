@@ -16,7 +16,7 @@ namespace WebStorageSystem.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.10")
+                .HasAnnotation("ProductVersion", "5.0.15")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -152,21 +152,6 @@ namespace WebStorageSystem.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("TransferUnit", b =>
-                {
-                    b.Property<int>("TransfersId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UnitsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TransfersId", "UnitsId");
-
-                    b.HasIndex("UnitsId");
-
-                    b.ToTable("TransferUnit");
                 });
 
             modelBuilder.Entity("WebStorageSystem.Areas.Defects.Data.Entities.Defect", b =>
@@ -322,6 +307,10 @@ namespace WebStorageSystem.Data.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("InventoryNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -338,13 +327,9 @@ namespace WebStorageSystem.Data.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("SerialNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("SerialNumber");
+                    b.HasAlternateKey("InventoryNumber");
 
                     b.ToTable("Bundles");
                 });
@@ -709,7 +694,7 @@ namespace WebStorageSystem.Data.Migrations
                     b.ToTable("Images");
                 });
 
-            modelBuilder.Entity("WebStorageSystem.Data.Entities.Transfers.Transfer", b =>
+            modelBuilder.Entity("WebStorageSystem.Data.Entities.Transfers.MainTransfer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -727,9 +712,6 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("OriginLocationId")
-                        .HasColumnType("int");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
@@ -756,11 +738,60 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.HasIndex("DestinationLocationId");
 
-                    b.HasIndex("OriginLocationId");
-
                     b.HasIndex("UserId");
 
-                    b.ToTable("Transfers");
+                    b.ToTable("MainTransfers");
+                });
+
+            modelBuilder.Entity("WebStorageSystem.Data.Entities.Transfers.SubTransfer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BundleId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DestinationLocationId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MainTransferId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OriginLocationId")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<int>("UnitId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BundleId");
+
+                    b.HasIndex("DestinationLocationId");
+
+                    b.HasIndex("MainTransferId");
+
+                    b.HasIndex("OriginLocationId");
+
+                    b.HasIndex("UnitId");
+
+                    b.ToTable("SubTransfers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -810,21 +841,6 @@ namespace WebStorageSystem.Data.Migrations
                     b.HasOne("WebStorageSystem.Data.Entities.Identities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("TransferUnit", b =>
-                {
-                    b.HasOne("WebStorageSystem.Data.Entities.Transfers.Transfer", null)
-                        .WithMany()
-                        .HasForeignKey("TransfersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WebStorageSystem.Areas.Products.Data.Entities.Unit", null)
-                        .WithMany()
-                        .HasForeignKey("UnitsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -938,17 +954,11 @@ namespace WebStorageSystem.Data.Migrations
                     b.Navigation("Vendor");
                 });
 
-            modelBuilder.Entity("WebStorageSystem.Data.Entities.Transfers.Transfer", b =>
+            modelBuilder.Entity("WebStorageSystem.Data.Entities.Transfers.MainTransfer", b =>
                 {
                     b.HasOne("WebStorageSystem.Areas.Locations.Data.Entities.Location", "DestinationLocation")
-                        .WithMany("DestinationTransfers")
+                        .WithMany("DestinationMainTransfers")
                         .HasForeignKey("DestinationLocationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("WebStorageSystem.Areas.Locations.Data.Entities.Location", "OriginLocation")
-                        .WithMany("OriginTransfers")
-                        .HasForeignKey("OriginLocationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -960,14 +970,57 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.Navigation("DestinationLocation");
 
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("WebStorageSystem.Data.Entities.Transfers.SubTransfer", b =>
+                {
+                    b.HasOne("WebStorageSystem.Areas.Products.Data.Entities.Bundle", "Bundle")
+                        .WithMany("SubTransfers")
+                        .HasForeignKey("BundleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WebStorageSystem.Areas.Locations.Data.Entities.Location", "DestinationLocation")
+                        .WithMany("DestinationTransfers")
+                        .HasForeignKey("DestinationLocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WebStorageSystem.Data.Entities.Transfers.MainTransfer", "MainTransfer")
+                        .WithMany("SubTransfers")
+                        .HasForeignKey("MainTransferId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WebStorageSystem.Areas.Locations.Data.Entities.Location", "OriginLocation")
+                        .WithMany("OriginTransfers")
+                        .HasForeignKey("OriginLocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WebStorageSystem.Areas.Products.Data.Entities.Unit", "Unit")
+                        .WithMany("SubTransfers")
+                        .HasForeignKey("UnitId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Bundle");
+
+                    b.Navigation("DestinationLocation");
+
+                    b.Navigation("MainTransfer");
+
                     b.Navigation("OriginLocation");
 
-                    b.Navigation("User");
+                    b.Navigation("Unit");
                 });
 
             modelBuilder.Entity("WebStorageSystem.Areas.Locations.Data.Entities.Location", b =>
                 {
                     b.Navigation("DefaultUnits");
+
+                    b.Navigation("DestinationMainTransfers");
 
                     b.Navigation("DestinationTransfers");
 
@@ -984,6 +1037,8 @@ namespace WebStorageSystem.Data.Migrations
             modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.Bundle", b =>
                 {
                     b.Navigation("BundledUnits");
+
+                    b.Navigation("SubTransfers");
                 });
 
             modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.Manufacturer", b =>
@@ -1004,6 +1059,8 @@ namespace WebStorageSystem.Data.Migrations
             modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.Unit", b =>
                 {
                     b.Navigation("Defects");
+
+                    b.Navigation("SubTransfers");
                 });
 
             modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.Vendor", b =>
@@ -1025,6 +1082,11 @@ namespace WebStorageSystem.Data.Migrations
                     b.Navigation("Defects");
 
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("WebStorageSystem.Data.Entities.Transfers.MainTransfer", b =>
+                {
+                    b.Navigation("SubTransfers");
                 });
 #pragma warning restore 612, 618
         }

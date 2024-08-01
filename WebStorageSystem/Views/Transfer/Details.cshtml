@@ -1,0 +1,41 @@
+﻿@model MainTransferModel
+
+@{
+    ViewData["Title"] = "Details Transfer " + @Model.TransferNumber;
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Unit</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Transfer Number
+        </dt>
+        <dd class="col-sm-10">
+            @Model.TransferNumber
+        </dd>
+        <dt class="col-sm-2">
+            State
+        </dt>
+        <dd class="col-sm-10">
+            @Model.State.ToString()
+        </dd>
+        <dt class="col-sm-2">
+            Transfer Time
+        </dt>
+        <dd class="col-sm-10">
+            @Model.TransferTime
+        </dd>
+        <dt class="col-sm-2">
+            User 
+        </dt>
+        <dd class="col-sm-10">
+            @Model.User.UserName
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="text-primary" asp-action="Index">Back to List</a>
+</div>

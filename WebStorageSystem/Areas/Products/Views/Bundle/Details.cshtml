@@ -1,7 +1,7 @@
 ﻿@model BundleModel
 
 @{
-    ViewData["Title"] = "Details " + Model.SerialNumber;
+    ViewData["Title"] = "Details " + Model.InventoryNumber;
 }
 
 <h1>Details</h1>
@@ -20,7 +20,7 @@
             Serial Number
         </dt>
         <dd class="col-sm-10">
-            @Model.SerialNumber
+            @Model.InventoryNumber
         </dd>
         <dt class="col-sm-2">
             Included Units

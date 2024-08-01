@@ -45,7 +45,6 @@ namespace WebStorageSystem.Areas.Defects.Models
         [Display(Name = "Deleted")]
         public override bool IsDeleted { get; set; }
 
-        [JsonIgnore]
         public override byte[] RowVersion { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

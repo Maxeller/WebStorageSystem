@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
 using WebStorageSystem.Models;
+using WebStorageSystem.Models.Transfers;
 
 namespace WebStorageSystem.Areas.Products.Models
 {
@@ -13,14 +14,17 @@ namespace WebStorageSystem.Areas.Products.Models
         [Required, StringLength(100)]
         public string Name { get; set; }
 
-        [Required, DisplayName("Serial Number")]
-        public string SerialNumber { get; set; } //TODO: compatibility with code reader
+        [Required, DisplayName("Inventory Number")]
+        public string InventoryNumber { get; set; } //TODO: compatibility with code reader
 
         [DisplayName("Bundled Units")]
         public IEnumerable<UnitModel> BundledUnits { get; set; }
 
         [Required, DisplayName("Bundled Units")]
         public IEnumerable<int> BundledUnitsIds { get; set; }
+
+        [JsonIgnore]
+        public IEnumerable<SubTransferModel> SubTransfers { get; set; }
 
         [DisplayName("# Units")]
         public int NumberOfUnits => BundledUnits?.ToArray().Length ?? 0;

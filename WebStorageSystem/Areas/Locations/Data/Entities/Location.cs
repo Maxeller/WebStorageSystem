@@ -26,9 +26,11 @@ namespace WebStorageSystem.Areas.Locations.Data.Entities
         public LocationType LocationType { get; set; }
         public int LocationTypeId { get; set; }
 
-        public IEnumerable<Transfer> OriginTransfers { get; set; }
+        public IEnumerable<SubTransfer> OriginTransfers { get; set; }
 
-        public IEnumerable<Transfer> DestinationTransfers { get; set; }
+        public IEnumerable<SubTransfer> DestinationTransfers { get; set; }
+
+        public IEnumerable<MainTransfer> DestinationMainTransfers { get; set; }
 
         public IEnumerable<Unit> Units { get; set; }
 
