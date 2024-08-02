@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -125,6 +126,7 @@ namespace WebStorageSystem
                 {
                     options.JsonSerializerOptions.AllowTrailingCommas = true; // Allows for trailing commas in JSON file
                     options.JsonSerializerOptions.PropertyNamingPolicy = null; // Json is serialized without camelCase
+                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                 })
                 .AddXmlSerializerFormatters(); // Adds XML serializer for input and output
 
