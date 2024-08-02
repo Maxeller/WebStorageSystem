@@ -1,6 +1,6 @@
 ﻿CREATE VIEW [dbo].UnitBundleView
 	AS 
-		SELECT Units.SerialNumber, Units.Id AS UnitId, 'Unit' AS TableName FROM Units
+		SELECT Units.InventoryNumber, Units.Id AS UnitId, NULL AS BundleId, 'Unit' AS TableName FROM Units
 		WHERE Units.PartOfBundleId IS NULL
 	UNION ALL
-		SELECT Bundles.SerialNumber, Bundles.Id AS BundleId, 'Bundle' AS TableName FROM Bundles
+		SELECT Bundles.InventoryNumber, NULL AS UnitId, Bundles.Id AS BundleId, 'Bundle' AS TableName FROM Bundles
