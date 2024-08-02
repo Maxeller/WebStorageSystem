@@ -1,21 +1,18 @@
 ﻿using System.ComponentModel;
 
-namespace WebStorageSystem.Areas.Products.Data.Entities
+namespace WebStorageSystem.Areas.Products.Models
 {
-    public class UnitBundleView
+    public class UnitBundleViewModel
     {
         [DisplayName("Inventory Number")]
         public string InventoryNumber { get; set; }
 
-        public Unit Unit { get; private set; }
-
+        public UnitModel Unit { get; set; }
         public int UnitId { get; set; }
 
-        public Bundle Bundle { get; private set; }
-
+        public BundleModel Bundle { get; set; }
         public int BundleId { get; set; }
 
         public bool IsBundle => Bundle != null;
-
     }
 }

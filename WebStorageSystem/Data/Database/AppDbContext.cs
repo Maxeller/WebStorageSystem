@@ -116,6 +116,13 @@ namespace WebStorageSystem.Data.Database
                 entity.ToTable("Units");
             });
 
+            // Views as in https://learn.microsoft.com/en-us/ef/core/modeling/keyless-entity-types?tabs=data-annotations#mapping-to-database-objects
+            modelBuilder.Entity<UnitBundleView>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView("UnitBundleView");
+            });
+
             // Folder: Location
             modelBuilder.Entity<Location>(entity =>
             {
