@@ -31,10 +31,10 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 .Bundles
                 .OrderBy(bundle => bundle.Name)
                 .Include(bundle => bundle.BundledUnits)
-                .ThenInclude(unit => unit.Product)
-                .ThenInclude(product => product.ProductType)
+                    .ThenInclude(unit => unit.Product)
+                        .ThenInclude(product => product.ProductType)
                 .Include(bundle => bundle.BundledUnits)
-                .ThenInclude(unit => unit.Location)
+                    .ThenInclude(unit => unit.Location)
                 .AsNoTracking();
         }
 
@@ -72,7 +72,6 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             var query = _context
                 .Bundles
                 .Include(bundle => bundle.BundledUnits)
-                .AsNoTracking()
                 .IgnoreQueryFilters();
 
             // SEARCH
@@ -81,15 +80,18 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             // ORDER
             query = query.OrderBy(request);
 
-            var count = await query.CountAsync();
+            // SEARCH USING IncludeFilter
+            var list = await query.SpecialitySearch(request);
 
             var data =
-                query.Select(bundle => _mapper.Map<BundleModel>(bundle)).AsParallel().ToArray();
+                list.Select(bundle => _mapper.Map<BundleModel>(bundle)).AsParallel().ToArray();
+
+            data = data.Where(bundle => bundle.NumberOfUnits > 0).ToArray();
 
             return new DataTableDbResult<BundleModel>
             {
                 Data = data,
-                RecordsTotal = count
+                RecordsTotal = data.Length
             };
         }
 

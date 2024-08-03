@@ -44,5 +44,10 @@ namespace WebStorageSystem.Areas.Products.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public override Dictionary<string, string> Action { get; set; }
         public override int Id { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return InventoryNumber == ((BundleModel)obj)?.InventoryNumber;
+        }
     }
 }
