@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Models.DataTables;
+using Z.EntityFramework.Plus;
 
 namespace WebStorageSystem.Extensions
 {
@@ -15,16 +20,20 @@ namespace WebStorageSystem.Extensions
         /// <param name="query">A sequence of values to order.</param>
         /// <param name="request">DataTables request</param>
         /// <returns>Ordered query based on DataTableRequest</returns>
-        public static IOrderedQueryable<TSource> OrderBy<TSource>(this IQueryable<TSource> query, DataTableRequest request)
+        public static IOrderedQueryable<TSource> OrderBy<TSource>(this IQueryable<TSource> query,
+            DataTableRequest request)
         {
             if (request.Order == null) // Datatables has possibility of unordered 
             {
                 return (IOrderedQueryable<TSource>)query;
             }
+
             int columnNumber = request.Order[0].Column;
             string columnName = request.Columns[columnNumber].Data;
             if (columnName == null) columnName = request.Columns[columnNumber + 1].Data; // Crutch for Transfer table
-            return request.Order[0].Dir == DataTableRequestOrderDirection.asc ? query.OrderBy(columnName) : query.OrderByDescending(columnName);
+            return request.Order[0].Dir == DataTableRequestOrderDirection.asc
+                ? query.OrderBy(columnName)
+                : query.OrderByDescending(columnName);
         }
 
         /// <summary>
@@ -53,7 +62,7 @@ namespace WebStorageSystem.Extensions
                 {
                     var parameters = m.GetParameters().ToList();
                     //Put more restriction here to ensure selecting the right overload                
-                    return parameters.Count == 2;//overload that has 2 parameters
+                    return parameters.Count == 2; //overload that has 2 parameters
                 }).Single();
             //The linq's OrderBy<TSource, TKey> has two generic types, which provided here
             MethodInfo genericMethod = method.MakeGenericMethod(entityType, property.Type);
@@ -61,7 +70,8 @@ namespace WebStorageSystem.Extensions
             /*Call query.OrderBy(selector), with query and selector: x => x.PropName
               Note that we pass the selector as Expression to the method and we don't compile it.
               By doing so EF can extract "order by" columns and generate SQL for it.*/
-            IOrderedQueryable<TSource> newQuery = (IOrderedQueryable<TSource>)genericMethod.Invoke(genericMethod, new object[] { query, selector });
+            IOrderedQueryable<TSource> newQuery =
+                (IOrderedQueryable<TSource>)genericMethod.Invoke(genericMethod, new object[] { query, selector });
             return newQuery;
         }
 
@@ -73,7 +83,8 @@ namespace WebStorageSystem.Extensions
         /// <param name="query">A sequence of values to order.</param>
         /// <param name="propertyName"></param>
         /// <returns></returns>
-        private static IOrderedQueryable<TSource> OrderByDescending<TSource>(this IQueryable<TSource> query, string propertyName)
+        private static IOrderedQueryable<TSource> OrderByDescending<TSource>(this IQueryable<TSource> query,
+            string propertyName)
         {
             Type entityType = typeof(TSource);
 
@@ -90,7 +101,7 @@ namespace WebStorageSystem.Extensions
                 {
                     var parameters = m.GetParameters().ToList();
                     //Put more restriction here to ensure selecting the right overload                
-                    return parameters.Count == 2;//overload that has 2 parameters
+                    return parameters.Count == 2; //overload that has 2 parameters
                 }).Single();
             //The linq's OrderBy<TSource, TKey> has two generic types, which provided here
             MethodInfo genericMethod = method.MakeGenericMethod(entityType, property.Type);
@@ -98,7 +109,8 @@ namespace WebStorageSystem.Extensions
             /*Call query.OrderBy(selector), with query and selector: x => x.PropName
               Note that we pass the selector as Expression to the method and we don't compile it.
               By doing so EF can extract "order by" columns and generate SQL for it.*/
-            IOrderedQueryable<TSource> newQuery = (IOrderedQueryable<TSource>)genericMethod.Invoke(genericMethod, new object[] { query, selector });
+            IOrderedQueryable<TSource> newQuery =
+                (IOrderedQueryable<TSource>)genericMethod.Invoke(genericMethod, new object[] { query, selector });
             return newQuery;
         }
 
@@ -124,6 +136,7 @@ namespace WebStorageSystem.Extensions
                 string searchValue = column.Search.Value;
 
                 if (searchValue == null) continue;
+                if (columnName.Contains("BundledUnits")) continue;
 
                 ParameterExpression arg = Expression.Parameter(entityType, "x");
 
@@ -153,7 +166,10 @@ namespace WebStorageSystem.Extensions
                 if (columnName.Contains("Date"))
                 {
                     ConstantExpression zero = Expression.Constant(0, typeof(int));
-                    BinaryExpression binaryExpression = Expression.GreaterThanOrEqual(expression, zero); // TODO: Check CompareTo docs for diff options
+                    BinaryExpression
+                        binaryExpression =
+                            Expression.GreaterThanOrEqual(expression,
+                                zero); // TODO: Check CompareTo docs for diff options
                     lambda = Expression.Lambda<Func<TSource, bool>>(binaryExpression, arg);
                 }
                 else
@@ -176,8 +192,36 @@ namespace WebStorageSystem.Extensions
                 propertyName = propertyName.Substring(index + 1);
                 index = propertyName.IndexOf('.');
             }
+
             MemberExpression property = Expression.Property(arg, propertyName);
             return property;
+        }
+
+        public static async Task<IEnumerable<TSource>> SpecialitySearch<TSource>(this IQueryable<TSource> query, DataTableRequest request)
+        {
+            foreach (var column in request.Columns)
+            {
+                if (!column.Searchable) continue;
+
+                string columnName = column.Data;
+                string searchValue = column.Search.Value;
+
+                if (searchValue == null) continue;
+                
+                switch (columnName)
+                {
+                    case "BundledUnits":
+                    {
+                        return await ((IQueryable<Bundle>)query)
+                            .IncludeFilter(b => b.BundledUnits.Where(u => u.InventoryNumber.Contains(searchValue)))
+                            .ToListAsync() as IEnumerable<TSource>;
+                    }
+
+                    default: continue;
+                }
+            }
+
+            return await query.ToListAsync();
         }
     }
 }
