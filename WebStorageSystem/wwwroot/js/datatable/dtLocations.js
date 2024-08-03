@@ -86,8 +86,10 @@ $(document).ready(function () {
                 } else {
                     $("#dtLocationType thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-                counter++;
+            } else {
+                $("#dtLocationType thead tr:last").append(`<th></th>`);
             }
+            counter++;
         });
         $("#dtLocationType thead th:last").after("</tr>");
 
@@ -204,8 +206,11 @@ $(document).ready(function () {
                 } else {
                     $("#dtLocation thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-                counter++;
             }
+            else {
+                $("#dtLocation thead tr:last").append(`<th></th>`);
+            }
+            counter++;
         });
         $("#dtLocation thead th:last").after("</tr>");
 

@@ -84,8 +84,10 @@ $(document).ready(function () {
                 } else {
                     $("#dtManufacturer thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-                counter++;
+            } else {
+                $("#dtManufacturer thead tr:last").append(`<th></th>`);
             }
+            counter++;
         });
         $("#dtManufacturer thead th:last").after("</tr>");
 
@@ -192,8 +194,10 @@ $(document).ready(function () {
                 } else {
                     $("#dtProductType thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-                counter++;
+            } else {
+                $("#dtProductType thead tr:last").append(`<th></th>`);
             }
+            counter++;
         });
         $("#dtProductType thead th:last").after("</tr>");
 
@@ -315,8 +319,10 @@ $(document).ready(function () {
                 } else {
                     $("#dtVendor thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-                counter++;
+            } else {
+                $("#dtVendor thead tr:last").append(`<th></th>`);
             }
+            counter++;
         });
         $("#dtVendor thead th:last").after("</tr>");
 
@@ -443,8 +449,10 @@ $(document).ready(function () {
                 } else {
                     $("#dtProduct thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-                counter++;
+            } else {
+                $("#dtProduct thead tr:last").append(`<th></th>`);
             }
+            counter++;
         });
         $("#dtProduct thead th:last").after("</tr>");
 
@@ -476,14 +484,22 @@ $(document).ready(function () {
                 orderable: true
             },
             {
-                data: "Description",
+                data: "InventoryNumber",
                 searchable: true,
                 orderable: true
             },
             {
                 data: "NumberOfUnits",
+                searchable: false,
+                orderable: false
+            },
+            {
+                data: "BundledUnits",
                 searchable: true,
-                orderable: true
+                orderable: false,
+                render: function (data, type, row) {
+                    return "Inventory";
+                }
             },
             {
                 data: "CreatedDate",
@@ -556,8 +572,10 @@ $(document).ready(function () {
                 } else {
                     $("#dtBundle thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-                counter++;
+            } else {
+                $("#dtBundle thead tr:last").append(`<th></th>`);
             }
+            counter++;
         });
         $("#dtBundle thead th:last").after("</tr>");
 
@@ -717,8 +735,10 @@ $(document).ready(function () {
                 } else {
                     $("#dtUnit thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-                counter++;
+            } else {
+                $("#dtUnit thead tr:last").append(`<th></th>`);
             }
+            counter++;
         });
         $("#dtUnit thead th:last").after("</tr>");
 

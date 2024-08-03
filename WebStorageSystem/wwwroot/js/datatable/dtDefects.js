@@ -116,8 +116,10 @@ $(document).ready(function () {
                 } else {
                     $("#dtDefect thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-                counter++;
+            } else {
+                $("#dtDefect thead tr:last").append(`<th></th>`);
             }
+            counter++;
         });
         $("#dtDefect thead th:last").after("</tr>");
 

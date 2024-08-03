@@ -205,8 +205,10 @@ $(document).ready(function () {
                 } else {
                     $("#dtTransfer thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-                counter++;
+            } else {
+                $("#dtTransfer thead tr:last").append(`<th></th>`);
             }
+            counter++;
         });
         $("#dtTransfer thead th:last").after("</tr>");
 
