@@ -498,7 +498,11 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: false,
                 render: function (data, type, row) {
-                    return "Inventory";
+                    var s = "";
+                    for(const i in data) {
+                        s = s + `${data[i].InventoryNumber} (${data[i].Product.ProductType.Name} - ${data[i].Product.Name})  <br />`;
+                    }
+                    return s;
                 }
             },
             {

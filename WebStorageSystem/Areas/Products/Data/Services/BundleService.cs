@@ -72,6 +72,8 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             var query = _context
                 .Bundles
                 .Include(bundle => bundle.BundledUnits)
+                    .ThenInclude(unit => unit.Product)
+                        .ThenInclude(product => product.ProductType)
                 .IgnoreQueryFilters();
 
             // SEARCH
