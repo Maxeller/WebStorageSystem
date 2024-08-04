@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 using System.Linq;
 using System.Text.Json.Serialization;
+using IronBarCode;
 using WebStorageSystem.Models;
 using WebStorageSystem.Models.Transfers;
 
@@ -28,6 +30,20 @@ namespace WebStorageSystem.Areas.Products.Models
 
         [DisplayName("# Units")]
         public int NumberOfUnits => BundledUnits?.ToArray().Length ?? 0;
+
+        [JsonIgnore]
+        public string BarCode
+        {
+            get
+            {
+                GeneratedBarcode barcode = BarcodeWriter
+                    .CreateBarcode(InventoryNumber, BarcodeEncoding.Code128)
+                    .ResizeTo(250, 50)
+                    .AddAnnotationTextAboveBarcode(Name)
+                    .AddAnnotationTextBelowBarcode(InventoryNumber);
+                return barcode.ToHtmlTag();
+            }
+        } 
 
         [Display(Name = "Creation Date")]
         public override DateTime CreatedDate { get; set; }

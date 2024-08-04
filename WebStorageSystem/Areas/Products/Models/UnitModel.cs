@@ -1,8 +1,10 @@
-﻿using System;
+﻿using IronBarCode;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 using WebStorageSystem.Areas.Defects.Models;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Models;
@@ -28,10 +30,10 @@ namespace WebStorageSystem.Areas.Products.Models
         [Required, DisplayName("Location")]
         public int LocationId { get; set; }
 
+        public LocationModel DefaultLocation { get; set; }
+
         [Required, DisplayName("Default Location")]
         public int DefaultLocationId { get; set; }
-
-        public LocationModel DefaultLocation { get; set; }
 
         public VendorModel Vendor { get; set; }
 
@@ -48,6 +50,20 @@ namespace WebStorageSystem.Areas.Products.Models
         public string ShelfNumber { get; set; }
 
         public string Notes { get; set; }
+
+        [JsonIgnore]
+        public string BarCode
+        {
+            get
+            {
+                GeneratedBarcode barcode = BarcodeWriter
+                    .CreateBarcode(InventoryNumber, BarcodeEncoding.Code128)
+                    .ResizeTo(250, 50)
+                .AddAnnotationTextAboveBarcode($"{Product.Manufacturer.Name} {Product.Name} ")
+                    .AddAnnotationTextBelowBarcode(InventoryNumber);
+                return barcode.ToHtmlTag();
+            }
+        }
 
         [DisplayName("Last Transfer Date")]
         public DateTime? LastTransferTime { get; set; }
