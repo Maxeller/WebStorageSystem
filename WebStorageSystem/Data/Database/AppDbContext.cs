@@ -22,6 +22,7 @@ namespace WebStorageSystem.Data.Database
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Unit> Units { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
+        public DbSet<UnitBundleView> UnitsBundleView { get; set; } // VIEW
 
         // Folder: Location
         public DbSet<Location> Locations { get; set; }
@@ -95,7 +96,7 @@ namespace WebStorageSystem.Data.Database
                     .HasMany(bundle => bundle.BundledUnits)
                     .WithOne(unit => unit.PartOfBundle)
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasAlternateKey(bundle => bundle.InventoryNumber);
+                entity.HasIndex(bundle => bundle.InventoryNumber).IsUnique();
                 entity.HasQueryFilter(bundle => !bundle.IsDeleted);
                 entity.ToTable("Bundles");
             });
@@ -111,7 +112,7 @@ namespace WebStorageSystem.Data.Database
                     .WithMany(location => location.DefaultUnits)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasAlternateKey(unit => unit.InventoryNumber);
+                entity.HasIndex(unit => unit.InventoryNumber).IsUnique();
                 entity.HasQueryFilter(unit => !unit.IsDeleted);
                 entity.ToTable("Units");
             });
@@ -158,9 +159,7 @@ namespace WebStorageSystem.Data.Database
                 entity
                     .HasOne(mainTransfer => mainTransfer.DestinationLocation)
                     .WithMany(location => location.DestinationMainTransfers)
-                    .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasQueryFilter(mainTransfer => !mainTransfer.IsDeleted);
                 entity.ToTable("MainTransfers");
             });
 
@@ -184,14 +183,13 @@ namespace WebStorageSystem.Data.Database
                     .HasOne(subTransfer => subTransfer.Bundle)
                     .WithMany(bundle => bundle.SubTransfers)
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasQueryFilter(subTransfer => !subTransfer.IsDeleted);
                 entity.ToTable("SubTransfers");
             });
 
             // Folder: Defect
             modelBuilder.Entity<Defect>(entity =>
             {
-                entity.HasAlternateKey(defect => defect.DefectNumber);
+                entity.HasIndex(defect => defect.DefectNumber).IsUnique();
                 entity
                     .HasOne(defect => defect.Unit)
                     .WithMany(unit => unit.Defects)
