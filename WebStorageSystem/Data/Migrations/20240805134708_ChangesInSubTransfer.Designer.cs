@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebStorageSystem.Data.Database;
 
 namespace WebStorageSystem.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240805134708_ChangesInSubTransfer")]
+    partial class ChangesInSubTransfer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,10 +207,9 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CausedByUserId");
+                    b.HasAlternateKey("DefectNumber");
 
-                    b.HasIndex("DefectNumber")
-                        .IsUnique();
+                    b.HasIndex("CausedByUserId");
 
                     b.HasIndex("ImageId");
 
@@ -330,8 +331,7 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InventoryNumber")
-                        .IsUnique();
+                    b.HasAlternateKey("InventoryNumber");
 
                     b.ToTable("Bundles");
                 });
@@ -527,10 +527,9 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DefaultLocationId");
+                    b.HasAlternateKey("InventoryNumber");
 
-                    b.HasIndex("InventoryNumber")
-                        .IsUnique();
+                    b.HasIndex("DefaultLocationId");
 
                     b.HasIndex("LocationId");
 
