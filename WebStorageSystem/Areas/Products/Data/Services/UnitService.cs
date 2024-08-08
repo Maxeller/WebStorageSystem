@@ -89,6 +89,15 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         }
 
         /// <summary>
+        /// Gets entries from DB that are not in Bundle
+        /// </summary>
+        /// <returns>Collection of entities</returns>
+        public async Task<IEnumerable<Unit>> GetUnitsNotInBundleAsync()
+        {
+            return await _getQuery.Where(u => u.PartOfBundle == null).ToListAsync();
+        }
+
+        /// <summary>
         /// Gets all entries from DB for jQuery Datatables
         /// </summary>
         /// <param name="request">DataTableRequest with table search and sort options</param>
@@ -127,7 +136,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             };
         }
 
-        public async Task<DataTableDbResult<UnitBundleModel>> GetUnitBundlesAsync(DataTableRequest request, bool getDeleted = false)
+        public async Task<DataTableDbResult<UnitBundleViewModel>> GetUnitBundlesAsync(DataTableRequest request, bool getDeleted = false)
         {
             var query = _context
                 .Units
@@ -151,9 +160,9 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             var count = await query.CountAsync();
 
             var data =
-                query.Select(unit => _mapper.Map<UnitBundleModel>(unit)).AsParallel().ToArray();
+                query.Select(unit => _mapper.Map<UnitBundleViewModel>(unit)).AsParallel().ToArray();
 
-            return new DataTableDbResult<UnitBundleModel>
+            return new DataTableDbResult<UnitBundleViewModel>
             {
                 Data = data,
                 RecordsTotal = count

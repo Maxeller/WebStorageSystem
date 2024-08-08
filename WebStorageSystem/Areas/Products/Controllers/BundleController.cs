@@ -74,14 +74,14 @@ namespace WebStorageSystem.Areas.Products.Controllers
             var bundle = await _bundleService.GetBundleAsync((int)id, getDeleted);
             if (bundle == null) return NotFound();
             var bundleModel = _mapper.Map<BundleModel>(bundle);
-            await CreateUnitDropdownList(bundleModel.BundledUnits);
+            await CreateUnitDropdownList(bundleModel.BundledUnits, true);
             return View(bundleModel);
         }
 
         // POST: Products/Bundle/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,SerialNumber,BundledUnitsIds,Id,CreatedDate,IsDeleted,RowVersion")] BundleModel bundleModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,InventoryNumber,BundledUnitsIds,Id,CreatedDate,IsDeleted,RowVersion")] BundleModel bundleModel)
         {
             if (id != bundleModel.Id) return NotFound();
             if (!ModelState.IsValid)
@@ -96,7 +96,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (success) return RedirectToAction(nameof(Index));
 
             if (await _bundleService.GetBundleAsync(bundle.Id) == null) return NotFound();
-            await CreateUnitDropdownList();
+            await CreateUnitDropdownList(bundleModel.BundledUnits, true);
             TempData["Error"] = errorMessage;
             return View(bundleModel);
         }
@@ -155,9 +155,11 @@ namespace WebStorageSystem.Areas.Products.Controllers
             }
         }
 
-        private async Task CreateUnitDropdownList(IEnumerable<UnitModel> selectedValues = null)
+        private async Task CreateUnitDropdownList(IEnumerable<UnitModel> selectedValues = null, bool getUnitsAlreadyInBundle = false)
         {
-            var units = await _unitService.GetUnitsNotInBundleAsync();
+            var units = getUnitsAlreadyInBundle
+                ? await _unitService.GetUnitsAsync()
+                : await _unitService.GetUnitsNotInBundleAsync();
             var unitModels = _mapper.Map<ICollection<UnitModel>>(units);
             ViewBag.Units = new MultiSelectList(unitModels, "Id", "InventoryNumberProduct", (selectedValues ?? Array.Empty<UnitModel>()).Select(s => s.Id).ToList());
         }
