@@ -83,7 +83,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             query = query.OrderBy(request);
 
             // SEARCH USING IncludeFilter
-            var list = await query.SpecialitySearch(request);
+            var list = await query.SpecialitySearchToList(request);
 
             var data =
                 list.Select(bundle => _mapper.Map<BundleModel>(bundle)).AsParallel().ToArray();

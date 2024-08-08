@@ -4,7 +4,6 @@ using System;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Areas.Products.Models;
 using System.Text.Json.Serialization;
-using WebStorageSystem.Areas.Products.Data.Entities;
 
 namespace WebStorageSystem.Models.Transfers
 {
@@ -28,11 +27,11 @@ namespace WebStorageSystem.Models.Transfers
 
         [Required]
         public UnitModel Unit { get; set; }
-        public int UnitId { get; set; }
+        public int? UnitId { get; set; }
 
         [Display(Name = "Transferred Bundle")]
         public BundleModel Bundle { get; set; }
-        public int BundleId { get; set; }
+        public int? BundleId { get; set; }
 
         [Display(Name = "Creation Date")]
         public override DateTime CreatedDate { get; set; }

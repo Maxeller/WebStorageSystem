@@ -147,7 +147,11 @@ $(document).ready(function () {
             {
                 data: "MainTransfer.User.UserName",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                render: function (data, type, row) {
+                    const words = data.split("@");
+                    return words[0];
+                }
             },
             {
                 data: "OriginLocation.Name",
@@ -160,12 +164,16 @@ $(document).ready(function () {
                 orderable: true
             },
             {
-                data: "Unit.InventoryNumber",
+                data: "UnitBundleView.InventoryNumber",
                 searchable: true,
-                orderable: true,/*
+                orderable: true,
                 render: function (data, type, row) {
-                    return row.Unit.InventoryNumberProduct
-                }*/
+                    if (row.BundleId == null) {
+                        return row.Unit.InventoryNumber;
+                    } else {
+                        return row.Bundle.InventoryNumber;
+                    }
+                }
             },
             {
                 data: "Action",

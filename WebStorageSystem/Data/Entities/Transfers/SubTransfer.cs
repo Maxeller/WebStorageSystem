@@ -33,12 +33,12 @@ namespace WebStorageSystem.Data.Entities.Transfers
         [Display(Name = "Transferred Unit")]
         public Unit Unit { get; set; }
         [Display(Name = "Transferred Unit")]
-        public int UnitId { get; set; }
+        public int? UnitId { get; set; }
 
         [Display(Name = "Transferred Bundle")]
         public Bundle Bundle { get; set; }
         [Display(Name = "Transferred Bundle")]
-        public int BundleId { get; set; }
+        public int? BundleId { get; set; }
 
         public override DateTime CreatedDate { get; set; }
         public override DateTime ModifiedDate { get; set; }

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Data.Database;
 using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Data.Entities.Transfers;
@@ -98,6 +97,7 @@ namespace WebStorageSystem.Data.Services
                         .ThenInclude(product => product.ProductType)
                 .Include(subTransfer => subTransfer.Unit)
                     .ThenInclude(unit => unit.Vendor)
+                .Include(subTransfer => subTransfer.Bundle)
                 .AsNoTracking();
 
             // SEARCH
@@ -105,6 +105,9 @@ namespace WebStorageSystem.Data.Services
 
             // ORDER
             query = query.OrderBy(request);
+
+            // SPECIALTY SEARCH
+            query = query.SpecialitySearch(request);
 
             var count = await query.CountAsync();
 

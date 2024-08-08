@@ -4,8 +4,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
+using LinqKit;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using WebStorageSystem.Areas.Products.Data.Entities;
+using WebStorageSystem.Data.Database;
+using WebStorageSystem.Data.Entities.Transfers;
 using WebStorageSystem.Models.DataTables;
 using Z.EntityFramework.Plus;
 
@@ -136,7 +140,7 @@ namespace WebStorageSystem.Extensions
                 string searchValue = column.Search.Value;
 
                 if (searchValue == null) continue;
-                if (columnName.Contains("BundledUnits")) continue;
+                if (CheckIfColumnIsInSpecialtySearch(columnName)) continue;
 
                 ParameterExpression arg = Expression.Parameter(entityType, "x");
 
@@ -197,7 +201,15 @@ namespace WebStorageSystem.Extensions
             return property;
         }
 
-        public static async Task<IEnumerable<TSource>> SpecialitySearch<TSource>(this IQueryable<TSource> query, DataTableRequest request)
+        private static bool CheckIfColumnIsInSpecialtySearch(string columnName)
+        {
+            if (columnName.Contains("BundledUnits")) return true;
+            if (columnName.Contains("UnitBundleView")) return true;
+            
+            return false;
+        }
+
+        public static async Task<IEnumerable<TSource>> SpecialitySearchToList<TSource>(this IQueryable<TSource> query, DataTableRequest request)
         {
             foreach (var column in request.Columns)
             {
@@ -222,6 +234,34 @@ namespace WebStorageSystem.Extensions
             }
 
             return await query.ToListAsync();
+        }
+
+        public static IQueryable<TSource> SpecialitySearch<TSource>(this IQueryable<TSource> query, DataTableRequest request)
+        {
+            foreach (var column in request.Columns)
+            {
+                if (!column.Searchable) continue;
+
+                string columnName = column.Data;
+                string searchValue = column.Search.Value;
+
+                if (searchValue == null) continue;
+
+                switch (columnName)
+                {
+                    case "UnitBundleView.InventoryNumber":
+                    {
+                        var predicate = PredicateBuilder.New<SubTransfer>();
+                        predicate = predicate.Or(subTransfer => subTransfer.Bundle.InventoryNumber.Contains(searchValue));
+                        predicate = predicate.Or(subTransfer => subTransfer.Unit.InventoryNumber.Contains(searchValue));
+                        return (query as IQueryable<SubTransfer>).Where(predicate) as IQueryable<TSource>;
+                    }
+
+                    default: continue;
+                }
+            }
+
+            return query;
         }
     }
 }
