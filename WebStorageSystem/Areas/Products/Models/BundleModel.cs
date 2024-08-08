@@ -35,6 +35,7 @@ namespace WebStorageSystem.Areas.Products.Models
         {
             get
             {
+                if (InventoryNumber == null) return "";
                 GeneratedBarcode barcode = BarcodeWriter
                     .CreateBarcode(InventoryNumber, BarcodeEncoding.Code128)
                     .ResizeTo(250, 50)

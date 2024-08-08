@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using System.Xml.Linq;
 using WebStorageSystem.Areas.Defects.Models;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Models;
@@ -56,6 +55,7 @@ namespace WebStorageSystem.Areas.Products.Models
         {
             get
             {
+                if (Product == null) return "";
                 GeneratedBarcode barcode = BarcodeWriter
                     .CreateBarcode(InventoryNumber, BarcodeEncoding.Code128)
                     .ResizeTo(250, 50)
