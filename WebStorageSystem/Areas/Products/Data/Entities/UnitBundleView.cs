@@ -7,15 +7,17 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
         [DisplayName("Inventory Number")]
         public string InventoryNumber { get; set; }
 
-        public Unit Unit { get; private set; }
+        public Unit Unit { get; set; }
 
-        public int UnitId { get; set; }
+        public int? UnitId { get; set; }
 
-        public Bundle Bundle { get; private set; }
+        public Bundle Bundle { get; set; }
 
-        public int BundleId { get; set; }
+        public int? BundleId { get; set; }
 
-        public bool IsBundle => Bundle != null;
+        public string TableName { get; set; }
+
+        public bool IsBundle => BundleId != null;
 
     }
 }
