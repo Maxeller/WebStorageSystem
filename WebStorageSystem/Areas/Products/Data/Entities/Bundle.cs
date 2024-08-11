@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Data.Entities;
 using WebStorageSystem.Data.Entities.Transfers;
 
@@ -17,7 +18,19 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
 
         [Required]
         public IEnumerable<Unit> BundledUnits { get; set; }
+
         
+        public Location Location { get; set; }
+
+        [Required]
+        public int LocationId { get; set; }
+
+        
+        public Location DefaultLocation { get; set; }
+
+        [Required]
+        public int DefaultLocationId { get; set; }
+
         public IEnumerable<SubTransfer> SubTransfers { get; set; }
         public override DateTime CreatedDate { get; set; }
         public override DateTime ModifiedDate { get; set; }

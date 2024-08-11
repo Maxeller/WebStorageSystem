@@ -96,6 +96,16 @@ namespace WebStorageSystem.Data.Database
                     .HasMany(bundle => bundle.BundledUnits)
                     .WithOne(unit => unit.PartOfBundle)
                     .OnDelete(DeleteBehavior.Restrict);
+                entity
+                    .HasOne(bundle => bundle.Location)
+                    .WithMany(location => location.Bundles)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity
+                    .HasOne(bundle => bundle.DefaultLocation)
+                    .WithMany(location => location.DefaultBundles)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
                 entity.HasIndex(bundle => bundle.InventoryNumber).IsUnique();
                 entity.HasQueryFilter(bundle => !bundle.IsDeleted);
                 entity.ToTable("Bundles");
@@ -120,7 +130,8 @@ namespace WebStorageSystem.Data.Database
             // Views as in https://learn.microsoft.com/en-us/ef/core/modeling/keyless-entity-types?tabs=data-annotations#mapping-to-database-objects
             modelBuilder.Entity<UnitBundleView>(entity =>
             {
-                entity.HasNoKey();
+                //entity.HasNoKey();
+                entity.HasKey(view => view.InventoryNumber);
                 entity.ToView("UnitBundleView");
             });
 

@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using WebStorageSystem.Areas.Locations.Data.Services;
+using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Areas.Products.Models;
@@ -17,12 +19,14 @@ namespace WebStorageSystem.Areas.Products.Controllers
     {
         private readonly BundleService _bundleService;
         private readonly UnitService _unitService;
+        private readonly LocationService _locationService;
         private readonly IMapper _mapper;
 
-        public BundleController(BundleService bundleService, UnitService unitService, IMapper mapper)
+        public BundleController(BundleService bundleService, UnitService unitService, LocationService locationService, IMapper mapper)
         {
             _bundleService = bundleService;
             _unitService = unitService;
+            _locationService = locationService;
             _mapper = mapper;
         }
 
@@ -46,17 +50,19 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Create()
         {
             await CreateUnitDropdownList();
+            await CreateLocationDropdownList();
             return View();
         }
 
         // POST: Products/Bundle/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,InventoryNumber,BundledUnitsIds,IsDeleted")] BundleModel bundleModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Create([Bind("Name,InventoryNumber,BundledUnitsIds,LocationId,DefaultLocationId,IsDeleted")] BundleModel bundleModel, [FromQuery] bool getDeleted)
         {
             if (!ModelState.IsValid)
             {
                 await CreateUnitDropdownList();
+                await CreateLocationDropdownList();
                 return View(bundleModel);
             }
 
@@ -81,17 +87,19 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Products/Bundle/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,InventoryNumber,BundledUnitsIds,Id,CreatedDate,IsDeleted,RowVersion")] BundleModel bundleModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,InventoryNumber,BundledUnitsIds,LocationId,DefaultLocationIdId,CreatedDate,IsDeleted,RowVersion")] BundleModel bundleModel, bool getDeleted = false)
         {
             if (id != bundleModel.Id) return NotFound();
             if (!ModelState.IsValid)
             {
                 await CreateUnitDropdownList(bundleModel.BundledUnits);
+                await CreateLocationDropdownList(bundleModel.Location, bundleModel.DefaultLocation);
                 return View(bundleModel);
             }
 
             var units = await _unitService.GetUnitsAsync(bundleModel.BundledUnitsIds);
             var bundle = _mapper.Map<Bundle>(bundleModel);
+
             var (success, errorMessage) = await _bundleService.EditBundleAsync(bundle, units);
             if (success) return RedirectToAction(nameof(Index));
 
@@ -162,6 +170,14 @@ namespace WebStorageSystem.Areas.Products.Controllers
                 : await _unitService.GetUnitsNotInBundleAsync();
             var unitModels = _mapper.Map<ICollection<UnitModel>>(units);
             ViewBag.Units = new MultiSelectList(unitModels, "Id", "InventoryNumberProduct", (selectedValues ?? Array.Empty<UnitModel>()).Select(s => s.Id).ToList());
+        }
+
+        private async Task CreateLocationDropdownList(object selectedLocation = null, object selectedDefaultLocation = null, bool getDeleted = false)
+        {
+            var locations = await _locationService.GetLocationsAsync(getDeleted);
+            var lModels = _mapper.Map<ICollection<LocationModel>>(locations);
+            ViewBag.Locations = new SelectList(lModels, "Id", "Name", selectedLocation);
+            ViewBag.DefaultLocations = new SelectList(lModels, "Id", "Name", selectedDefaultLocation);
         }
     }
 }

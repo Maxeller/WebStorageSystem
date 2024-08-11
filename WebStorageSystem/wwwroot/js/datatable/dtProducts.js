@@ -489,6 +489,16 @@ $(document).ready(function () {
                 orderable: true
             },
             {
+                data: "Location.Name",
+                searchable: true,
+                orderable: true
+            },
+            {
+                data: "DefaultLocation.Name",
+                searchable: true,
+                orderable: true
+            },
+            {
                 data: "NumberOfUnits",
                 searchable: false,
                 orderable: false

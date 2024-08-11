@@ -23,6 +23,18 @@
             @Model.InventoryNumber
         </dd>
         <dt class="col-sm-2">
+            Location
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Location.Name (@Model.Location.LocationType.Name)
+        </dd>
+        <dt class="col-sm-2">
+            Default Location
+        </dt>
+        <dd class="col-sm-10">
+            @Model.DefaultLocation.Name (@Model.DefaultLocation.LocationType.Name)
+        </dd>
+        <dt class="col-sm-2">
             Bar Code
         </dt>
         <dd class="col-sm-10">

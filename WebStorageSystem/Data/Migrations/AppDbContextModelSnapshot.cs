@@ -308,12 +308,18 @@ namespace WebStorageSystem.Data.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DefaultLocationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("InventoryNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -330,8 +336,12 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DefaultLocationId");
+
                     b.HasIndex("InventoryNumber")
                         .IsUnique();
+
+                    b.HasIndex("LocationId");
 
                     b.ToTable("Bundles");
                 });
@@ -545,17 +555,19 @@ namespace WebStorageSystem.Data.Migrations
 
             modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.UnitBundleView", b =>
                 {
+                    b.Property<string>("InventoryNumber")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int?>("BundleId")
                         .HasColumnType("int");
-
-                    b.Property<string>("InventoryNumber")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TableName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UnitId")
                         .HasColumnType("int");
+
+                    b.HasKey("InventoryNumber");
 
                     b.HasIndex("BundleId");
 
@@ -912,6 +924,25 @@ namespace WebStorageSystem.Data.Migrations
                     b.Navigation("LocationType");
                 });
 
+            modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.Bundle", b =>
+                {
+                    b.HasOne("WebStorageSystem.Areas.Locations.Data.Entities.Location", "DefaultLocation")
+                        .WithMany("DefaultBundles")
+                        .HasForeignKey("DefaultLocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WebStorageSystem.Areas.Locations.Data.Entities.Location", "Location")
+                        .WithMany("Bundles")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DefaultLocation");
+
+                    b.Navigation("Location");
+                });
+
             modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.Product", b =>
                 {
                     b.HasOne("WebStorageSystem.Data.Entities.ImageEntity", "Image")
@@ -1055,6 +1086,10 @@ namespace WebStorageSystem.Data.Migrations
 
             modelBuilder.Entity("WebStorageSystem.Areas.Locations.Data.Entities.Location", b =>
                 {
+                    b.Navigation("Bundles");
+
+                    b.Navigation("DefaultBundles");
+
                     b.Navigation("DefaultUnits");
 
                     b.Navigation("DestinationMainTransfers");
