@@ -21,9 +21,11 @@ namespace WebStorageSystem.Areas.Locations.Data.Entities
         [StringLength(200)]
         public string Address { get; set; }
 
-        [Required]
+        
         [Display(Name = "Location Type")]
         public LocationType LocationType { get; set; }
+        
+        [Required]
         public int LocationTypeId { get; set; }
 
         public IEnumerable<SubTransfer> OriginTransfers { get; set; }
@@ -35,6 +37,10 @@ namespace WebStorageSystem.Areas.Locations.Data.Entities
         public IEnumerable<Unit> Units { get; set; }
 
         public IEnumerable<Unit> DefaultUnits { get; set; }
+
+        public IEnumerable<Bundle> Bundles { get; set; }
+
+        public IEnumerable<Bundle> DefaultBundles { get; set; }
 
         public override DateTime CreatedDate { get; set; }
 

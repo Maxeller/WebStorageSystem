@@ -68,19 +68,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
                 return View(unitModel);
             }
 
-            var product = await _productService.GetProductAsync(unitModel.ProductId, getDeleted);
-            var location = await _locationService.GetLocationAsync(unitModel.LocationId, getDeleted);
-            var defaultLocation = await _locationService.GetLocationAsync(unitModel.DefaultLocationId, getDeleted);
-            if (product == null || location == null || defaultLocation == null)
-            {
-                await CreateDropdownLists(getDeleted);
-                return View(unitModel);
-            }
             var unit = _mapper.Map<Unit>(unitModel);
-            unit.Product = product;
-            unit.Location = location;
-            if (unitModel.VendorId != null) unit.Vendor = await _vendorService.GetVendorAsync((int)unitModel.VendorId, getDeleted);
-            if (unitModel.PartOfBundleId != null) unit.PartOfBundle = await _bundleService.GetBundleAsync((int)unitModel.PartOfBundleId, getDeleted);
             await _unitService.AddUnitAsync(unit);
             return RedirectToAction(nameof(Index));
         }
@@ -106,24 +94,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (id != unitModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(unitModel);
 
-            var product = await _productService.GetProductAsync(unitModel.ProductId, getDeleted);
-            var location = await _locationService.GetLocationAsync(unitModel.LocationId, getDeleted);
-            var defaultLocation = await _locationService.GetLocationAsync(unitModel.DefaultLocationId, getDeleted);
-            if (product == null || location == null || defaultLocation == null)
-            {
-                await CreateDropdownLists(getDeleted);
-                return View(unitModel);
-            }
             var unit = _mapper.Map<Unit>(unitModel);
-            unit.Product = product;
-            unit.Location = location;
-            unit.Vendor = unitModel.VendorId != null
-                ? await _vendorService.GetVendorAsync((int)unitModel.VendorId, getDeleted)
-                : null;
-
-            unit.PartOfBundle = unitModel.PartOfBundleId != null
-                ? await _bundleService.GetBundleAsync((int)unitModel.PartOfBundleId, getDeleted)
-                : null;
 
             var (success, errorMessage) = await _unitService.EditUnitAsync(unit);
             if (success) return RedirectToAction(nameof(Index));

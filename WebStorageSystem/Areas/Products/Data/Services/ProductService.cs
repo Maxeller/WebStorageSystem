@@ -72,8 +72,8 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 .OrderBy(product => product.Name)
                 .Include(product => product.ProductType)
                 .Include(product => product.Manufacturer)
-                .AsNoTracking()
-                .IgnoreQueryFilters();
+                .IgnoreQueryFilters()
+                .AsNoTracking();
 
             // SEARCH
             query = query.Search(request);
@@ -99,9 +99,6 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <param name="product">Object for adding</param>
         public async Task AddProductAsync(Product product)
         {
-            product.Manufacturer = _context.Manufacturers.Attach(product.Manufacturer).Entity;
-            product.ProductType = _context.ProductTypes.Attach(product.ProductType).Entity;
-            product.Image = _context.Images.Attach(product.Image).Entity;
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
         }

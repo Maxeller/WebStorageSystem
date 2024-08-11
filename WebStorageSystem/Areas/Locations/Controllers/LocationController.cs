@@ -61,14 +61,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
                 return View(locationModel);
             }
 
-            var locationType = await _locationTypeService.GetLocationTypeAsync(locationModel.LocationTypeId, getDeleted);
-            if (locationType == null)
-            {
-                await CreateLocationTypeDropdownList(getDeleted);
-                return View(locationModel);
-            }
             var location = _mapper.Map<Location>(locationModel);
-            location.LocationType = locationType;
             await _locationService.AddLocationAsync(location);
             return RedirectToAction(nameof(Index));
         }
@@ -95,14 +88,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
             if (id != locationModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(locationModel);
 
-            var locationType = await _locationTypeService.GetLocationTypeAsync(locationModel.LocationTypeId, getDeleted);
-            if (locationType == null)
-            {
-                await CreateLocationTypeDropdownList(getDeleted);
-                return View(locationModel);
-            }
             var location = _mapper.Map<Location>(locationModel);
-            location.LocationType = locationType;
 
             var (success, errorMessage) = await _locationService.EditLocationAsync(location);
             if (success) return RedirectToAction(nameof(Index));

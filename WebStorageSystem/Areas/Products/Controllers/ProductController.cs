@@ -70,18 +70,15 @@ namespace WebStorageSystem.Areas.Products.Controllers
                 return View(productModel);
             }
 
-            var manufacturer = await _manufacturerService.GetManufacturerAsync(productModel.ManufacturerId, getDeleted);
-            var productType = await _productTypeService.GetProductTypeAsync(productModel.ProductTypeId, getDeleted);
-            var image = await _imageService.AddImageAsync(productModel.Image, _hostEnvironment.WebRootPath);
-            if (manufacturer == null || productType == null || image == null)
+            if (productModel.Image.ImageFile != null)
             {
-                await CreateDropdownLists(getDeleted);
-                return View(productModel);
+                var image = await _imageService.AddImageAsync(productModel.Image, _hostEnvironment.WebRootPath);
+                productModel.ImageId = image.Id;
             }
+            productModel.Image = null;
+
             var product = _mapper.Map<Product>(productModel);
-            product.Manufacturer = manufacturer;
-            product.ProductType = productType;
-            product.Image = image;
+
             await _productService.AddProductAsync(product);
             return RedirectToAction(nameof(Index));
         }
@@ -108,16 +105,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (id != productModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(productModel);
 
-            var manufacturer = await _manufacturerService.GetManufacturerAsync(productModel.ManufacturerId, getDeleted);
-            var productType = await _productTypeService.GetProductTypeAsync(productModel.ProductTypeId, getDeleted);
-            if (manufacturer == null || productType == null)
-            {
-                await CreateDropdownLists(getDeleted);
-                return View(productModel);
-            }
             var product = _mapper.Map<Product>(productModel);
-            product.Manufacturer = manufacturer;
-            product.ProductType = productType;
 
             var (success, errorMessage) = await _productService.EditProductAsync(product);
             if (success) return RedirectToAction(nameof(Index));
