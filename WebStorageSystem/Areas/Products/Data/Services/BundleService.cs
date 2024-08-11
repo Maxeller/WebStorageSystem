@@ -118,6 +118,8 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 var u = await _context.Units.FirstOrDefaultAsync(u => u.Id == unit.Id);
                 _context.Entry(u).State = EntityState.Modified;
                 u.PartOfBundleId = row.Entity.Id;
+                u.LocationId = row.Entity.LocationId;
+                u.DefaultLocationId = row.Entity.DefaultLocationId;
             }
             await _context.SaveChangesAsync();
         }
@@ -135,14 +137,17 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 var prev = await GetBundleAsync(bundle.Id);
                 foreach (var bundledUnit in prev.BundledUnits)
                 {
-                    _context.Entry(bundledUnit).State = EntityState.Modified;
-                    bundledUnit.PartOfBundleId = null;
+                    var u = await _context.Units.FirstAsync(u => u.Id == bundledUnit.Id);
+                    _context.Entry(u).State = EntityState.Modified;
+                    u.PartOfBundleId = null;
                 }
                 foreach (var unit in units)
                 {
-                    var prevUnit = await _context.Units.FirstAsync(u => u.Id == unit.Id);
-                    _context.Entry(unit).State = EntityState.Modified;
-                    unit.PartOfBundleId = bundle.Id;
+                    var u = await _context.Units.FirstAsync(u => u.Id == unit.Id);
+                    _context.Entry(u).State = EntityState.Modified;
+                    u.PartOfBundleId = bundle.Id;
+                    u.LocationId = bundle.LocationId;
+                    u.DefaultLocationId = bundle.DefaultLocationId;
                 }
 
                 _context.Bundles.Update(bundle);

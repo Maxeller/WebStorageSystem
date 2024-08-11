@@ -81,13 +81,14 @@ namespace WebStorageSystem.Areas.Products.Controllers
             if (bundle == null) return NotFound();
             var bundleModel = _mapper.Map<BundleModel>(bundle);
             await CreateUnitDropdownList(bundleModel.BundledUnits, true);
+            await CreateLocationDropdownList(bundleModel.Location, bundleModel.DefaultLocation);
             return View(bundleModel);
         }
 
         // POST: Products/Bundle/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,InventoryNumber,BundledUnitsIds,LocationId,DefaultLocationIdId,CreatedDate,IsDeleted,RowVersion")] BundleModel bundleModel, bool getDeleted = false)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,InventoryNumber,BundledUnitsIds,LocationId,DefaultLocationId,Id,CreatedDate,IsDeleted,RowVersion")] BundleModel bundleModel, bool getDeleted = false)
         {
             if (id != bundleModel.Id) return NotFound();
             if (!ModelState.IsValid)
