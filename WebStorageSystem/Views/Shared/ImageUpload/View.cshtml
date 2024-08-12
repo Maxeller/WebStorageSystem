@@ -4,6 +4,9 @@
     Image
 </dt>
 <dd class="col-sm-10">
-    <img src="@("~/upload/images/"+Model.ImageName)" asp-append-version="true" />
-    <label asp-for="@Model.Title" class="control-label">@Model.Title</label>
+    @if (Model != null)
+    {
+        <img src="@("~/upload/images/" + Model.ImageName)" asp-append-version="true"/>
+        <label asp-for="@Model.Title" class="control-label">@Model.Title</label>
+    }
 </dd>

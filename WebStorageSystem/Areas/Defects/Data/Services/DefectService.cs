@@ -121,9 +121,8 @@ namespace WebStorageSystem.Areas.Defects.Data.Services
         /// <param name="defect">Object for adding</param>
         public async Task AddDefectAsync(Defect defect)
         {
-            defect.Unit = _context.Units.Attach(defect.Unit).Entity;
-            defect.CausedByUser = _context.Users.Attach(defect.CausedByUser).Entity;
-            defect.ReportedByUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User); // Gets current user from HttpContext
+            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User); // Gets current user from HttpContext
+            defect.ReportedByUserId = currentUser.Id;
             _context.Defects.Add(defect);
             await _context.SaveChangesAsync();
         }

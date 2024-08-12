@@ -38,11 +38,14 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 render: function(data, type, row) {
+                    return data;
+                    /*
                     if (data.includes("InRepair")) {
                         return "In repair";
                     } else {
                          return data;
                     }
+                    */
                 }
             },
             {

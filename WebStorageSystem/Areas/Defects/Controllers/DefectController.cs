@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,6 +13,7 @@ using WebStorageSystem.Areas.Defects.Models;
 using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data.Entities.Identities;
+using WebStorageSystem.Data.Services;
 using WebStorageSystem.Models;
 using WebStorageSystem.Models.DataTables;
 
@@ -20,15 +22,19 @@ namespace WebStorageSystem.Areas.Defects.Controllers
     [Area("Defects")]
     public class DefectController : Controller
     {
+        private readonly IWebHostEnvironment _hostEnvironment;
         private readonly DefectService _defectService;
         private readonly UnitService _unitService;
+        private readonly ImageService _imageService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
 
-        public DefectController(DefectService defectService, UnitService unitService, UserManager<ApplicationUser> userManager, IMapper mapper)
+        public DefectController(IWebHostEnvironment hostEnvironment, DefectService defectService, UnitService unitService, ImageService imageService, UserManager<ApplicationUser> userManager, IMapper mapper)
         {
+            _hostEnvironment = hostEnvironment;
             _defectService = defectService;
             _unitService = unitService;
+            _imageService = imageService;
             _userManager = userManager;
             _mapper = mapper;
         }
@@ -71,15 +77,15 @@ namespace WebStorageSystem.Areas.Defects.Controllers
                 return View(defectModel);
             }
 
-            var unit = await _unitService.GetUnitAsync(defectModel.UnitId);
-            var causedByUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == defectModel.CausedByUserId);
-            if (unit == null || causedByUser == null)
+            if (defectModel.Image.ImageFile != null)
             {
-                return NotFound();
+                var image = await _imageService.AddImageAsync(defectModel.Image, _hostEnvironment.WebRootPath);
+                defectModel.ImageId = image.Id;
             }
+            defectModel.Image = null;
+
             var defect = _mapper.Map<Defect>(defectModel);
-            defect.Unit = unit;
-            defect.CausedByUser = causedByUser;
+
             await _defectService.AddDefectAsync(defect);
             return RedirectToAction(nameof(Index));
         }
