@@ -100,7 +100,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Products/Product/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,ProductNumber,Description,Webpage,IsDeleted,ManufacturerId,ProductTypeId,Image,Id,CreatedDate,IsDeleted,RowVersion")] ProductModel productModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,ProductNumber,Description,Webpage,IsDeleted,ManufacturerId,ProductTypeId,Image,ImageId,Id,CreatedDate,IsDeleted,RowVersion")] ProductModel productModel, [FromQuery] bool getDeleted)
         {
             if (id != productModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(productModel);
