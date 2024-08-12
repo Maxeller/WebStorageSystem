@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing;
 using WebStorageSystem.Areas.Locations.Data.Services;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Areas.Products.Data.Entities;
@@ -140,10 +141,11 @@ namespace WebStorageSystem.Areas.Products.Controllers
                 var results = await _bundleService.GetBundlesAsync(request);
                 foreach (var item in results.Data)
                 {
+                    var routeValues = new RouteValueDictionary { { "id", item.Id }, { "getDeleted", item.IsDeleted } };
                     item.Action = new Dictionary<string, string>
                     {
-                        {"Edit", Url.Action(nameof(Edit), new {item.Id})},
-                        {"Details", Url.Action(nameof(Details), new {item.Id})},
+                        {"Edit", Url.Action(nameof(Edit), routeValues)},
+                        {"Details", Url.Action(nameof(Details), routeValues)},
                         {"Delete", Url.Action(nameof(Delete), new {item.Id})},
                         {"Restore", Url.Action(nameof(Restore), new {item.Id})}
                     };

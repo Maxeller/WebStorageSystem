@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Areas.Products.Models;
@@ -84,7 +85,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         // GET: Products/Product/Edit/5
-        public async Task<IActionResult> Edit(int? id, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Edit(int? id, [FromQuery] bool getDeleted = false)
         {
             if (id == null) return BadRequest();
 
@@ -100,7 +101,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Products/Product/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,ProductNumber,Description,Webpage,IsDeleted,ManufacturerId,ProductTypeId,Image,ImageId,Id,CreatedDate,IsDeleted,RowVersion")] ProductModel productModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,ProductNumber,Description,Webpage,IsDeleted,ManufacturerId,ProductTypeId,Image,ImageId,Id,CreatedDate,IsDeleted,RowVersion")] ProductModel productModel, [FromQuery] bool getDeleted = false)
         {
             if (id != productModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(productModel);
@@ -152,10 +153,11 @@ namespace WebStorageSystem.Areas.Products.Controllers
                 var results = await _productService.GetProductsAsync(request);
                 foreach (var item in results.Data)
                 {
+                    var routeValues = new RouteValueDictionary { { "id", item.Id }, { "getDeleted", item.IsDeleted } };
                     item.Action = new Dictionary<string, string>
                     {
-                        {"Edit", Url.Action(nameof(Edit), new {item.Id})},
-                        {"Details", Url.Action(nameof(Details), new {item.Id})},
+                        {"Edit", Url.Action(nameof(Edit), routeValues)},
+                        {"Details", Url.Action(nameof(Details), routeValues)},
                         {"Delete", Url.Action(nameof(Delete), new {item.Id})},
                         {"Restore", Url.Action(nameof(Restore), new {item.Id})}
                     };
