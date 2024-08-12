@@ -100,11 +100,17 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Products/Product/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,ProductNumber,Description,Webpage,Id,ManufacturerId,ProductTypeId,CreatedDate,IsDeleted,RowVersion")] ProductModel productModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,ProductNumber,Description,Webpage,IsDeleted,ManufacturerId,ProductTypeId,Image,Id,CreatedDate,IsDeleted,RowVersion")] ProductModel productModel, [FromQuery] bool getDeleted)
         {
             if (id != productModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(productModel);
 
+            if (productModel.Image.ImageFile != null)
+            {
+                var image = await _imageService.AddImageAsync(productModel.Image, _hostEnvironment.WebRootPath);
+                productModel.ImageId = image.Id;
+            }
+            productModel.Image = null;
             var product = _mapper.Map<Product>(productModel);
 
             var (success, errorMessage) = await _productService.EditProductAsync(product);
