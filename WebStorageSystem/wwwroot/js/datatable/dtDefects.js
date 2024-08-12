@@ -113,7 +113,7 @@ $(document).ready(function () {
             var title = $("#dtDefect thead th").eq($(this).index()).text();
             if (myColumns[counter].searchable) {
                 if (myColumns[counter].data.includes("IsDeleted")) {
-                    $("#dtDefect thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox"></div></th>`);
+                    $("#dtDefect thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
                 } else if (myColumns[counter].data.includes("Date")) {
                     $("#dtDefect thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
                 } else {
@@ -130,15 +130,20 @@ $(document).ready(function () {
         table.columns().every(function (index) {
             var column = this;
             var elem = $(`#dtDefect thead tr:last th:eq(${index}) input`);
-            elem.on("keyup change", function () {
-                if (elem.hasClass("form-check-input")) { // If search is triggered from checkbox
-                    column.search(this.checked).draw();  // send value of checkbox
-                } if (elem.is("#searchDate")) {          // If search is triggered on "Date" column
+
+            if (elem.is("#searchCheckbox")) {
+                elem.on("click", function () {
+                    column.search(this.checked).draw();
+                });
+            } else if (elem.is("#searchDate")) {
+                elem.on("change", function () {
                     column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
-                } else {                                 // If search is triggered from textbox
-                    column.search(this.value).draw();    // send value from textbox
-                }
-            });
+                });
+            } else {
+                elem.on("keyup clear", function () {
+                    column.search(this.value).draw();
+                });
+            }
         });
     }
 });

@@ -50,7 +50,7 @@
             Cause by
         </dt>
         <dd class="col-sm-10">
-            @Model.CausedByUser.UserName
+            @if (Model.CausedByUser != null) @Model.CausedByUser.UserName
         </dd>
         <partial name="ImageUpload/View" model="Model.Image"/>
         <dt class="col-sm-2">

@@ -1,12 +1,12 @@
 ﻿@model DefectModel
 
 @{
-    ViewData["Title"] = "Edit Defect" + @Model.DefectNumber;
+    ViewData["Title"] = "Edit Defect" +@Model.DefectNumber;
 }
 
 <h1>Edit</h1>
 
-<h4>Defect + @Model.DefectNumber</h4>
+<h4>Defect @Model.DefectNumber</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -24,17 +24,6 @@
                 </select>
                 <span asp-validation-for="UnitId" class="text-danger" />
             </div>
-            @{
-                /*
-            <div class="form-group">
-                <label asp-for="ReportedByUserId" class="control-label"></label>
-                <select asp-for="ReportedByUserId" class="form-control selectTwo" asp-items="ViewBag.Users" data-placeholder="Select Unit">
-                    <option value="">-- Select Unit --</option>
-                </select>
-                <span asp-validation-for="ReportedByUserId" class="text-danger" />
-            </div>
-                */
-            }
             <div class="form-group">
                 <label asp-for="CausedByUserId" class="control-label"></label>
                 <select asp-for="CausedByUserId" class="form-control selectTwo" asp-items="ViewBag.Users" data-placeholder="Select User">
@@ -57,14 +46,31 @@
                 <input asp-for="State" class="form-control" />
                 <span asp-validation-for="State" class="text-danger"></span>
             </div>
-            <partial for="Image" name="ImageUpload/Upload"/>
+            <div class="form-group">
+                <label asp-for="Image" class="control-label"></label>
+                @if (Model.Image != null)
+                {
+                    <partial name="ImageUpload/View" model="Model.Image" />
+                    <span>Change Image</span>
+                    <partial for="Image" name="ImageUpload/Upload" />
+                }
+                else
+                {
+                    <partial for="Image" name="ImageUpload/Upload" />
+                }
+                <input type="hidden" asp-for="ImageId" />
+            </div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CreatedDate" />
+            <input type="hidden" asp-for="RowVersion" />
+            <input type="hidden" asp-for="ReportedByUserId" />
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
                 </label>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>

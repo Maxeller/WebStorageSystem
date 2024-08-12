@@ -13,12 +13,13 @@ namespace WebStorageSystem.Areas.Defects.Data.Entities
         [Required, StringLength(100)]
         public string DefectNumber { get; set; }
 
-        [Required]
+        
         public Unit Unit { get; set; }
+        [Required]
         public int UnitId { get; set; }
 
-        [Required]
         public ApplicationUser ReportedByUser { get; set; }
+        [Required]
         public string ReportedByUserId { get; set; }
 
         public ApplicationUser CausedByUser { get; set; }
@@ -30,6 +31,7 @@ namespace WebStorageSystem.Areas.Defects.Data.Entities
         public string Notes { get; set; }
 
         public ImageEntity Image { get; set; }
+        public int ImageId { get; set; }
 
         public DefectState State { get; set; }
 

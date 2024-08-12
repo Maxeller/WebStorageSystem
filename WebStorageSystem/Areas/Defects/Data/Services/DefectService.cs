@@ -48,6 +48,7 @@ namespace WebStorageSystem.Areas.Defects.Data.Services
                         .ThenInclude(location => location.LocationType)
                 .Include(defect => defect.ReportedByUser)
                 .Include(defect => defect.CausedByUser)
+                .Include(defect => defect.Image)
                 .AsNoTracking();
         }
 
@@ -59,7 +60,7 @@ namespace WebStorageSystem.Areas.Defects.Data.Services
         /// <returns>If found returns object, otherwise null</returns>
         public async Task<Defect> GetDefectAsync(int id, bool getDeleted = false)
         {
-            if (getDeleted) return await _getQuery.IgnoreQueryFilters().FirstOrDefaultAsync(location => location.Id == id);
+            if (getDeleted) return await _getQuery.IgnoreQueryFilters().FirstOrDefaultAsync(defect => defect.Id == id);
             return await _getQuery.FirstOrDefaultAsync(defect => defect.Id == id);
         }
 

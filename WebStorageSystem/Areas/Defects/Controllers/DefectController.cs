@@ -105,7 +105,7 @@ namespace WebStorageSystem.Areas.Defects.Controllers
         // POST: Defects/Defect/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DefectNumber,UnitId,ReportedByUserId,CausedByUserId,Description,Notes,Image,State,CreatedDate,IsDeleted,RowVersion")] DefectModel defectModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DefectNumber,UnitId,ReportedByUserId,CausedByUserId,Description,Notes,Image,ImageId,State,CreatedDate,IsDeleted,RowVersion")] DefectModel defectModel, [FromQuery] bool getDeleted)
         {
             if (id != defectModel.Id) return NotFound();
             if (!ModelState.IsValid)
@@ -115,6 +115,12 @@ namespace WebStorageSystem.Areas.Defects.Controllers
                 return View(defectModel);
             }
 
+            if (defectModel.Image.ImageFile != null)
+            {
+                var image = await _imageService.AddImageAsync(defectModel.Image, _hostEnvironment.WebRootPath);
+                defectModel.ImageId = image.Id;
+            }
+            defectModel.Image = null;
             var defect = _mapper.Map<Defect>(defectModel);
 
             var (success, errorMessage) = await _defectService.EditDefectAsync(defect);
