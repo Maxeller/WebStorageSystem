@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using LinqKit;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using WebStorageSystem.Areas.Defects.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Entities;
-using WebStorageSystem.Data.Database;
 using WebStorageSystem.Data.Entities.Transfers;
 using WebStorageSystem.Models.DataTables;
 using Z.EntityFramework.Plus;
@@ -24,8 +24,7 @@ namespace WebStorageSystem.Extensions
         /// <param name="query">A sequence of values to order.</param>
         /// <param name="request">DataTables request</param>
         /// <returns>Ordered query based on DataTableRequest</returns>
-        public static IOrderedQueryable<TSource> OrderBy<TSource>(this IQueryable<TSource> query,
-            DataTableRequest request)
+        public static IOrderedQueryable<TSource> OrderBy<TSource>(this IQueryable<TSource> query, DataTableRequest request)
         {
             if (request.Order == null) // Datatables has possibility of unordered 
             {
@@ -34,7 +33,6 @@ namespace WebStorageSystem.Extensions
 
             int columnNumber = request.Order[0].Column;
             string columnName = request.Columns[columnNumber].Data;
-            if (columnName == null) columnName = request.Columns[columnNumber + 1].Data; // Crutch for Transfer table
             return request.Order[0].Dir == DataTableRequestOrderDirection.asc
                 ? query.OrderBy(columnName)
                 : query.OrderByDescending(columnName);
@@ -139,7 +137,13 @@ namespace WebStorageSystem.Extensions
                 string columnName = column.Data;
                 string searchValue = column.Search.Value;
 
-                if (searchValue == null) continue;
+                if (searchValue == null || searchValue == "Invalid DateTime") continue;
+                if (columnName.Contains("IsDeleted"))
+                {
+                    if (searchValue == "on") searchValue = "true";
+                    if (searchValue == "off") searchValue = "false";
+                }
+
                 if (CheckIfColumnIsInSpecialtySearch(columnName)) continue;
 
                 ParameterExpression arg = Expression.Parameter(entityType, "x");
@@ -157,6 +161,27 @@ namespace WebStorageSystem.Extensions
                     method = typeof(bool).GetMethod("Equals", new[] { typeof(bool) });
                     constant = Expression.Constant(b, typeof(bool));
                 }
+                else if (int.TryParse(searchValue, out int i) && columnName == "State")
+                {
+                    switch (entityType.Name)
+                    {
+                        case "Defect":
+                        {
+                            method = typeof(DefectState).GetMethod("Equals", new[] { typeof(DefectState) });
+                            var searchAsEnum = Enum.ToObject(typeof(DefectState), i);
+                            constant = Expression.Constant(searchAsEnum, typeof(Object));
+                            break;
+                        }
+                        case "MainTransfer":
+                        {
+                            method = typeof(TransferState).GetMethod("Equals", new[] { typeof(TransferState) });
+                            var searchAsEnum = Enum.ToObject(typeof(TransferState), i);
+                            constant = Expression.Constant(searchAsEnum, typeof(Object));
+                            break;
+                        }   
+                        default: continue;
+                    }
+                }
                 else
                 {
                     method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
@@ -170,10 +195,7 @@ namespace WebStorageSystem.Extensions
                 if (columnName.Contains("Date"))
                 {
                     ConstantExpression zero = Expression.Constant(0, typeof(int));
-                    BinaryExpression
-                        binaryExpression =
-                            Expression.GreaterThanOrEqual(expression,
-                                zero); // TODO: Check CompareTo docs for diff options
+                    BinaryExpression binaryExpression = Expression.GreaterThanOrEqual(expression, zero);
                     lambda = Expression.Lambda<Func<TSource, bool>>(binaryExpression, arg);
                 }
                 else
@@ -226,6 +248,14 @@ namespace WebStorageSystem.Extensions
                     {
                         return await ((IQueryable<Bundle>)query)
                             .IncludeFilter(b => b.BundledUnits.Where(u => u.InventoryNumber.Contains(searchValue)))
+                            .ToListAsync() as IEnumerable<TSource>;
+                    }
+
+                    case "Bundle.BundledUnits":
+                    {
+                        return await ((IQueryable<UnitBundleView>)query)
+                            .Include(view => view.Bundle)
+                            .ThenInclude(bundle => bundle.BundledUnits.Where(u => u.InventoryNumber.Contains(searchValue)))
                             .ToListAsync() as IEnumerable<TSource>;
                     }
 
