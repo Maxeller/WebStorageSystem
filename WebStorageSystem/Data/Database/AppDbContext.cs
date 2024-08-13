@@ -130,7 +130,6 @@ namespace WebStorageSystem.Data.Database
             // Views as in https://learn.microsoft.com/en-us/ef/core/modeling/keyless-entity-types?tabs=data-annotations#mapping-to-database-objects
             modelBuilder.Entity<UnitBundleView>(entity =>
             {
-                //entity.HasNoKey();
                 entity.HasKey(view => view.InventoryNumber);
                 entity.ToView("UnitBundleView");
             });

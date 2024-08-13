@@ -31,6 +31,8 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
         [Required]
         public int DefaultLocationId { get; set; }
 
+        public bool HasDefect { get; set; }
+
         public IEnumerable<SubTransfer> SubTransfers { get; set; }
         public override DateTime CreatedDate { get; set; }
         public override DateTime ModifiedDate { get; set; }

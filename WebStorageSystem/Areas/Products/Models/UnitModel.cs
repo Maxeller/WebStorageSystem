@@ -71,6 +71,9 @@ namespace WebStorageSystem.Areas.Products.Models
         [DisplayName("Last Check Time")]
         public DateTime? LastCheckTime { get; set; }
 
+        [DisplayName("Has Defect")]
+        public bool HasDefect { get; set; }
+
         [JsonIgnore]
         public IEnumerable<SubTransferModel> Transfers { get; set; }
 

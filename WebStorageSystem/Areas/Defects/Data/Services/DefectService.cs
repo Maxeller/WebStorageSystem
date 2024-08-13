@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Defects.Data.Entities;
 using WebStorageSystem.Areas.Defects.Models;
+using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Data.Database;
 using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Extensions;
@@ -125,6 +126,44 @@ namespace WebStorageSystem.Areas.Defects.Data.Services
             var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User); // Gets current user from HttpContext
             defect.ReportedByUserId = currentUser.Id;
             _context.Defects.Add(defect);
+
+            var defectUnit = await _context.Units.FirstOrDefaultAsync(u => u.Id == defect.UnitId);
+            _context.Entry(defectUnit).State = EntityState.Modified;
+
+            switch (defect.State)
+            {
+                case DefectState.Broken:
+                case DefectState.InRepair:
+                { 
+                    defectUnit.HasDefect = true;
+                    break;
+                }
+                case DefectState.Repaired:
+                {
+                    defectUnit.HasDefect = false;
+                    break;
+                }
+            }
+            
+            await _context.SaveChangesAsync();
+
+            if (defectUnit.PartOfBundleId != null) await CheckIfBundleShouldHaveDefect((int)defectUnit.PartOfBundleId);
+        }
+
+        private async Task CheckIfBundleShouldHaveDefect(int bundleId)
+        {
+            var bundle = await _context.Bundles
+                .Include(b => b.BundledUnits)
+                .FirstOrDefaultAsync(b => b.Id == bundleId);
+
+            foreach (var unit in bundle.BundledUnits)
+            {
+                if (!unit.HasDefect) continue;
+                bundle.HasDefect = true;
+                break;
+            }
+            _context.Entry(bundle).State = EntityState.Modified;
+
             await _context.SaveChangesAsync();
         }
 
@@ -141,7 +180,29 @@ namespace WebStorageSystem.Areas.Defects.Data.Services
                 _context.Entry(prev).State = EntityState.Detached;
                 _context.Entry(defect).State = EntityState.Modified;
                 _context.Defects.Update(defect);
+
+                var defectUnit = await _context.Units.FirstOrDefaultAsync(u => u.Id == defect.UnitId);
+                _context.Entry(defectUnit).State = EntityState.Modified;
+
+                switch (defect.State)
+                {
+                    case DefectState.Broken:
+                    case DefectState.InRepair:
+                    {
+                        defectUnit.HasDefect = true;
+                        break;
+                    }
+                    case DefectState.Repaired:
+                    {
+                        defectUnit.HasDefect = false;
+                        break;
+                    }
+                }
+
                 await _context.SaveChangesAsync();
+
+                if (defectUnit.PartOfBundleId != null) await CheckIfBundleShouldHaveDefect((int)defectUnit.PartOfBundleId);
+
                 return (true, null);
             }
             catch (DbUpdateConcurrencyException concurrencyException)

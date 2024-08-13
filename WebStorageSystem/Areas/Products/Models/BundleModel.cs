@@ -54,7 +54,10 @@ namespace WebStorageSystem.Areas.Products.Models
                     .AddAnnotationTextBelowBarcode(InventoryNumber);
                 return barcode.ToHtmlTag();
             }
-        } 
+        }
+
+        [DisplayName("Has Defect")]
+        public bool HasDefect { get; set; }
 
         [Display(Name = "Creation Date")]
         public override DateTime CreatedDate { get; set; }

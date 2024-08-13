@@ -536,19 +536,13 @@ $(document).ready(function () {
                 }
             },
             {
-                data: "CreatedDate",
+                data: "HasDefect",
                 searchable: true,
                 orderable: true,
                 render: function (data, type, row) {
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
-                }
-            },
-            {
-                data: "ModifiedDate",
-                searchable: true,
-                orderable: true,
-                render: function (data, type, row) {
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
+                    var s = "";
+                    if (row.HasDefect === true) s = "checked";
+                    return `<div class="form-check"><input class="form-check-input" type="checkbox" disabled ${s}></div>`;
                 }
             },
             {
@@ -599,7 +593,7 @@ $(document).ready(function () {
         $("#dtBundle thead th").each(function () {
             var title = $("#dtBundle thead th").eq($(this).index()).text();
             if (myColumns[counter].searchable) {
-                if (myColumns[counter].data.includes("IsDeleted")) {
+                if (myColumns[counter].data.includes("IsDeleted") || myColumns[counter].data.includes("HasDefect")) {
                     $("#dtBundle thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
                 } else if (myColumns[counter].data.includes("Date")) {
                     $("#dtBundle thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
@@ -720,6 +714,16 @@ $(document).ready(function () {
                 }
             },
             {
+                data: "HasDefect",
+                searchable: true,
+                orderable: true,
+                render: function (data, type, row) {
+                    var s = "";
+                    if (row.HasDefect === true) s = "checked";
+                    return `<div class="form-check"><input class="form-check-input" type="checkbox" disabled ${s}></div>`;
+                }
+            },
+            {
                 data: "IsDeleted",
                 searchable: true,
                 orderable: true,
@@ -767,7 +771,7 @@ $(document).ready(function () {
         $("#dtUnit thead th").each(function () {
             var title = $("#dtUnit thead th").eq($(this).index()).text();
             if (myColumns[counter].searchable) {
-                if (myColumns[counter].data.includes("IsDeleted")) {
+                if (myColumns[counter].data.includes("IsDeleted") || myColumns[counter].data.includes("HasDefect")) {
                     $("#dtUnit thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
                 } else if (myColumns[counter].data.includes("Date")) {
                     $("#dtUnit thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
