@@ -95,7 +95,7 @@ namespace WebStorageSystem.Areas.Defects.Data.Services
                     .ThenInclude(unit => unit.Location)
                         //.ThenInclude(location => location.LocationType)
                 .Include(defect => defect.ReportedByUser)
-                //.Include(defect => defect.CausedByUser)
+                .Include(defect => defect.CausedByUser)
                 .AsNoTracking();
 
             // SEARCH

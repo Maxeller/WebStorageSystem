@@ -99,7 +99,8 @@ namespace WebStorageSystem.Areas.Defects.Controllers
             var defect = await _defectService.GetDefectAsync((int)id, getDeleted);
             if (defect == null) return NotFound();
             var defectModel = _mapper.Map<DefectModel>(defect);
-            await CreateUnitDropdownList(getDeleted, defectModel.Unit.Id);
+            await CreateUnitDropdownList(getDeleted, defectModel.UnitId);
+            await CreateUserDropdownList(getDeleted, defectModel.CausedByUserId);
             return View(defectModel);
         }
         
@@ -111,8 +112,8 @@ namespace WebStorageSystem.Areas.Defects.Controllers
             if (id != defectModel.Id) return NotFound();
             if (!ModelState.IsValid)
             {
-                await CreateUnitDropdownList(getDeleted, defectModel.Unit.Id);
-                await CreateUserDropdownList(getDeleted, defectModel.CausedByUser.Id);
+                await CreateUnitDropdownList(getDeleted, defectModel.UnitId);
+                await CreateUserDropdownList(getDeleted, defectModel.CausedByUserId);
                 return View(defectModel);
             }
 
