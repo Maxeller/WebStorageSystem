@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System;
 using WebStorageSystem.Data.Entities.Transfers;
 using System.Text.Json.Serialization;
+using WebStorageSystem.Areas.Locations.Models;
+using WebStorageSystem.Areas.Products.Models;
 
 namespace WebStorageSystem.Models.Transfers
 {
@@ -12,16 +14,13 @@ namespace WebStorageSystem.Models.Transfers
         [Display(Name = "Transfer Number")]
         public string TransferNumber { get; set; }
 
-        [Required]
         [Display(Name = "Transferred Units")]
         [JsonIgnore]
         public IEnumerable<SubTransferModel> SubTransfers { get; set; }
 
-        [Required]
         [Display(Name = "Transfer State")]
         public TransferState State { get; set; }
 
-        [Required]
         [Display(Name = "Time of Transfer")]
         public DateTime TransferTime { get; set; }
 
@@ -29,6 +28,13 @@ namespace WebStorageSystem.Models.Transfers
 
         [Display(Name = "User")]
         public string UserId { get; set; }
+
+        [Display(Name = "Destination Location")]
+        public LocationModel DestinationLocation { get; set; }
+
+        [Required]
+        [Display(Name = "Destination Location")]
+        public int DestinationLocationId { get; set; }
 
         [Display(Name = "Creation Date")]
         public override DateTime CreatedDate { get; set; }

@@ -10,7 +10,6 @@ using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data.Services;
-using WebStorageSystem.Models;
 using WebStorageSystem.Models.DataTables;
 
 namespace WebStorageSystem.Areas.Products.Controllers

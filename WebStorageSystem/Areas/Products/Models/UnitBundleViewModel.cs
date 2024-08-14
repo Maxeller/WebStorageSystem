@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using WebStorageSystem.Areas.Locations.Models;
 
 namespace WebStorageSystem.Areas.Products.Models
 {
@@ -12,6 +13,14 @@ namespace WebStorageSystem.Areas.Products.Models
 
         public BundleModel Bundle { get; set; }
         public int? BundleId { get; set; }
+
+        public LocationModel Location { get; set; }
+        public int LocationId { get; set; }
+
+        public LocationModel DefaultLocation { get; set; }
+        public int DefaultLocationId { get; set; }
+
+        public bool HasDefect { get; set; }
 
         public string TableName { get; set; }
 

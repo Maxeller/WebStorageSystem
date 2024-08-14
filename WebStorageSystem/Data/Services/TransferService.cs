@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using WebStorageSystem.Areas.Products.Data.Entities;
+using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data.Database;
 using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Data.Entities.Transfers;
@@ -122,28 +124,166 @@ namespace WebStorageSystem.Data.Services
         }
 
         /// <summary>
+        /// Gets all entries from DB for jQuery Datatables
+        /// </summary>
+        /// <param name="request">DataTableRequest with table search and sort options</param>
+        /// <returns>DataTableDbResult</returns>
+        public async Task<DataTableDbResult<UnitBundleViewModel>> GetUnitBundleViewAsync(DataTableRequest request)
+        {
+            var query = _context
+                .UnitsBundleView
+                .Include(view => view.Location)
+                    .ThenInclude(location => location.LocationType)
+                .Include(view => view.DefaultLocation)
+                    .ThenInclude(location => location.LocationType)
+                .Include(view => view.Unit)
+                    .ThenInclude(unit => unit.Product)
+                        .ThenInclude(product => product.ProductType)
+                .Include(view => view.Bundle)
+                    .ThenInclude(bundle => bundle.BundledUnits)
+                        .ThenInclude(unit => unit.Product)
+                            .ThenInclude(product => product.ProductType)
+                .AsNoTracking();
+                
+
+            // SEARCH
+            query = query.Search(request);
+
+            // ORDER
+            query = query.OrderBy(request);
+
+            // SPECIALTY SEARCH
+            var list = await query.SpecialitySearchToList(request);
+
+            var data = list.Select(view => _mapper.Map<UnitBundleViewModel>(view)).AsParallel().ToArray();
+
+            data = data.Where(view => view.IsBundle && view.Bundle.NumberOfUnits > 0 || !view.IsBundle).ToArray();
+
+            return new DataTableDbResult<UnitBundleViewModel>
+            {
+                Data = data,
+                RecordsTotal = data.Length
+            };
+        }
+
+        /// <summary>
         /// Adds object to DB
         /// </summary>
-        /// <param name="transfer">Object for adding</param>
-        public async Task AddTransferAsync(MainTransfer transfer)
+        /// <param name="mainTransfer">Object for adding</param>
+        /// <param name="selectedUnitBundle">Selected Units/Bundles to mainTransfer</param>
+        public async Task AddTransferAsync(MainTransfer mainTransfer, List<UnitBundleViewModel> selectedUnitBundle)
         {
-            /*
-            var dbUnits = new List<Unit>();
-            foreach (var unit in transfer.Units) // Moves all transferred units to destination location
-            {
-                var dbUnit = await _context.Units.FirstAsync(u => u.Id == unit.Id);
-                dbUnit.LocationId = transfer.DestinationLocationId;
-                _context.Entry(dbUnit).State = EntityState.Modified;
-                _context.Units.Update(dbUnit);
-                dbUnits.Add(dbUnit);
-            }
-            transfer.Units = dbUnits;
-
-            transfer.User = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User); // Gets current user from HttpContext and sets it for this transfer
-            transfer.TransferTime = DateTime.UtcNow; // Sets transfer time
-            _context.Transfers.Add(transfer);
+            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+            mainTransfer.UserId = currentUser.Id;
+            if (mainTransfer.State == TransferState.Transferred) mainTransfer.TransferTime = DateTime.UtcNow;
+            var row = _context.MainTransfers.Add(mainTransfer);
             await _context.SaveChangesAsync();
-            */
+
+            foreach (var ub in selectedUnitBundle)
+            {
+                var subTransfer = new SubTransfer
+                {
+                    MainTransferId = row.Entity.Id,
+                    DestinationLocationId = row.Entity.DestinationLocationId
+                };
+
+                if (ub.IsBundle)
+                {
+                    var bundle = await _context.Bundles
+                        .Include(b => b.BundledUnits)
+                        .FirstOrDefaultAsync(b => b.Id == ub.BundleId);
+                    subTransfer.BundleId = bundle.Id;
+                    subTransfer.OriginLocationId = bundle.LocationId;
+                    
+                    if (row.Entity.State == TransferState.Transferred)
+                    {
+                        _context.Entry(bundle).State = EntityState.Modified;
+                        bundle.LocationId = subTransfer.DestinationLocationId;
+                        _context.Bundles.Update(bundle);
+
+                        foreach (var bundledUnit in bundle.BundledUnits)
+                        {
+                            var unit = await _context.Units.FirstOrDefaultAsync(u => u.Id == bundledUnit.Id);
+                            _context.Entry(unit).State = EntityState.Modified;
+                            unit.LocationId = subTransfer.DestinationLocationId;
+                            _context.Units.Update(unit);
+                        }
+                    }
+                }
+                else
+                {
+                    var unit = await _context.Units.FirstOrDefaultAsync(u => u.Id == ub.UnitId);
+                    subTransfer.UnitId = unit.Id;
+                    subTransfer.OriginLocationId = unit.LocationId;
+                    if (row.Entity.State == TransferState.Transferred)
+                    {
+                        _context.Entry(unit).State = EntityState.Modified;
+                        unit.LocationId = subTransfer.DestinationLocationId;
+                        _context.Units.Update(unit);
+                    }
+                }
+
+                _context.SubTransfers.Add(subTransfer);
+            }
+            
+            await _context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Transfer Units/Bundles from Prepared Transfer
+        /// </summary>
+        /// <param name="mainTransferId">ID of MainTransfer</param>
+        /// <returns></returns>
+        public async Task<(bool Success, string ErrorMessage)> Transfer(int mainTransferId)
+        {
+            try
+            {
+                var mainTransfer = await _context.MainTransfers.FirstOrDefaultAsync(mt => mt.Id == mainTransferId);
+                if (mainTransfer is { State: TransferState.Prepared })
+                {
+                    _context.Entry(mainTransfer).State = EntityState.Modified;
+                    mainTransfer.State = TransferState.Transferred;
+                    mainTransfer.TransferTime = DateTime.UtcNow;
+                    _context.MainTransfers.Update(mainTransfer);
+
+                    var subTransfers = await _context.SubTransfers.Where(st => st.MainTransferId == mainTransferId).ToListAsync();
+                    foreach (var subTransfer in subTransfers)
+                    {
+                        if (subTransfer.BundleId != null)
+                        {
+                            var unit = await _context.Units.FirstOrDefaultAsync(u => u.Id == subTransfer.UnitId);
+                            _context.Entry(unit).State = EntityState.Modified;
+                            unit.LocationId = subTransfer.DestinationLocationId;
+                            _context.Units.Update(unit);
+                        }
+                        else
+                        {
+                            var bundle = await _context.Bundles
+                                .Include(b => b.BundledUnits)
+                                .FirstOrDefaultAsync(b => b.Id == subTransfer.BundleId);
+                            _context.Entry(bundle).State = EntityState.Modified;
+                            _context.Bundles.Update(bundle);
+                            foreach (var bundledUnit in bundle.BundledUnits)
+                            {
+                                var unit = await _context.Units.FirstOrDefaultAsync(u => u.Id == bundledUnit.Id);
+                                _context.Entry(unit).State = EntityState.Modified;
+                                unit.LocationId = subTransfer.DestinationLocationId;
+                                _context.Units.Update(unit);
+                            }
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+                    return (true, null);
+                }
+
+                return (false, "Transfer State is not Prepared");
+            }
+            catch (Exception e)
+            {
+                // TODO LOG
+                return (false, e.Message);
+            }
         }
 
         /*

@@ -31,6 +31,7 @@ namespace WebStorageSystem.Data.Entities.Transfers
 
         public Location DestinationLocation { get; set; }
 
+        [Required]
         public int DestinationLocationId { get; set; }
 
         public override DateTime CreatedDate { get; set; }
@@ -40,9 +41,9 @@ namespace WebStorageSystem.Data.Entities.Transfers
         public override int Id { get; set; }
     }
 
-    public enum TransferState
+    public enum TransferState : ushort
     {
-        Prepared,
-        Transferred
+        Prepared = 1,
+        Transferred = 2
     }
 }
