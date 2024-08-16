@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using LinqKit;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Defects.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Data.Entities.Transfers;
@@ -32,7 +33,11 @@ namespace WebStorageSystem.Extensions
             }
 
             int columnNumber = request.Order[0].Column;
-            string columnName = request.Columns[columnNumber].Data;
+            DataTableRequestColumns column = request.Columns[columnNumber];
+
+            if (!column.Orderable) return (IOrderedQueryable<TSource>)query;
+
+            string columnName = column.Data;
             return request.Order[0].Dir == DataTableRequestOrderDirection.asc
                 ? query.OrderBy(columnName)
                 : query.OrderByDescending(columnName);

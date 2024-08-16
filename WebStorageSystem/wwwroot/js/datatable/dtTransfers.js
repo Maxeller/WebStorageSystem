@@ -13,7 +13,7 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 render: function (data, type, row) {
-                    if (row.State == 1) return "Not Yet Transfered"
+                    if (row.MainTransfer.State == 1) return "Not Yet Transfered";
                     return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
                 }
             },
@@ -65,7 +65,10 @@ $(document).ready(function () {
                 searchable: false,
                 orderable: false,
                 render: function (data, type, row) {
-                    return `<a href="${row.Action.Details}" class="text-primary">Details</a>`;
+                    var s = "";
+                    if (row.Action.Transfer != null) s = `<a href="${row.Action.Transfer}" class="text-primary">Transfer</a> `;
+                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a>`;
+                    return s;
                 }
             }
         ];
@@ -154,6 +157,94 @@ $(document).ready(function () {
         });
     }
 });
+
+// Transfer Details
+$(document).ready(function () {
+    if ($("#dtTransferDetails").length !== 0) {
+        // Column definition
+        var myColumns = [
+            {
+                data: "UnitBundleView.InventoryNumber",
+                searchable: true,
+                orderable: false,
+                render: function (data, type, row) {
+                    if (row.BundleId == null) {
+                        return row.Unit.InventoryNumber;
+                    } else {
+                        return row.Bundle.InventoryNumber;
+                    }
+                }
+            },
+            {
+                data: "OriginLocation.Name",
+                searchable: true,
+                orderable: true
+            }
+        ];
+
+        // DataTable initialization 
+        var table = $("#dtTransferDetails").DataTable({
+            paging: false,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "/Transfer/LoadTableDetails",
+                type: "POST",
+                data: {
+                    "AdditionalData": {
+                        "MainTransferId": $('#MainTransferId').val()
+                    }
+                }
+            },
+            layout: {
+                topEnd: null
+            },
+            initComplete: function () {
+                // Creation of search bars for searchable columns
+                $("#dtTransferDetails thead tr").after("<tr>");
+                var counter = 0;
+                $("#dtTransferDetails thead th").each(function () {
+                    var title = $("#dtTransferDetails thead th").eq($(this).index()).text();
+                    if (myColumns[counter].searchable && title != "Transfer State") {
+                        if (myColumns[counter].data.includes("IsDeleted")) {
+                            $("#dtTransferDetails thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox"></div></th>`);
+                        } else if (myColumns[counter].data.includes("Date")) {
+                            $("#dtTransferDetails thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
+                        } else {
+                            $("#dtTransferDetails thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                        }
+                    } else {
+                        $("#dtTransferDetails thead tr:last").append(`<th></th>`);
+                    }
+                    counter++;
+                });
+                $("#dtTransfer thead th:last").after("</tr>");
+
+                // Creation of trigger for search event
+                table.columns().every(function (index) {
+                    var column = this;
+                    var elem = $(`#dtTransferDetails thead tr:last th:eq(${index}) input`);
+
+                    if (elem.is("#searchCheckbox")) {
+                        elem.on("click", function () {
+                            column.search(this.checked).draw();
+                        });
+                    } else if (elem.is("#searchDate")) {
+                        elem.on("change", function () {
+                            column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
+                        });
+                    } else {
+                        elem.on("keyup clear", function () {
+                            column.search(this.value).draw();
+                        });
+                    }
+                });
+            },
+            columns: myColumns
+        });
+    }
+});
+
 
 // Transfer Create
 $(document).ready(function () {
@@ -275,4 +366,3 @@ $(document).ready(function () {
         });
     }
 });
-

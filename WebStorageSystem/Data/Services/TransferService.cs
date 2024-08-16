@@ -15,6 +15,7 @@ using WebStorageSystem.Data.Entities.Transfers;
 using WebStorageSystem.Extensions;
 using WebStorageSystem.Models.DataTables;
 using WebStorageSystem.Models.Transfers;
+using Z.EntityFramework.Plus;
 
 namespace WebStorageSystem.Data.Services
 {
@@ -84,7 +85,7 @@ namespace WebStorageSystem.Data.Services
         /// <param name="request">DataTableRequest with table search and sort options</param>
         /// <param name="getDeleted">Looks through soft deleted entries</param>
         /// <returns>DataTableDbResult</returns>
-        public async Task<DataTableDbResult<SubTransferModel>> GetTransfersAsync(DataTableRequest request, bool getDeleted = false)
+        public async Task<DataTableDbResult<SubTransferModel>> GetSubTransfersAsync(DataTableRequest request, bool getDeleted = false)
         {
             var query = _context
                 .SubTransfers
@@ -101,6 +102,47 @@ namespace WebStorageSystem.Data.Services
                     .ThenInclude(unit => unit.Vendor)
                 .Include(subTransfer => subTransfer.Bundle)
                 .AsNoTracking();
+
+            // SEARCH
+            query = query.Search(request);
+
+            // ORDER
+            query = query.OrderBy(request);
+
+            // SPECIALTY SEARCH
+            query = query.SpecialitySearch(request);
+
+            var count = await query.CountAsync();
+
+            var data =
+                query.Select(transfer => _mapper.Map<SubTransferModel>(transfer)).AsParallel().ToArray();
+
+            return new DataTableDbResult<SubTransferModel>
+            {
+                Data = data,
+                RecordsTotal = count
+            };
+        }
+
+        /// <summary>
+        /// Gets all entries from DB for jQuery Datatables
+        /// </summary>
+        /// <param name="request">DataTableRequest with table search and sort options</param>
+        /// <param name="getDeleted">Looks through soft deleted entries</param>
+        /// <returns>DataTableDbResult</returns>
+        public async Task<DataTableDbResult<SubTransferModel>> GetSubTransfersForDetailAsync(DataTableRequest request, bool getDeleted = false)
+        {
+            var query = _context
+                .SubTransfers
+                .Where(st => st.MainTransferId == int.Parse(request.AdditionalData.MainTransferId))
+                .Include(st => st.Bundle)
+                .ThenInclude(b => b.BundledUnits)
+                .ThenInclude(u => u.Product)
+                .Include(st => st.Unit)
+                .ThenInclude(u => u.Product)
+                .Include(st => st.OriginLocation)
+                .AsNoTracking();
+
 
             // SEARCH
             query = query.Search(request);
@@ -249,7 +291,7 @@ namespace WebStorageSystem.Data.Services
                     var subTransfers = await _context.SubTransfers.Where(st => st.MainTransferId == mainTransferId).ToListAsync();
                     foreach (var subTransfer in subTransfers)
                     {
-                        if (subTransfer.BundleId != null)
+                        if (subTransfer.BundleId == null)
                         {
                             var unit = await _context.Units.FirstOrDefaultAsync(u => u.Id == subTransfer.UnitId);
                             _context.Entry(unit).State = EntityState.Modified;
@@ -293,7 +335,7 @@ namespace WebStorageSystem.Data.Services
         /// <param name="request">DataTableRequest with table search and sort options</param>
         /// <param name="getDeleted">Looks through soft deleted entries</param>
         /// <returns>DataTableDbResult</returns>
-        public async Task<DataTableDbResult<MainTransferModel>> GetTransfersAsync(DataTableRequest request, bool getDeleted = false)
+        public async Task<DataTableDbResult<MainTransferModel>> GetSubTransfersAsync(DataTableRequest request, bool getDeleted = false)
         {
             var query = _context
                 .MainTransfers

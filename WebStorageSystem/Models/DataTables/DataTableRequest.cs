@@ -8,7 +8,7 @@
         public DataTableRequestColumns[] Columns { get; set; }
         public DataTableRequestOrder[] Order { get; set; }
         public DataTableRequestSearch Search { get; set; }
-        //public DataTableAdditionalData AdditionalData { get; set; }
+        public DataTableAdditionalData AdditionalData { get; set; }
     }
 
     public class DataTableRequestColumns
@@ -50,6 +50,6 @@
 
     public class DataTableAdditionalData
     {
-        public string UserTimeZone { get; set; }
+        public string MainTransferId { get; set; }
     }
 }
