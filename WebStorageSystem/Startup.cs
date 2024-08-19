@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using WebStorageSystem.Areas.Defects.Data.Services;
+using WebStorageSystem.Areas.Identity;
 using WebStorageSystem.Areas.Locations.Data.Services;
 using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Data.Database;
@@ -35,7 +37,7 @@ namespace WebStorageSystem
         public void ConfigureServices(IServiceCollection services)
         {
             // DATABASE
-            services.AddMyDatabaseConfiguration(Configuration.GetConnectionString("LocalDb"), _env);
+            services.AddMyDatabaseConfiguration(Configuration.GetConnectionString("LocalDbTest"), _env);
 
             // IDENTITY
             services.AddMyIdentityConfiguration();
@@ -155,6 +157,7 @@ namespace WebStorageSystem
                     options.EnableSensitiveDataLogging(true);
                     options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
                 }
+                // TODO: Add UseSQLite
                 options.UseSqlServer(connectionString, options =>
                 {
                     options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
@@ -164,14 +167,6 @@ namespace WebStorageSystem
 
         public static void AddMyIdentityConfiguration(this IServiceCollection services)
         {
-            /*
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders();
-            */
-
-            //TODO: Add Claims/Roles
-
             services.AddDefaultIdentity<ApplicationUser>(options =>
                 {
                     // Password settings
@@ -179,11 +174,15 @@ namespace WebStorageSystem
                     options.Password.RequireDigit = true;
 
                     // Lockout settings
-                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(20);
                     options.Lockout.MaxFailedAccessAttempts = 5;
                     options.Lockout.AllowedForNewUsers = true;
                 })
-                .AddEntityFrameworkStores<AppDbContext>();
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddUserManager<AppUserManager>()
+                .AddDefaultTokenProviders();
+
+            //TODO: Add Claims/Roles
 
             services.ConfigureApplicationCookie(options =>
             {

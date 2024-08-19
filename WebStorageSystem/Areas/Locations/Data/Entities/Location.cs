@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Data.Entities;
+using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Data.Entities.Transfers;
 
 namespace WebStorageSystem.Areas.Locations.Data.Entities
@@ -41,6 +42,8 @@ namespace WebStorageSystem.Areas.Locations.Data.Entities
         public IEnumerable<Bundle> Bundles { get; set; }
 
         public IEnumerable<Bundle> DefaultBundles { get; set; }
+
+        public ICollection<ApplicationUser> UsersSubscribed { get; set; }
 
         public override DateTime CreatedDate { get; set; }
 

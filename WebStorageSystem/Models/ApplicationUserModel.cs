@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 using WebStorageSystem.Areas.Defects.Models;
+using WebStorageSystem.Areas.Locations.Data.Entities;
+using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Models.Transfers;
 
 namespace WebStorageSystem.Models
@@ -39,7 +41,6 @@ namespace WebStorageSystem.Models
 
         [JsonIgnore]
         public override int AccessFailedCount { get; set; }
-        public bool IsAdmin { get; set; }
 
         [JsonIgnore]
         public IEnumerable<MainTransferModel> Transfers { get; set; }
@@ -49,5 +50,8 @@ namespace WebStorageSystem.Models
 
         [JsonIgnore]
         public IEnumerable<DefectModel> CausedDefects { get; set; }
+
+        [JsonIgnore]
+        public IEnumerable<LocationModel> SubscribedLocations { get; set; }
     }
 }

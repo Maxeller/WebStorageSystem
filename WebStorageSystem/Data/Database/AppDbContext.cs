@@ -221,6 +221,9 @@ namespace WebStorageSystem.Data.Database
             // Folder: Identity
             modelBuilder.Entity<ApplicationUser>(entity =>
             {
+                entity
+                    .HasMany(user => user.SubscribedLocations)
+                    .WithMany(location => location.UsersSubscribed);
                 entity.ToTable("Users");
             });
 
