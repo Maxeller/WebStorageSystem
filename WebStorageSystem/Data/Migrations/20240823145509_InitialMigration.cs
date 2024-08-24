@@ -99,7 +99,6 @@ namespace WebStorageSystem.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IsAdmin = table.Column<bool>(type: "bit", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -316,6 +315,30 @@ namespace WebStorageSystem.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ApplicationUserLocation",
+                columns: table => new
+                {
+                    SubscribedLocationsId = table.Column<int>(type: "int", nullable: false),
+                    UsersSubscribedId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApplicationUserLocation", x => new { x.SubscribedLocationsId, x.UsersSubscribedId });
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserLocation_Locations_SubscribedLocationsId",
+                        column: x => x.SubscribedLocationsId,
+                        principalTable: "Locations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserLocation_Users_UsersSubscribedId",
+                        column: x => x.UsersSubscribedId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Bundles",
                 columns: table => new
                 {
@@ -325,6 +348,7 @@ namespace WebStorageSystem.Data.Migrations
                     InventoryNumber = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     LocationId = table.Column<int>(type: "int", nullable: false),
                     DefaultLocationId = table.Column<int>(type: "int", nullable: false),
+                    HasDefect = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -398,6 +422,7 @@ namespace WebStorageSystem.Data.Migrations
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastTransferTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastCheckTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    HasDefect = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -448,9 +473,9 @@ namespace WebStorageSystem.Data.Migrations
                     UnitId = table.Column<int>(type: "int", nullable: false),
                     ReportedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CausedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImageId = table.Column<int>(type: "int", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    ImageId = table.Column<int>(type: "int", nullable: false),
                     State = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -465,7 +490,7 @@ namespace WebStorageSystem.Data.Migrations
                         column: x => x.ImageId,
                         principalTable: "Images",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Defects_Units_UnitId",
                         column: x => x.UnitId,
@@ -536,6 +561,11 @@ namespace WebStorageSystem.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUserLocation_UsersSubscribedId",
+                table: "ApplicationUserLocation",
+                column: "UsersSubscribedId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -707,6 +737,9 @@ namespace WebStorageSystem.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ApplicationUserLocation");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 

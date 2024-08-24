@@ -18,7 +18,7 @@ using WebStorageSystem.Models.Transfers;
 
 namespace WebStorageSystem.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "User, Warehouse, Admin")]
     public class TransferController : Controller
     {
         private readonly TransferService _transferService;

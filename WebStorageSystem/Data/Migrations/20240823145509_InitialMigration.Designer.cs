@@ -10,8 +10,8 @@ using WebStorageSystem.Data.Database;
 namespace WebStorageSystem.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240814202900_LocationSubscription")]
-    partial class LocationSubscription
+    [Migration("20240823145509_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

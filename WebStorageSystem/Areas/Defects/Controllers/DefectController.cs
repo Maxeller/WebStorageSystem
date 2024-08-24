@@ -22,7 +22,7 @@ using WebStorageSystem.Models.DataTables;
 namespace WebStorageSystem.Areas.Defects.Controllers
 {
     [Area("Defects")]
-    [Authorize]
+    [Authorize(Roles = "User, Warehouse, Admin")]
     public class DefectController : Controller
     {
         private readonly IWebHostEnvironment _hostEnvironment;
