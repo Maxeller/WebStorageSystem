@@ -4,7 +4,6 @@ using System;
 using WebStorageSystem.Data.Entities.Transfers;
 using System.Text.Json.Serialization;
 using WebStorageSystem.Areas.Locations.Models;
-using WebStorageSystem.Areas.Products.Models;
 
 namespace WebStorageSystem.Models.Transfers
 {

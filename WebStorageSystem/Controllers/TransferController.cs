@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -14,7 +13,6 @@ using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data.Entities.Transfers;
 using WebStorageSystem.Data.Services;
-using WebStorageSystem.Models;
 using WebStorageSystem.Models.DataTables;
 using WebStorageSystem.Models.Transfers;
 

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data.Database;
 using WebStorageSystem.Data.Entities.Identities;
@@ -15,7 +14,6 @@ using WebStorageSystem.Data.Entities.Transfers;
 using WebStorageSystem.Extensions;
 using WebStorageSystem.Models.DataTables;
 using WebStorageSystem.Models.Transfers;
-using Z.EntityFramework.Plus;
 
 namespace WebStorageSystem.Data.Services
 {

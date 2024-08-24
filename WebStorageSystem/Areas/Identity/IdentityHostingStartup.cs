@@ -1,12 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using WebStorageSystem.Data.Database;
-using WebStorageSystem.Data.Entities.Identities;
+﻿using Microsoft.AspNetCore.Hosting;
 
 [assembly: HostingStartup(typeof(WebStorageSystem.Areas.Identity.IdentityHostingStartup))]
 namespace WebStorageSystem.Areas.Identity

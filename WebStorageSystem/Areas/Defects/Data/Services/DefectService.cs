@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Defects.Data.Entities;
 using WebStorageSystem.Areas.Defects.Models;
-using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Data.Database;
 using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Extensions;

@@ -10,8 +10,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Areas.Locations.Data.Services;
-using WebStorageSystem.Areas.Locations.Models;
-using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data.Entities.Identities;
 
 namespace WebStorageSystem.Areas.Identity.Pages.Account.Manage

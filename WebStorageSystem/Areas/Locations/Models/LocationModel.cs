@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using WebStorageSystem.Areas.Products.Models;
-using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Models;
 using WebStorageSystem.Models.Transfers;
 
