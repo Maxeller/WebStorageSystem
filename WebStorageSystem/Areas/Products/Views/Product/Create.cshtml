@@ -46,7 +46,10 @@
                 </select>
                 <span asp-validation-for="ProductTypeId" class="text-danger" />
             </div>
-            <partial for="Image" name="ImageUpload/Upload"/>
+            <div class="form-group">
+                <label asp-for="Image" class="control-label"></label>
+                <partial for="Image" name="ImageUpload/Upload" />
+            </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)

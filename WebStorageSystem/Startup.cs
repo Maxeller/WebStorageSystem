@@ -1,9 +1,12 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using WebStorageSystem.Areas.Defects.Data.Services;
+using WebStorageSystem.Areas.Identity;
 using WebStorageSystem.Areas.Locations.Data.Services;
 using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Data.Database;
@@ -35,6 +39,8 @@ namespace WebStorageSystem
         {
             // DATABASE
             services.AddMyDatabaseConfiguration(Configuration.GetConnectionString("LocalDb"), _env);
+            //services.AddMyDatabaseConfiguration("Data Source=(localdb)\\mssqllocaldb;Initial Catalog=WSSTest;Integrated Security=True;Multiple Active Result Sets=True", _env);
+            
 
             // IDENTITY
             services.AddMyIdentityConfiguration();
@@ -54,8 +60,10 @@ namespace WebStorageSystem
             //services.AddDatabaseDeveloperPageExceptionFilter();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
+            CreateRoles(serviceProvider).Wait();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -77,6 +85,10 @@ namespace WebStorageSystem
             }
 
             app.UseHttpsRedirection();
+
+            //app.UseResponseCaching();
+
+            //app.UseResponseCompression();
 
             app.UseStaticFiles();
 
@@ -100,6 +112,35 @@ namespace WebStorageSystem
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+        }
+
+        private async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            //Initialization of roles
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<AppUserManager>();
+            string[] roles = { "Admin", "Warehouse", "User" };
+
+            foreach (var role in roles)
+            {
+                var roleExists = await roleManager.RoleExistsAsync(role);
+                if (!roleExists) await roleManager.CreateAsync(new IdentityRole(role));
+            }
+
+            // Creation of main admin user
+            var admin = new ApplicationUser
+            {
+                UserName = Configuration["Admin:UserName"],
+                Email = Configuration["Admin:UserName"],
+            };
+            
+            var user = await userManager.FindByEmailAsync(Configuration["Admin:UserName"]);
+
+            if (user == null)
+            {
+                var result = await userManager.CreateAsync(admin, Configuration["Admin:Password"]);
+                if (result.Succeeded) await userManager.AddToRoleAsync(admin, "Admin");
+            }
         }
     }
     public static class ServiceExtensions
@@ -125,6 +166,7 @@ namespace WebStorageSystem
                 {
                     options.JsonSerializerOptions.AllowTrailingCommas = true; // Allows for trailing commas in JSON file
                     options.JsonSerializerOptions.PropertyNamingPolicy = null; // Json is serialized without camelCase
+                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                 })
                 .AddXmlSerializerFormatters(); // Adds XML serializer for input and output
 
@@ -153,6 +195,7 @@ namespace WebStorageSystem
                     options.EnableSensitiveDataLogging(true);
                     options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
                 }
+                // TODO: Add UseSQLite
                 options.UseSqlServer(connectionString, options =>
                 {
                     options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
@@ -162,14 +205,6 @@ namespace WebStorageSystem
 
         public static void AddMyIdentityConfiguration(this IServiceCollection services)
         {
-            /*
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders();
-            */
-
-            //TODO: Add Claims/Roles
-
             services.AddDefaultIdentity<ApplicationUser>(options =>
                 {
                     // Password settings
@@ -177,11 +212,14 @@ namespace WebStorageSystem
                     options.Password.RequireDigit = true;
 
                     // Lockout settings
-                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(20);
                     options.Lockout.MaxFailedAccessAttempts = 5;
                     options.Lockout.AllowedForNewUsers = true;
                 })
-                .AddEntityFrameworkStores<AppDbContext>();
+                .AddUserManager<AppUserManager>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
 
             services.ConfigureApplicationCookie(options =>
             {

@@ -33,6 +33,7 @@ namespace WebStorageSystem.Areas.Defects.Models
         public string Notes { get; set; }
 
         public ImageEntityModel Image { get; set; }
+        public int ImageId { get; set; }
 
         public DefectState State { get; set; }
 
@@ -45,7 +46,6 @@ namespace WebStorageSystem.Areas.Defects.Models
         [Display(Name = "Deleted")]
         public override bool IsDeleted { get; set; }
 
-        [JsonIgnore]
         public override byte[] RowVersion { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

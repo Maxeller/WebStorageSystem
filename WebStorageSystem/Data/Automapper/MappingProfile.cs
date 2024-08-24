@@ -4,6 +4,7 @@ using WebStorageSystem.Data.Entities;
 using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Data.Entities.Transfers;
 using WebStorageSystem.Models;
+using WebStorageSystem.Models.Transfers;
 
 namespace WebStorageSystem.Data.Automapper
 {
@@ -11,17 +12,26 @@ namespace WebStorageSystem.Data.Automapper
     {
         public MappingProfile()
         {
-            TransferMapping();
+            MainTransferMapping();
+            SubTransferMapping();
             ApplicationUserMapping();
             ImageMapping();
         }
 
-        private void TransferMapping()
+        private void MainTransferMapping()
         {
-            CreateMap<Transfer, TransferModel>();
-            CreateMap<List<Transfer>, List<TransferModel>>();
-            CreateMap<TransferModel, Transfer>();
-            CreateMap<List<TransferModel>, List<Transfer>>();
+            CreateMap<MainTransfer, MainTransferModel>();
+            CreateMap<List<MainTransfer>, List<MainTransferModel>>();
+            CreateMap<MainTransferModel, MainTransfer>();
+            CreateMap<List<MainTransferModel>, List<MainTransfer>>();
+        }
+
+        private void SubTransferMapping()
+        {
+            CreateMap<SubTransfer, SubTransferModel>();
+            CreateMap<List<SubTransfer>, List<SubTransferModel>>();
+            CreateMap<SubTransferModel, SubTransfer>();
+            CreateMap<List<SubTransferModel>, List<SubTransfer>>();
         }
 
         private void ApplicationUserMapping()

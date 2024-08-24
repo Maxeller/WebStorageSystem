@@ -31,10 +31,14 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 .Bundles
                 .OrderBy(bundle => bundle.Name)
                 .Include(bundle => bundle.BundledUnits)
-                .ThenInclude(unit => unit.Product)
-                .ThenInclude(product => product.ProductType)
+                    .ThenInclude(unit => unit.Product)
+                        .ThenInclude(product => product.ProductType)
+                .Include(bundle => bundle.Location)
+                    .ThenInclude(location => location.LocationType)
+                .Include(bundle => bundle.DefaultLocation)
+                    .ThenInclude(defaultLocation => defaultLocation.LocationType)
                 .Include(bundle => bundle.BundledUnits)
-                .ThenInclude(unit => unit.Location)
+                    .ThenInclude(unit => unit.Location)
                 .AsNoTracking();
         }
 
@@ -71,8 +75,11 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         {
             var query = _context
                 .Bundles
+                .Include(bundle => bundle.Location)
+                .Include(bundle => bundle.DefaultLocation)
                 .Include(bundle => bundle.BundledUnits)
-                .AsNoTracking()
+                    .ThenInclude(unit => unit.Product)
+                        .ThenInclude(product => product.ProductType)
                 .IgnoreQueryFilters();
 
             // SEARCH
@@ -81,15 +88,18 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             // ORDER
             query = query.OrderBy(request);
 
-            var count = await query.CountAsync();
+            // SEARCH USING IncludeFilter
+            var list = await query.SpecialitySearchToList(request);
 
             var data =
-                query.Select(bundle => _mapper.Map<BundleModel>(bundle)).AsParallel().ToArray();
+                list.Select(bundle => _mapper.Map<BundleModel>(bundle)).AsParallel().ToArray();
+
+            data = data.Where(bundle => bundle.NumberOfUnits > 0).ToArray();
 
             return new DataTableDbResult<BundleModel>
             {
                 Data = data,
-                RecordsTotal = count
+                RecordsTotal = data.Length
             };
         }
 
@@ -100,13 +110,15 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <param name="units">Objects where edited object is used</param>
         public async Task AddBundleAsync(Bundle bundle, IEnumerable<Unit> units)
         {
-            _context.Bundles.Add(bundle);
+            var row = _context.Bundles.Add(bundle);
             await _context.SaveChangesAsync();
             foreach (var unit in units)
             {
                 var u = await _context.Units.FirstOrDefaultAsync(u => u.Id == unit.Id);
                 _context.Entry(u).State = EntityState.Modified;
-                u.PartOfBundle = _context.Bundles.Attach(bundle).Entity;
+                u.PartOfBundleId = row.Entity.Id;
+                u.LocationId = row.Entity.LocationId;
+                u.DefaultLocationId = row.Entity.DefaultLocationId;
             }
             await _context.SaveChangesAsync();
         }
@@ -124,15 +136,17 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 var prev = await GetBundleAsync(bundle.Id);
                 foreach (var bundledUnit in prev.BundledUnits)
                 {
-                    _context.Entry(bundledUnit).State = EntityState.Modified;
-                    bundledUnit.PartOfBundleId = null;
+                    var u = await _context.Units.FirstAsync(u => u.Id == bundledUnit.Id);
+                    _context.Entry(u).State = EntityState.Modified;
+                    u.PartOfBundleId = null;
                 }
                 foreach (var unit in units)
                 {
-                    var prevUnit = await _context.Units.FirstAsync(u => u.Id == unit.Id);
-                    _context.Entry(prevUnit).State = EntityState.Detached;
-                    _context.Entry(unit).State = EntityState.Modified;
-                    unit.PartOfBundle = _context.Bundles.Attach(bundle).Entity;
+                    var u = await _context.Units.FirstAsync(u => u.Id == unit.Id);
+                    _context.Entry(u).State = EntityState.Modified;
+                    u.PartOfBundleId = bundle.Id;
+                    u.LocationId = bundle.LocationId;
+                    u.DefaultLocationId = bundle.DefaultLocationId;
                 }
 
                 _context.Bundles.Update(bundle);

@@ -1,0 +1,32 @@
+﻿@page
+@model AssignRolesModel
+@{
+    ViewData["Title"] = "Assign Roles";
+    ViewData["ActivePage"] = ManageNavPages.AssignRoles;
+}
+
+<h4>@ViewData["Title"]</h4>
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="assign-roles-form" method="post">
+            <div class="form-group">
+                <label asp-for="Input.UserId" class="control-label"></label>
+                <select asp-for="Input.UserId" class="form-control selectTwo" asp-items="ViewBag.Users" data-placeholder="Select User">
+                </select>
+                <span asp-validation-for="Input.UserId" class="text-danger" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.RolesId" class="control-label"></label>
+                <select asp-for="Input.RolesId" class="form-control selectTwo" asp-items="ViewBag.Roles" multiple="multiple" data-placeholder="Select Roles">
+                </select>
+                <span asp-validation-for="Input.RolesId" class="text-danger" />
+            </div>
+            <button id="update-roles-button" type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

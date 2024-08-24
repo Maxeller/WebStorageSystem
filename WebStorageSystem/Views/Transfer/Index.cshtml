@@ -1,4 +1,4 @@
-﻿@model TransferModel
+﻿@model SubTransferModel
 
 @{
     ViewData["Title"] = "List of Transfers";
@@ -14,20 +14,14 @@
 <table id="dtTransfer" class="table table-striped table-bordered table-dark">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.TransferNumber)</th>
+            <th>@Html.DisplayNameFor(model => model.MainTransfer.TransferNumber)</th>
+            <th>@Html.DisplayNameFor(model => model.MainTransfer.TransferTime)</th>
+            <th>@Html.DisplayNameFor(model => model.MainTransfer.State)</th>
+            <th>@Html.DisplayNameFor(model => model.MainTransfer.User.UserName)</th>
             <th>Origin Location</th>
             <th>Destination Location</th>
-            <th>@Html.DisplayNameFor(model => model.State)</th>
-            <th>@Html.DisplayNameFor(model => model.TransferTime)</th>
-            <th>@Html.DisplayNameFor(model => model.State)</th>
-            <th>@Html.DisplayNameFor(model => model.Units)</th>
+            <th>Inventory Number</th>
             <th>@Html.DisplayNameFor(model => model.Action)</th>
         </tr>
     </thead>
 </table>
-
-<partial name="DeleteRestoreModal" />
-@if (TempData["Error"] != null)
-{
-    await Html.RenderPartialAsync("ErrorModal", TempData["Error"]);
-}

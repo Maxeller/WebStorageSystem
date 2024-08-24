@@ -78,14 +78,16 @@ $(document).ready(function () {
             var title = $("#dtManufacturer thead th").eq($(this).index()).text();
             if (myColumns[counter].searchable) {
                 if (myColumns[counter].data.includes("IsDeleted")) {
-                    $("#dtManufacturer thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox"></div></th>`);
+                    $("#dtManufacturer thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
                 } else if (myColumns[counter].data.includes("Date")) {
                     $("#dtManufacturer thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
                 } else {
                     $("#dtManufacturer thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-                counter++;
+            } else {
+                $("#dtManufacturer thead tr:last").append(`<th></th>`);
             }
+            counter++;
         });
         $("#dtManufacturer thead th:last").after("</tr>");
 
@@ -93,15 +95,20 @@ $(document).ready(function () {
         table.columns().every(function (index) {
             var column = this;
             var elem = $(`#dtManufacturer thead tr:last th:eq(${index}) input`);
-            elem.on("keyup change", function () {
-                if (elem.hasClass("form-check-input")) { // If search is triggered from checkbox
-                    column.search(this.checked).draw();  // send value of checkbox
-                } if (elem.is("#searchDate")) {          // If search is triggered on "Date" column
+
+            if (elem.is("#searchCheckbox")) {
+                elem.on("click", function () {
+                    column.search(this.checked).draw();
+                });
+            } else if (elem.is("#searchDate")) {
+                elem.on("change", function () {
                     column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
-                } else {                                 // If search is triggered from textbox
-                    column.search(this.value).draw();    // send value from textbox
-                }
-            });
+                });
+            } else {
+                elem.on("keyup clear", function () {
+                    column.search(this.value).draw();
+                });
+            }
         });
     }
 });
@@ -186,14 +193,16 @@ $(document).ready(function () {
             var title = $("#dtProductType thead th").eq($(this).index()).text();
             if (myColumns[counter].searchable) {
                 if (myColumns[counter].data.includes("IsDeleted")) {
-                    $("#dtProductType thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox"></div></th>`);
+                    $("#dtProductType thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
                 } else if (myColumns[counter].data.includes("Date")) {
                     $("#dtProductType thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
                 } else {
                     $("#dtProductType thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-                counter++;
+            } else {
+                $("#dtProductType thead tr:last").append(`<th></th>`);
             }
+            counter++;
         });
         $("#dtProductType thead th:last").after("</tr>");
 
@@ -201,15 +210,20 @@ $(document).ready(function () {
         table.columns().every(function (index) {
             var column = this;
             var elem = $(`#dtProductType thead tr:last th:eq(${index}) input`);
-            elem.on("keyup change", function () {
-                if (elem.hasClass("form-check-input")) { // If search is triggered from checkbox
-                    column.search(this.checked).draw();  // send value of checkbox
-                } if (elem.is("#searchDate")) {          // If search is triggered on "Date" column
+
+            if (elem.is("#searchCheckbox")) {
+                elem.on("click", function () {
+                    column.search(this.checked).draw();
+                });
+            } else if (elem.is("#searchDate")) {
+                elem.on("change", function () {
                     column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
-                } else {                                 // If search is triggered from textbox
-                    column.search(this.value).draw();    // send value from textbox
-                }
-            });
+                });
+            } else {
+                elem.on("keyup clear", function () {
+                    column.search(this.value).draw();
+                });
+            }
         });
     }
 });
@@ -309,14 +323,16 @@ $(document).ready(function () {
             var title = $("#dtVendor thead th").eq($(this).index()).text();
             if (myColumns[counter].searchable) {
                 if (myColumns[counter].data.includes("IsDeleted")) {
-                    $("#dtVendor thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox"></div></th>`);
+                    $("#dtVendor thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
                 } else if (myColumns[counter].data.includes("Date")) {
                     $("#dtVendor thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
                 } else {
                     $("#dtVendor thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-                counter++;
+            } else {
+                $("#dtVendor thead tr:last").append(`<th></th>`);
             }
+            counter++;
         });
         $("#dtVendor thead th:last").after("</tr>");
 
@@ -324,15 +340,20 @@ $(document).ready(function () {
         table.columns().every(function (index) {
             var column = this;
             var elem = $(`#dtVendor thead tr:last th:eq(${index}) input`);
-            elem.on("keyup change", function () {
-                if (elem.hasClass("form-check-input")) { // If search is triggered from checkbox
-                    column.search(this.checked).draw();  // send value of checkbox
-                } if (elem.is("#searchDate")) {          // If search is triggered on "Date" column
+
+            if (elem.is("#searchCheckbox")) {
+                elem.on("click", function () {
+                    column.search(this.checked).draw();
+                });
+            } else if (elem.is("#searchDate")) {
+                elem.on("change", function () {
                     column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
-                } else {                                 // If search is triggered from textbox
-                    column.search(this.value).draw();    // send value from textbox
-                }
-            });
+                });
+            } else {
+                elem.on("keyup clear", function () {
+                    column.search(this.value).draw();
+                });
+            }
         });
     }
 });
@@ -437,14 +458,16 @@ $(document).ready(function () {
             var title = $("#dtProduct thead th").eq($(this).index()).text();
             if (myColumns[counter].searchable) {
                 if (myColumns[counter].data.includes("IsDeleted")) {
-                    $("#dtProduct thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox"></div></th>`);
+                    $("#dtProduct thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
                 } else if (myColumns[counter].data.includes("Date")) {
                     $("#dtProduct thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
                 } else {
                     $("#dtProduct thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-                counter++;
+            } else {
+                $("#dtProduct thead tr:last").append(`<th></th>`);
             }
+            counter++;
         });
         $("#dtProduct thead th:last").after("</tr>");
 
@@ -452,15 +475,20 @@ $(document).ready(function () {
         table.columns().every(function (index) {
             var column = this;
             var elem = $(`#dtProduct thead tr:last th:eq(${index}) input`);
-            elem.on("keyup change", function () {
-                if (elem.hasClass("form-check-input")) { // If search is triggered from checkbox
-                    column.search(this.checked).draw();  // send value of checkbox
-                } if (elem.is("#searchDate")) {          // If search is triggered on "Date" column
+
+            if (elem.is("#searchCheckbox")) {
+                elem.on("click", function () {
+                    column.search(this.checked).draw();
+                });
+            } else if (elem.is("#searchDate")) {
+                elem.on("change", function () {
                     column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
-                } else {                                 // If search is triggered from textbox
-                    column.search(this.value).draw();    // send value from textbox
-                }
-            });
+                });
+            } else {
+                elem.on("keyup clear", function () {
+                    column.search(this.value).draw(); 
+                });
+            }
         });
     }
 });
@@ -476,29 +504,45 @@ $(document).ready(function () {
                 orderable: true
             },
             {
-                data: "Description",
+                data: "InventoryNumber",
+                searchable: true,
+                orderable: true
+            },
+            {
+                data: "Location.Name",
+                searchable: true,
+                orderable: true
+            },
+            {
+                data: "DefaultLocation.Name",
                 searchable: true,
                 orderable: true
             },
             {
                 data: "NumberOfUnits",
-                searchable: true,
-                orderable: true
+                searchable: false,
+                orderable: false
             },
             {
-                data: "CreatedDate",
+                data: "BundledUnits",
                 searchable: true,
-                orderable: true,
+                orderable: false,
                 render: function (data, type, row) {
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
+                    var s = "";
+                    for(const i in data) {
+                        s = s + `${data[i].InventoryNumber} (${data[i].Product.ProductType.Name} - ${data[i].Product.Name})  <br />`;
+                    }
+                    return s;
                 }
             },
             {
-                data: "ModifiedDate",
+                data: "HasDefect",
                 searchable: true,
                 orderable: true,
                 render: function (data, type, row) {
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
+                    var s = "";
+                    if (row.HasDefect === true) s = "checked";
+                    return `<div class="form-check"><input class="form-check-input" type="checkbox" disabled ${s}></div>`;
                 }
             },
             {
@@ -549,15 +593,17 @@ $(document).ready(function () {
         $("#dtBundle thead th").each(function () {
             var title = $("#dtBundle thead th").eq($(this).index()).text();
             if (myColumns[counter].searchable) {
-                if (myColumns[counter].data.includes("IsDeleted")) {
-                    $("#dtBundle thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox"></div></th>`);
+                if (myColumns[counter].data.includes("IsDeleted") || myColumns[counter].data.includes("HasDefect")) {
+                    $("#dtBundle thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
                 } else if (myColumns[counter].data.includes("Date")) {
                     $("#dtBundle thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
                 } else {
                     $("#dtBundle thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-                counter++;
+            } else {
+                $("#dtBundle thead tr:last").append(`<th></th>`);
             }
+            counter++;
         });
         $("#dtBundle thead th:last").after("</tr>");
 
@@ -565,15 +611,20 @@ $(document).ready(function () {
         table.columns().every(function (index) {
             var column = this;
             var elem = $(`#dtBundle thead tr:last th:eq(${index}) input`);
-            elem.on("keyup change", function () {
-                if (elem.hasClass("form-check-input")) { // If search is triggered from checkbox
-                    column.search(this.checked).draw();  // send value of checkbox
-                } if (elem.is("#searchDate")) {          // If search is triggered on "Date" column
+
+            if (elem.is("#searchCheckbox")) {
+                elem.on("click", function () {
+                    column.search(this.checked).draw();
+                });
+            } else if (elem.is("#searchDate")) {
+                elem.on("change", function () {
                     column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
-                } else {                                 // If search is triggered from textbox
-                    column.search(this.value).draw();    // send value from textbox
-                }
-            });
+                });
+            } else {
+                elem.on("keyup clear", function () {
+                    column.search(this.value).draw();
+                });
+            }
         });
     }
 });
@@ -663,6 +714,16 @@ $(document).ready(function () {
                 }
             },
             {
+                data: "HasDefect",
+                searchable: true,
+                orderable: true,
+                render: function (data, type, row) {
+                    var s = "";
+                    if (row.HasDefect === true) s = "checked";
+                    return `<div class="form-check"><input class="form-check-input" type="checkbox" disabled ${s}></div>`;
+                }
+            },
+            {
                 data: "IsDeleted",
                 searchable: true,
                 orderable: true,
@@ -710,15 +771,17 @@ $(document).ready(function () {
         $("#dtUnit thead th").each(function () {
             var title = $("#dtUnit thead th").eq($(this).index()).text();
             if (myColumns[counter].searchable) {
-                if (myColumns[counter].data.includes("IsDeleted")) {
-                    $("#dtUnit thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox"></div></th>`);
+                if (myColumns[counter].data.includes("IsDeleted") || myColumns[counter].data.includes("HasDefect")) {
+                    $("#dtUnit thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
                 } else if (myColumns[counter].data.includes("Date")) {
                     $("#dtUnit thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
                 } else {
                     $("#dtUnit thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
                 }
-                counter++;
+            } else {
+                $("#dtUnit thead tr:last").append(`<th></th>`);
             }
+            counter++;
         });
         $("#dtUnit thead th:last").after("</tr>");
 
@@ -726,15 +789,20 @@ $(document).ready(function () {
         table.columns().every(function (index) {
             var column = this;
             var elem = $(`#dtUnit thead tr:last th:eq(${index}) input`);
-            elem.on("keyup change", function () {
-                if (elem.hasClass("form-check-input")) { // If search is triggered from checkbox
-                    column.search(this.checked).draw();  // send value of checkbox
-                } if (elem.is("#searchDate")) {          // If search is triggered on "Date" column
+
+            if (elem.is("#searchCheckbox")) {
+                elem.on("click", function () {
+                    column.search(this.checked).draw();
+                });
+            } else if (elem.is("#searchDate")) {
+                elem.on("change", function () {
                     column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
-                } else {                                 // If search is triggered from textbox
-                    column.search(this.value).draw();    // send value from textbox
-                }
-            });
+                });
+            } else {
+                elem.on("keyup clear", function () {
+                    column.search(this.value).draw();
+                });
+            }
         });
     }
 });

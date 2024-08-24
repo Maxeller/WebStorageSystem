@@ -15,6 +15,7 @@ namespace WebStorageSystem.Areas.Products.Data.Automapper
             ProductMapping();
             UnitMapping();
             BundleMapping();
+            UnitBundleViewMapping();
         }
 
         private void ManufacturerMapping()
@@ -63,6 +64,14 @@ namespace WebStorageSystem.Areas.Products.Data.Automapper
             CreateMap<List<Bundle>, List<BundleModel>>();
             CreateMap<BundleModel, Bundle>();
             CreateMap<List<BundleModel>, List<Bundle>>();
+        }
+
+        private void UnitBundleViewMapping()
+        {
+            CreateMap<UnitBundleView, UnitBundleViewModel>();
+            CreateMap<List<UnitBundleView>, List<UnitBundleViewModel>>();
+            CreateMap<UnitBundleViewModel, UnitBundleView>();
+            CreateMap<List<UnitBundleViewModel>, List<UnitBundleView>>();
         }
     }
 }

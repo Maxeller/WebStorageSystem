@@ -48,6 +48,7 @@ namespace WebStorageSystem.Areas.Defects.Data.Services
                         .ThenInclude(location => location.LocationType)
                 .Include(defect => defect.ReportedByUser)
                 .Include(defect => defect.CausedByUser)
+                .Include(defect => defect.Image)
                 .AsNoTracking();
         }
 
@@ -59,7 +60,7 @@ namespace WebStorageSystem.Areas.Defects.Data.Services
         /// <returns>If found returns object, otherwise null</returns>
         public async Task<Defect> GetDefectAsync(int id, bool getDeleted = false)
         {
-            if (getDeleted) return await _getQuery.IgnoreQueryFilters().FirstOrDefaultAsync(location => location.Id == id);
+            if (getDeleted) return await _getQuery.IgnoreQueryFilters().FirstOrDefaultAsync(defect => defect.Id == id);
             return await _getQuery.FirstOrDefaultAsync(defect => defect.Id == id);
         }
 
@@ -94,7 +95,7 @@ namespace WebStorageSystem.Areas.Defects.Data.Services
                     .ThenInclude(unit => unit.Location)
                         //.ThenInclude(location => location.LocationType)
                 .Include(defect => defect.ReportedByUser)
-                //.Include(defect => defect.CausedByUser)
+                .Include(defect => defect.CausedByUser)
                 .AsNoTracking();
 
             // SEARCH
@@ -121,10 +122,47 @@ namespace WebStorageSystem.Areas.Defects.Data.Services
         /// <param name="defect">Object for adding</param>
         public async Task AddDefectAsync(Defect defect)
         {
-            defect.Unit = _context.Units.Attach(defect.Unit).Entity;
-            defect.CausedByUser = _context.Users.Attach(defect.CausedByUser).Entity;
-            defect.ReportedByUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User); // Gets current user from HttpContext
+            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User); // Gets current user from HttpContext
+            defect.ReportedByUserId = currentUser.Id;
             _context.Defects.Add(defect);
+
+            var defectUnit = await _context.Units.FirstOrDefaultAsync(u => u.Id == defect.UnitId);
+            _context.Entry(defectUnit).State = EntityState.Modified;
+
+            switch (defect.State)
+            {
+                case DefectState.Broken:
+                case DefectState.InRepair:
+                { 
+                    defectUnit.HasDefect = true;
+                    break;
+                }
+                case DefectState.Repaired:
+                {
+                    defectUnit.HasDefect = false;
+                    break;
+                }
+            }
+            
+            await _context.SaveChangesAsync();
+
+            if (defectUnit.PartOfBundleId != null) await CheckIfBundleShouldHaveDefect((int)defectUnit.PartOfBundleId);
+        }
+
+        private async Task CheckIfBundleShouldHaveDefect(int bundleId)
+        {
+            var bundle = await _context.Bundles
+                .Include(b => b.BundledUnits)
+                .FirstOrDefaultAsync(b => b.Id == bundleId);
+
+            foreach (var unit in bundle.BundledUnits)
+            {
+                if (!unit.HasDefect) continue;
+                bundle.HasDefect = true;
+                break;
+            }
+            _context.Entry(bundle).State = EntityState.Modified;
+
             await _context.SaveChangesAsync();
         }
 
@@ -141,7 +179,29 @@ namespace WebStorageSystem.Areas.Defects.Data.Services
                 _context.Entry(prev).State = EntityState.Detached;
                 _context.Entry(defect).State = EntityState.Modified;
                 _context.Defects.Update(defect);
+
+                var defectUnit = await _context.Units.FirstOrDefaultAsync(u => u.Id == defect.UnitId);
+                _context.Entry(defectUnit).State = EntityState.Modified;
+
+                switch (defect.State)
+                {
+                    case DefectState.Broken:
+                    case DefectState.InRepair:
+                    {
+                        defectUnit.HasDefect = true;
+                        break;
+                    }
+                    case DefectState.Repaired:
+                    {
+                        defectUnit.HasDefect = false;
+                        break;
+                    }
+                }
+
                 await _context.SaveChangesAsync();
+
+                if (defectUnit.PartOfBundleId != null) await CheckIfBundleShouldHaveDefect((int)defectUnit.PartOfBundleId);
+
                 return (true, null);
             }
             catch (DbUpdateConcurrencyException concurrencyException)

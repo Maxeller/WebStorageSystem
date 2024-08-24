@@ -28,6 +28,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
             _locationService = locationService;
         }
 
+        #region LocationType API
         /// <summary>
         /// Gets list of Location Types
         /// </summary>
@@ -119,7 +120,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> UpdateLocationType(int? id, [Bind()] LocationTypeModel locationTypeModel)
+        public async Task<ActionResult> UpdateLocationType(int? id, [Bind("Name,Description,IsDeleted,RowVersion")] LocationTypeModel locationTypeModel)
         {
             if (id == null) return BadRequest();
             var locationType = _mapper.Map<LocationType>(locationTypeModel);
@@ -148,7 +149,9 @@ namespace WebStorageSystem.Areas.Locations.Controllers
             if(success) return Ok();
             return errMsg.Contains("not found") ? NotFound(errMsg) : (ActionResult)BadRequest(errMsg);
         }
+        #endregion
 
+        #region Location API
         /// <summary>
         /// Gets list of Locations
         /// </summary>
@@ -185,5 +188,93 @@ namespace WebStorageSystem.Areas.Locations.Controllers
             if (locationModel == null) return NotFound();
             return Ok(locationModel);
         }
+
+        /// <summary>
+        /// Creates Location
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///     
+        ///     POST /location/
+        ///     {
+        ///         "Name": "&lt;name&gt;",
+        ///         "Description": "&lt;description&gt;",
+        ///         "Address": "&lt;address&gt;",
+        ///         "LocationTypeId": "&lt;id&gt;",
+        ///         "IsDeleted": false
+        ///     }
+        ///     
+        /// </remarks>
+        /// <param name="locationModel"></param>
+        /// <returns>Newly created Location Type</returns>
+        /// <response code="201">Returns newly created Location Type</response> 
+        /// <response code="400">If model is wrong</response> 
+        [HttpPost("location/", Name = "InsertLocation")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> InsertLocation([Bind("Name,Description,Address,LocationTypeId,IsDeleted")] LocationModel locationModel)
+        {
+            var location = _mapper.Map<Location>(locationModel);
+            await _locationService.AddLocationAsync(location);
+            var model = _mapper.Map<LocationModel>(location);
+            return CreatedAtAction(nameof(GetLocation), new { id = model.Id }, model);
+        }
+
+        /// <summary>
+        /// Edit Location
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///     
+        ///     PUT /location/&lt;id&gt;
+        ///     {
+        ///         "Name": "&lt;name&gt;",
+        ///         "Description": "&lt;description&gt;",
+        ///         "Address": "&lt;address&gt;",
+        ///         "LocationTypeId": "&lt;id&gt;",
+        ///         "RowVersion": "&lt;version&gt;"
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="id">ID of Location</param>
+        /// <param name="locationModel"></param>
+        /// <returns></returns>
+        /// <response code="200">Returns updated Location</response> 
+        /// <response code="400">If model is wrong</response> 
+        /// <response code="404">If selected ID doesnt exist</response> 
+        [HttpPut("location/{id?}", Name = "UpdateLocation")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> UpdateLocation(int? id, [Bind("Name,Description,Address,LocationTypeId,IsDeleted,RowVersion")] LocationModel locationModel)
+        {
+            if (id == null) return BadRequest();
+            var location = _mapper.Map<Location>(locationModel);
+            (bool success, string errMsg) = await _locationService.EditLocationAsync(location);
+            if (!success) return BadRequest(errMsg);
+            var model = _mapper.Map<LocationModel>(location);
+            return Ok(model);
+        }
+
+        /// <summary>
+        /// Delete Location
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <response code="200">If Location has been deleted</response> 
+        /// <response code="400">If error occured</response> 
+        /// <response code="404">If selected ID doesnt exist</response> 
+        [HttpDelete("location/{id?}", Name = "DeleteLocation")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> DeleteLocation(int? id)
+        {
+            if (id == null) return BadRequest();
+            (bool success, string errMsg) = await _locationTypeService.DeleteLocationTypeAsync((int)id);
+            if (success) return Ok();
+            return errMsg.Contains("not found") ? NotFound(errMsg) : (ActionResult)BadRequest(errMsg);
+        }
+        #endregion
     }
 }

@@ -10,16 +10,31 @@ using WebStorageSystem.Data.Database;
 namespace WebStorageSystem.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211012153938_ProductAddedImage")]
-    partial class ProductAddedImage
+    [Migration("20240823145509_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.10")
+                .HasAnnotation("ProductVersion", "5.0.15")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("ApplicationUserLocation", b =>
+                {
+                    b.Property<int>("SubscribedLocationsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsersSubscribedId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("SubscribedLocationsId", "UsersSubscribedId");
+
+                    b.HasIndex("UsersSubscribedId");
+
+                    b.ToTable("ApplicationUserLocation");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -156,19 +171,71 @@ namespace WebStorageSystem.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("TransferUnit", b =>
+            modelBuilder.Entity("WebStorageSystem.Areas.Defects.Data.Entities.Defect", b =>
                 {
-                    b.Property<int>("TransfersId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CausedByUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DefectNumber")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("ImageId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UnitsId")
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("ReportedByUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<int>("State")
                         .HasColumnType("int");
 
-                    b.HasKey("TransfersId", "UnitsId");
+                    b.Property<int>("UnitId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("UnitsId");
+                    b.HasKey("Id");
 
-                    b.ToTable("TransferUnit");
+                    b.HasIndex("CausedByUserId");
+
+                    b.HasIndex("DefectNumber")
+                        .IsUnique();
+
+                    b.HasIndex("ImageId");
+
+                    b.HasIndex("ReportedByUserId");
+
+                    b.HasIndex("UnitId");
+
+                    b.ToTable("Defects");
                 });
 
             modelBuilder.Entity("WebStorageSystem.Areas.Locations.Data.Entities.Location", b =>
@@ -260,8 +327,21 @@ namespace WebStorageSystem.Data.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DefaultLocationId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("HasDefect")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("InventoryNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -276,13 +356,14 @@ namespace WebStorageSystem.Data.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("SerialNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("SerialNumber");
+                    b.HasIndex("DefaultLocationId");
+
+                    b.HasIndex("InventoryNumber")
+                        .IsUnique();
+
+                    b.HasIndex("LocationId");
 
                     b.ToTable("Bundles");
                 });
@@ -431,6 +512,9 @@ namespace WebStorageSystem.Data.Migrations
                     b.Property<int>("DefaultLocationId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("HasDefect")
+                        .HasColumnType("bit");
+
                     b.Property<string>("InventoryNumber")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -478,9 +562,10 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("InventoryNumber");
-
                     b.HasIndex("DefaultLocationId");
+
+                    b.HasIndex("InventoryNumber")
+                        .IsUnique();
 
                     b.HasIndex("LocationId");
 
@@ -491,6 +576,42 @@ namespace WebStorageSystem.Data.Migrations
                     b.HasIndex("VendorId");
 
                     b.ToTable("Units");
+                });
+
+            modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.UnitBundleView", b =>
+                {
+                    b.Property<string>("InventoryNumber")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("BundleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DefaultLocationId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("HasDefect")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TableName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UnitId")
+                        .HasColumnType("int");
+
+                    b.HasKey("InventoryNumber");
+
+                    b.HasIndex("BundleId");
+
+                    b.HasIndex("DefaultLocationId");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("UnitId");
+
+                    b.ToView("UnitBundleView");
                 });
 
             modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.Vendor", b =>
@@ -563,9 +684,6 @@ namespace WebStorageSystem.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -623,7 +741,8 @@ namespace WebStorageSystem.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ImageName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -641,10 +760,12 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasAlternateKey("ImageName");
+
                     b.ToTable("Images");
                 });
 
-            modelBuilder.Entity("WebStorageSystem.Data.Entities.Transfers.Transfer", b =>
+            modelBuilder.Entity("WebStorageSystem.Data.Entities.Transfers.MainTransfer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -662,9 +783,6 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("OriginLocationId")
-                        .HasColumnType("int");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
@@ -691,11 +809,75 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.HasIndex("DestinationLocationId");
 
-                    b.HasIndex("OriginLocationId");
-
                     b.HasIndex("UserId");
 
-                    b.ToTable("Transfers");
+                    b.ToTable("MainTransfers");
+                });
+
+            modelBuilder.Entity("WebStorageSystem.Data.Entities.Transfers.SubTransfer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("BundleId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DestinationLocationId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MainTransferId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OriginLocationId")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<int?>("UnitId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BundleId");
+
+                    b.HasIndex("DestinationLocationId");
+
+                    b.HasIndex("MainTransferId");
+
+                    b.HasIndex("OriginLocationId");
+
+                    b.HasIndex("UnitId");
+
+                    b.ToTable("SubTransfers");
+                });
+
+            modelBuilder.Entity("ApplicationUserLocation", b =>
+                {
+                    b.HasOne("WebStorageSystem.Areas.Locations.Data.Entities.Location", null)
+                        .WithMany()
+                        .HasForeignKey("SubscribedLocationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebStorageSystem.Data.Entities.Identities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UsersSubscribedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -749,19 +931,38 @@ namespace WebStorageSystem.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TransferUnit", b =>
+            modelBuilder.Entity("WebStorageSystem.Areas.Defects.Data.Entities.Defect", b =>
                 {
-                    b.HasOne("WebStorageSystem.Data.Entities.Transfers.Transfer", null)
-                        .WithMany()
-                        .HasForeignKey("TransfersId")
+                    b.HasOne("WebStorageSystem.Data.Entities.Identities.ApplicationUser", "CausedByUser")
+                        .WithMany("CausedDefects")
+                        .HasForeignKey("CausedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("WebStorageSystem.Data.Entities.ImageEntity", "Image")
+                        .WithMany("Defects")
+                        .HasForeignKey("ImageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebStorageSystem.Areas.Products.Data.Entities.Unit", null)
-                        .WithMany()
-                        .HasForeignKey("UnitsId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("WebStorageSystem.Data.Entities.Identities.ApplicationUser", "ReportedByUser")
+                        .WithMany("ReportedDefects")
+                        .HasForeignKey("ReportedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("WebStorageSystem.Areas.Products.Data.Entities.Unit", "Unit")
+                        .WithMany("Defects")
+                        .HasForeignKey("UnitId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CausedByUser");
+
+                    b.Navigation("Image");
+
+                    b.Navigation("ReportedByUser");
+
+                    b.Navigation("Unit");
                 });
 
             modelBuilder.Entity("WebStorageSystem.Areas.Locations.Data.Entities.Location", b =>
@@ -773,6 +974,25 @@ namespace WebStorageSystem.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("LocationType");
+                });
+
+            modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.Bundle", b =>
+                {
+                    b.HasOne("WebStorageSystem.Areas.Locations.Data.Entities.Location", "DefaultLocation")
+                        .WithMany("DefaultBundles")
+                        .HasForeignKey("DefaultLocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WebStorageSystem.Areas.Locations.Data.Entities.Location", "Location")
+                        .WithMany("Bundles")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DefaultLocation");
+
+                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.Product", b =>
@@ -841,17 +1061,42 @@ namespace WebStorageSystem.Data.Migrations
                     b.Navigation("Vendor");
                 });
 
-            modelBuilder.Entity("WebStorageSystem.Data.Entities.Transfers.Transfer", b =>
+            modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.UnitBundleView", b =>
                 {
-                    b.HasOne("WebStorageSystem.Areas.Locations.Data.Entities.Location", "DestinationLocation")
-                        .WithMany("DestinationTransfers")
-                        .HasForeignKey("DestinationLocationId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                    b.HasOne("WebStorageSystem.Areas.Products.Data.Entities.Bundle", "Bundle")
+                        .WithMany()
+                        .HasForeignKey("BundleId");
+
+                    b.HasOne("WebStorageSystem.Areas.Locations.Data.Entities.Location", "DefaultLocation")
+                        .WithMany()
+                        .HasForeignKey("DefaultLocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebStorageSystem.Areas.Locations.Data.Entities.Location", "OriginLocation")
-                        .WithMany("OriginTransfers")
-                        .HasForeignKey("OriginLocationId")
+                    b.HasOne("WebStorageSystem.Areas.Locations.Data.Entities.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebStorageSystem.Areas.Products.Data.Entities.Unit", "Unit")
+                        .WithMany()
+                        .HasForeignKey("UnitId");
+
+                    b.Navigation("Bundle");
+
+                    b.Navigation("DefaultLocation");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("Unit");
+                });
+
+            modelBuilder.Entity("WebStorageSystem.Data.Entities.Transfers.MainTransfer", b =>
+                {
+                    b.HasOne("WebStorageSystem.Areas.Locations.Data.Entities.Location", "DestinationLocation")
+                        .WithMany("DestinationMainTransfers")
+                        .HasForeignKey("DestinationLocationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -863,14 +1108,59 @@ namespace WebStorageSystem.Data.Migrations
 
                     b.Navigation("DestinationLocation");
 
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("WebStorageSystem.Data.Entities.Transfers.SubTransfer", b =>
+                {
+                    b.HasOne("WebStorageSystem.Areas.Products.Data.Entities.Bundle", "Bundle")
+                        .WithMany("SubTransfers")
+                        .HasForeignKey("BundleId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("WebStorageSystem.Areas.Locations.Data.Entities.Location", "DestinationLocation")
+                        .WithMany("DestinationTransfers")
+                        .HasForeignKey("DestinationLocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WebStorageSystem.Data.Entities.Transfers.MainTransfer", "MainTransfer")
+                        .WithMany("SubTransfers")
+                        .HasForeignKey("MainTransferId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WebStorageSystem.Areas.Locations.Data.Entities.Location", "OriginLocation")
+                        .WithMany("OriginTransfers")
+                        .HasForeignKey("OriginLocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WebStorageSystem.Areas.Products.Data.Entities.Unit", "Unit")
+                        .WithMany("SubTransfers")
+                        .HasForeignKey("UnitId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Bundle");
+
+                    b.Navigation("DestinationLocation");
+
+                    b.Navigation("MainTransfer");
+
                     b.Navigation("OriginLocation");
 
-                    b.Navigation("User");
+                    b.Navigation("Unit");
                 });
 
             modelBuilder.Entity("WebStorageSystem.Areas.Locations.Data.Entities.Location", b =>
                 {
+                    b.Navigation("Bundles");
+
+                    b.Navigation("DefaultBundles");
+
                     b.Navigation("DefaultUnits");
+
+                    b.Navigation("DestinationMainTransfers");
 
                     b.Navigation("DestinationTransfers");
 
@@ -887,6 +1177,8 @@ namespace WebStorageSystem.Data.Migrations
             modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.Bundle", b =>
                 {
                     b.Navigation("BundledUnits");
+
+                    b.Navigation("SubTransfers");
                 });
 
             modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.Manufacturer", b =>
@@ -904,6 +1196,13 @@ namespace WebStorageSystem.Data.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.Unit", b =>
+                {
+                    b.Navigation("Defects");
+
+                    b.Navigation("SubTransfers");
+                });
+
             modelBuilder.Entity("WebStorageSystem.Areas.Products.Data.Entities.Vendor", b =>
                 {
                     b.Navigation("Units");
@@ -911,12 +1210,23 @@ namespace WebStorageSystem.Data.Migrations
 
             modelBuilder.Entity("WebStorageSystem.Data.Entities.Identities.ApplicationUser", b =>
                 {
+                    b.Navigation("CausedDefects");
+
+                    b.Navigation("ReportedDefects");
+
                     b.Navigation("Transfers");
                 });
 
             modelBuilder.Entity("WebStorageSystem.Data.Entities.ImageEntity", b =>
                 {
+                    b.Navigation("Defects");
+
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("WebStorageSystem.Data.Entities.Transfers.MainTransfer", b =>
+                {
+                    b.Navigation("SubTransfers");
                 });
 #pragma warning restore 612, 618
         }

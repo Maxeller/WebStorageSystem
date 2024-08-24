@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Areas.Locations.Data.Services;
 using WebStorageSystem.Areas.Locations.Models;
@@ -12,6 +14,7 @@ using WebStorageSystem.Models.DataTables;
 namespace WebStorageSystem.Areas.Locations.Controllers
 {
     [Area("Locations")]
+    [Authorize(Roles = "Admin")]
     public class LocationController : Controller
     {
         private readonly LocationService _locationService;
@@ -61,14 +64,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
                 return View(locationModel);
             }
 
-            var locationType = await _locationTypeService.GetLocationTypeAsync(locationModel.LocationTypeId, getDeleted);
-            if (locationType == null)
-            {
-                await CreateLocationTypeDropdownList(getDeleted);
-                return View(locationModel);
-            }
             var location = _mapper.Map<Location>(locationModel);
-            location.LocationType = locationType;
             await _locationService.AddLocationAsync(location);
             return RedirectToAction(nameof(Index));
         }
@@ -95,14 +91,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
             if (id != locationModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(locationModel);
 
-            var locationType = await _locationTypeService.GetLocationTypeAsync(locationModel.LocationTypeId, getDeleted);
-            if (locationType == null)
-            {
-                await CreateLocationTypeDropdownList(getDeleted);
-                return View(locationModel);
-            }
             var location = _mapper.Map<Location>(locationModel);
-            location.LocationType = locationType;
 
             var (success, errorMessage) = await _locationService.EditLocationAsync(location);
             if (success) return RedirectToAction(nameof(Index));
@@ -142,10 +131,11 @@ namespace WebStorageSystem.Areas.Locations.Controllers
                 var results = await _locationService.GetLocationsAsync(request);
                 foreach (var item in results.Data)
                 {
+                    var routeValues = new RouteValueDictionary { { "id", item.Id }, { "getDeleted", item.IsDeleted } };
                     item.Action = new Dictionary<string, string>
                     {
-                        {"Edit", Url.Action(nameof(Edit), new {item.Id})},
-                        {"Details", Url.Action(nameof(Details), new {item.Id})},
+                        {"Edit", Url.Action(nameof(Edit), routeValues)},
+                        {"Details", Url.Action(nameof(Details), routeValues)},
                         {"Delete", Url.Action(nameof(Delete), new {item.Id})},
                         {"Restore", Url.Action(nameof(Restore), new {item.Id})}
                     };

@@ -22,6 +22,7 @@ namespace WebStorageSystem.Data.Database
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Unit> Units { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
+        public DbSet<UnitBundleView> UnitsBundleView { get; set; } // VIEW
 
         // Folder: Location
         public DbSet<Location> Locations { get; set; }
@@ -31,7 +32,8 @@ namespace WebStorageSystem.Data.Database
         public DbSet<Defect> Defects { get; set; }
 
         // Folder: Transfer
-        public DbSet<Transfer> Transfers { get; set; }
+        public DbSet<MainTransfer> MainTransfers { get; set; }
+        public DbSet<SubTransfer> SubTransfers { get; set; }
 
         // Folder: Identity
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
@@ -94,7 +96,17 @@ namespace WebStorageSystem.Data.Database
                     .HasMany(bundle => bundle.BundledUnits)
                     .WithOne(unit => unit.PartOfBundle)
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasAlternateKey(bundle => bundle.SerialNumber);
+                entity
+                    .HasOne(bundle => bundle.Location)
+                    .WithMany(location => location.Bundles)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity
+                    .HasOne(bundle => bundle.DefaultLocation)
+                    .WithMany(location => location.DefaultBundles)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasIndex(bundle => bundle.InventoryNumber).IsUnique();
                 entity.HasQueryFilter(bundle => !bundle.IsDeleted);
                 entity.ToTable("Bundles");
             });
@@ -110,9 +122,16 @@ namespace WebStorageSystem.Data.Database
                     .WithMany(location => location.DefaultUnits)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasAlternateKey(unit => unit.InventoryNumber);
+                entity.HasIndex(unit => unit.InventoryNumber).IsUnique();
                 entity.HasQueryFilter(unit => !unit.IsDeleted);
                 entity.ToTable("Units");
+            });
+
+            // Views as in https://learn.microsoft.com/en-us/ef/core/modeling/keyless-entity-types?tabs=data-annotations#mapping-to-database-objects
+            modelBuilder.Entity<UnitBundleView>(entity =>
+            {
+                entity.HasKey(view => view.InventoryNumber);
+                entity.ToView("UnitBundleView");
             });
 
             // Folder: Location
@@ -133,32 +152,54 @@ namespace WebStorageSystem.Data.Database
             });
 
             // Folder: Transfer
-            modelBuilder.Entity<Transfer>(entity =>
+
+            modelBuilder.Entity<MainTransfer>(entity =>
             {
-                entity.HasAlternateKey(transfer => transfer.TransferNumber);
+                entity.HasAlternateKey(mainTransfer => mainTransfer.TransferNumber);
                 entity
-                    .HasOne(transfer => transfer.User)
+                    .HasOne(mainTransfer => mainTransfer.User)
                     .WithMany(user => user.Transfers)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
                 entity
-                    .HasOne(transfer => transfer.OriginLocation)
+                    .HasMany(mainTransfer => mainTransfer.SubTransfers)
+                    .WithOne(subTransfer => subTransfer.MainTransfer)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity
+                    .HasOne(mainTransfer => mainTransfer.DestinationLocation)
+                    .WithMany(location => location.DestinationMainTransfers)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.ToTable("MainTransfers");
+            });
+
+            modelBuilder.Entity<SubTransfer>(entity =>
+            {
+                entity
+                    .HasOne(subTransfer => subTransfer.OriginLocation)
                     .WithMany(location => location.OriginTransfers)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
                 entity
-                    .HasOne(transfer => transfer.DestinationLocation)
+                    .HasOne(subTransfer => subTransfer.DestinationLocation)
                     .WithMany(location => location.DestinationTransfers)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasQueryFilter(transfer => !transfer.IsDeleted);
-                entity.ToTable("Transfers");
+                entity
+                    .HasOne(subTransfer => subTransfer.Unit)
+                    .WithMany(unit => unit.SubTransfers)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity
+                    .HasOne(subTransfer => subTransfer.Bundle)
+                    .WithMany(bundle => bundle.SubTransfers)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.ToTable("SubTransfers");
             });
 
             // Folder: Defect
             modelBuilder.Entity<Defect>(entity =>
             {
-                entity.HasAlternateKey(defect => defect.DefectNumber);
+                entity.HasIndex(defect => defect.DefectNumber).IsUnique();
                 entity
                     .HasOne(defect => defect.Unit)
                     .WithMany(unit => unit.Defects)
@@ -180,6 +221,9 @@ namespace WebStorageSystem.Data.Database
             // Folder: Identity
             modelBuilder.Entity<ApplicationUser>(entity =>
             {
+                entity
+                    .HasMany(user => user.SubscribedLocations)
+                    .WithMany(location => location.UsersSubscribed);
                 entity.ToTable("Users");
             });
 

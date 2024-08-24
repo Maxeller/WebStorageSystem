@@ -95,7 +95,6 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         /// <param name="location">Object for adding</param>
         public async Task AddLocationAsync(Location location)
         {
-            location.LocationType = _context.LocationTypes.Attach(location.LocationType).Entity;
             _context.Locations.Add(location);
             await _context.SaveChangesAsync();
         }

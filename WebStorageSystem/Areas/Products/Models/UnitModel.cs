@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IronBarCode;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -6,6 +7,7 @@ using System.Text.Json.Serialization;
 using WebStorageSystem.Areas.Defects.Models;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Models;
+using WebStorageSystem.Models.Transfers;
 
 namespace WebStorageSystem.Areas.Products.Models
 {
@@ -27,10 +29,10 @@ namespace WebStorageSystem.Areas.Products.Models
         [Required, DisplayName("Location")]
         public int LocationId { get; set; }
 
+        public LocationModel DefaultLocation { get; set; }
+
         [Required, DisplayName("Default Location")]
         public int DefaultLocationId { get; set; }
-
-        public LocationModel DefaultLocation { get; set; }
 
         public VendorModel Vendor { get; set; }
 
@@ -48,19 +50,36 @@ namespace WebStorageSystem.Areas.Products.Models
 
         public string Notes { get; set; }
 
+        [JsonIgnore]
+        public string BarCode
+        {
+            get
+            {
+                if (Product == null) return "";
+                GeneratedBarcode barcode = BarcodeWriter
+                    .CreateBarcode(InventoryNumber, BarcodeEncoding.Code128)
+                    .ResizeTo(250, 50)
+                .AddAnnotationTextAboveBarcode($"{Product.Manufacturer.Name} {Product.Name} ")
+                    .AddAnnotationTextBelowBarcode(InventoryNumber);
+                return barcode.ToHtmlTag();
+            }
+        }
+
         [DisplayName("Last Transfer Date")]
         public DateTime? LastTransferTime { get; set; }
 
         [DisplayName("Last Check Time")]
         public DateTime? LastCheckTime { get; set; }
 
+        [DisplayName("Has Defect")]
+        public bool HasDefect { get; set; }
+
         [JsonIgnore]
-        public IEnumerable<TransferModel> Transfers { get; set; }
+        public IEnumerable<SubTransferModel> Transfers { get; set; }
 
         [JsonIgnore]
         public IEnumerable<DefectModel> Defects { get; set; }
 
-        [JsonIgnore]
         public string InventoryNumberProduct
         {
             get

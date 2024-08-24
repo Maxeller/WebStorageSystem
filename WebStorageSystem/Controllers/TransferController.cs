@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing;
 using WebStorageSystem.Areas.Locations.Data.Services;
 using WebStorageSystem.Areas.Locations.Models;
-using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Services;
+using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data.Entities.Transfers;
 using WebStorageSystem.Data.Services;
-using WebStorageSystem.Models;
 using WebStorageSystem.Models.DataTables;
+using WebStorageSystem.Models.Transfers;
 
 namespace WebStorageSystem.Controllers
 {
-    //[Authorize]
+    [Authorize(Roles = "User, Warehouse, Admin")]
     public class TransferController : Controller
     {
         private readonly TransferService _transferService;
@@ -37,7 +38,7 @@ namespace WebStorageSystem.Controllers
         // GET: Transfer/Index
         public IActionResult Index()
         {
-            return View(new TransferModel());
+            return View(new SubTransferModel());
         }
 
         // GET: Transfer/Create
@@ -50,77 +51,58 @@ namespace WebStorageSystem.Controllers
         // POST: Transfer/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TransferNumber,OriginLocationId,DestinationLocationId,UnitsIds,IsDeleted")] TransferModel transferModel, TransferState state)
+        public async Task<IActionResult> Create([Bind("TransferNumber,DestinationLocationId")] MainTransferModel mainTransferModel, TransferState state, string selectedRowsJson)
         {
-            if (!ModelState.IsValid)
+            var selectedRows = JsonSerializer.Deserialize<List<UnitBundleViewModel>>(selectedRowsJson); // Deserialization in method doesnt work (for some reason)
+
+            if (!ModelState.IsValid && selectedRows.Count != 0)
             {
                 await CreateLocationDropdownList();
                 return View();
             }
 
-            var transfer = _mapper.Map<Transfer>(transferModel);
-            var units = new List<Unit>(transferModel.UnitsIds.ToArray().Length);
-            foreach (var unitId in transferModel.UnitsIds)
-            {
-                units.Add(await _unitService.GetUnitAsync(unitId));
-            }
+            mainTransferModel.State = state;
+            var mainTransfer = _mapper.Map<MainTransfer>(mainTransferModel);
 
-            transfer.Units = units;
-            transfer.State = state;
-            await _transferService.AddTransferAsync(transfer);
+            await _transferService.AddTransferAsync(mainTransfer, selectedRows);
+            
             return RedirectToAction(nameof(Index));
         }
 
         // GET: Transfer/Details/5
-        public IActionResult Details()
+        public async Task<IActionResult> Details(int id)
         {
-            //return View();
-            return RedirectToAction(nameof(Index));
+            var mainTransfer = await _transferService.GetTransferAsync(id);
+            if (mainTransfer == null) return NotFound();
+            var model = _mapper.Map<MainTransferModel>(mainTransfer);
+            return View(model);
         }
 
-        // GET: Transfer/Edit/5
-        public IActionResult Edit()
+        public async Task<IActionResult> Transfer(int id)
         {
-            //return View();
-            return RedirectToAction(nameof(Index));
-        }
-
-        // POST: Transfer/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            return RedirectToAction(nameof(Index));
-        }
-
-        // POST: Transfer/Restore/5
-        [HttpPost, ActionName("Restore")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Restore(int? id)
-        {
+            await _transferService.Transfer(id);
             return RedirectToAction(nameof(Index));
         }
 
         // POST: Transfer/LoadTable
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> LoadTable(DataTableRequest request)
         {
             try
             {
-                var results = await _transferService.GetTransfersAsync(request);
+                var results = await _transferService.GetSubTransfersAsync(request);
                 foreach (var item in results.Data)
                 {
-                    item.Action = new Dictionary<string, string>
+                    RouteValueDictionary dict = new RouteValueDictionary { { "id", item.MainTransferId } };
+                    item.Action = new Dictionary<string, string>();
+                    if (item.MainTransfer.State == TransferState.Prepared)
                     {
-                        {"Edit", Url.Action(nameof(Edit), new {item.Id})},
-                        {"Details", Url.Action(nameof(Details), new {item.Id})},
-                        {"Delete", Url.Action(nameof(Delete), new {item.Id})},
-                        {"Restore", Url.Action(nameof(Restore), new {item.Id})}
-                    };
+                        item.Action.Add("Transfer", Url.Action(nameof(Transfer), dict));
+                    }
+                    item.Action.Add("Details", Url.Action(nameof(Details), dict));
                 }
 
-                return new JsonResult(new DataTableResponse<TransferModel>
+                return new JsonResult(new DataTableResponse<SubTransferModel>
                 {
                     Draw = request.Draw,
                     Data = results.Data,
@@ -135,24 +117,50 @@ namespace WebStorageSystem.Controllers
             }
         }
 
-        // GET: Transfer/UnitLoc
-        public async Task<Select2AjaxResult> UnitLoc(int loc, string sn)
+        // POST: Transfer/LoadUnitBundleView
+        [HttpPost]
+        public async Task<IActionResult> LoadUnitBundleView(DataTableRequest request)
         {
-            var result = new Select2AjaxResult();
-
-            var units = await _unitService.GetUnitsAsync();
-            var unitsAtLoc = units
-                .ToList()
-                .FindAll(unit => unit.Location.Id == loc &&
-                                 unit.InventoryNumber.Contains(sn ?? "", StringComparison.OrdinalIgnoreCase))
-                .AsParallel()
-                .ToList();
-            foreach (var unit in unitsAtLoc) // TODO: Change to Parallel.ForEach ?
+            try
             {
-                result.Results.Add(new Select2AjaxPartResult(unit.Id, unit.InventoryNumber));
-            }
+                var results = await _transferService.GetUnitBundleViewAsync(request);
 
-            return result;
+                return new JsonResult(new DataTableResponse<UnitBundleViewModel>
+                {
+                    Draw = request.Draw,
+                    Data = results.Data,
+                    RecordsFiltered = results.RecordsTotal,
+                    RecordsTotal = results.RecordsTotal
+                });
+            }
+            catch (Exception e)
+            {
+                Console.Write(e.Message);
+                return new JsonResult(new { error = "Internal Server Error" });
+            }
+        }
+
+        // POST: Transfer/LoadTableDetails
+        [HttpPost]
+        public async Task<IActionResult> LoadTableDetails(DataTableRequest request)
+        {
+            try
+            {
+                var results = await _transferService.GetSubTransfersForDetailAsync(request);
+
+                return new JsonResult(new DataTableResponse<SubTransferModel>
+                {
+                    Draw = request.Draw,
+                    Data = results.Data,
+                    RecordsFiltered = results.RecordsTotal,
+                    RecordsTotal = results.RecordsTotal
+                });
+            }
+            catch (Exception e)
+            {
+                Console.Write(e.Message);
+                return new JsonResult(new { error = "Internal Server Error" });
+            }
         }
 
         private async Task CreateLocationDropdownList(bool getDeleted = false, object selectedUnits = null)

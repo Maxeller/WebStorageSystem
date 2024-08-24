@@ -23,7 +23,7 @@ namespace WebStorageSystem.Areas.Products.Models
         [Required, Display(Name = "Product Type")]
         public int ProductTypeId { get; set; }
 
-        [Display(Name = "Product Type")] 
+        [Display(Name = "Product Type")]
         public ProductTypeModel ProductType { get; set; }
 
         [Required, Display(Name = "Manufacturer")]

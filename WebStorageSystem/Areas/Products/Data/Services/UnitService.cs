@@ -27,7 +27,9 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             _mapper = mapper;
             _logger = factory.CreateLogger<ProductService>();
 
-            _getQuery = _context.Units
+            _getQuery = _context
+                .Units
+                .OrderBy(unit => unit.InventoryNumber)
                 .Include(unit => unit.Product)
                     .ThenInclude(product => product.ProductType)
                 .Include(unit => unit.Product)
@@ -38,8 +40,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                     .ThenInclude(location => location.LocationType)
                 .Include(unit => unit.Vendor)
                 .Include(unit => unit.PartOfBundle)
-                .AsNoTracking()
-                .IgnoreQueryFilters();
+                .AsNoTracking();
         }
 
         /// <summary>
@@ -89,6 +90,15 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         }
 
         /// <summary>
+        /// Gets entries from DB that are not in Bundle
+        /// </summary>
+        /// <returns>Collection of entities</returns>
+        public async Task<IEnumerable<Unit>> GetUnitsNotInBundleAsync()
+        {
+            return await _getQuery.Where(u => u.PartOfBundle == null).ToListAsync();
+        }
+
+        /// <summary>
         /// Gets all entries from DB for jQuery Datatables
         /// </summary>
         /// <param name="request">DataTableRequest with table search and sort options</param>
@@ -106,8 +116,8 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 .Include(unit => unit.DefaultLocation)
                 .Include(unit => unit.Vendor)
                 .Include(unit => unit.PartOfBundle)
-                .AsNoTracking()
-                .IgnoreQueryFilters();
+                .IgnoreQueryFilters()
+                .AsNoTracking();
 
             // SEARCH
             query = query.Search(request);
@@ -127,16 +137,45 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             };
         }
 
+        public async Task<DataTableDbResult<UnitBundleViewModel>> GetUnitBundlesAsync(DataTableRequest request, bool getDeleted = false)
+        {
+            var query = _context
+                .Units
+                .Include(unit => unit.Product)
+                    .ThenInclude(product => product.ProductType)
+                .Include(unit => unit.Product)
+                    .ThenInclude(product => product.Manufacturer)
+                .Include(unit => unit.Location)
+                .Include(unit => unit.DefaultLocation)
+                .Include(unit => unit.Vendor)
+                .Include(unit => unit.PartOfBundle)
+                .AsNoTracking();
+
+
+            // SEARCH
+            query = query.Search(request);
+
+            // ORDER
+            query = query.OrderBy(request);
+
+            var count = await query.CountAsync();
+
+            var data =
+                query.Select(unit => _mapper.Map<UnitBundleViewModel>(unit)).AsParallel().ToArray();
+
+            return new DataTableDbResult<UnitBundleViewModel>
+            {
+                Data = data,
+                RecordsTotal = count
+            };
+        }
+
         /// <summary>
         /// Adds object to DB
         /// </summary>
         /// <param name="unit">Object for adding</param>
         public async Task AddUnitAsync(Unit unit)
         {
-            unit.Product = _context.Products.Attach(unit.Product).Entity;
-            unit.Location = _context.Locations.Attach(unit.Location).Entity;
-            if (unit.Vendor != null) unit.Vendor = _context.Vendors.Attach(unit.Vendor).Entity;
-            if (unit.PartOfBundle != null) unit.PartOfBundle = _context.Bundles.Attach(unit.PartOfBundle).Entity;
             unit.LastCheckTime = DateTime.Now;
             _context.Units.Add(unit);
             await _context.SaveChangesAsync();

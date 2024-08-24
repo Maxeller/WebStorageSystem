@@ -2,32 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WebStorageSystem.Areas.Locations.Data.Entities;
-using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Data.Entities.Identities;
 
 namespace WebStorageSystem.Data.Entities.Transfers
 {
-    public class Transfer : BaseEntityWithId
+    public class MainTransfer : BaseEntityWithId
     {
         [Required]
         [Display(Name = "Transfer Number")]
         public string TransferNumber { get; set; }
 
         [Required]
-        [Display(Name = "Origin Location")]
-        public Location OriginLocation { get; set; }
-
-        [Required]
-        [Display(Name = "Origin Location")]
-        public int OriginLocationId { get; set; }
-
-        [Required]
-        [Display(Name = "Destination Location")]
-        public Location DestinationLocation { get; set; }
-
-        [Required]
-        [Display(Name = "Destination Location")]
-        public int DestinationLocationId { get; set; }
+        [Display(Name = "Transferred Units")]
+        public IEnumerable<SubTransfer> SubTransfers { get; set; }
 
         [Required]
         [Display(Name = "Transfer State")]
@@ -37,14 +24,15 @@ namespace WebStorageSystem.Data.Entities.Transfers
         [Display(Name = "Time of Transfer")]
         public DateTime TransferTime { get; set; }
 
-        [Required]
-        [Display(Name = "Transferred Units")]
-        public IEnumerable<Unit> Units { get; set; }
-
         public ApplicationUser User { get; set; }
 
         [Display(Name = "User")]
         public string UserId { get; set; }
+
+        public Location DestinationLocation { get; set; }
+
+        [Required]
+        public int DestinationLocationId { get; set; }
 
         public override DateTime CreatedDate { get; set; }
         public override DateTime ModifiedDate { get; set; }
@@ -53,9 +41,9 @@ namespace WebStorageSystem.Data.Entities.Transfers
         public override int Id { get; set; }
     }
 
-    public enum TransferState
+    public enum TransferState : ushort
     {
-        Prepared,
-        Transferred
+        Prepared = 1,
+        Transferred = 2
     }
 }

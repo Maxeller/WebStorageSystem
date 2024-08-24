@@ -1,30 +1,14 @@
 ﻿// Tippy Initialization
 tippy(document.querySelectorAll(".tippy"));
 
-// Select2
-$(document).ready(function() { // TODO: Move when select2 moved to separate partial
+// Select2 Initialization
+$(document).ready(function() { 
     $(".selectTwo").select2({
         theme: "bootstrap4"
     }); 
     $(".selectTwoAllowClear").select2({
         theme: "bootstrap4",
         allowClear: true
-    });
-    $(".selectTwoTransferUnits").select2({
-        theme: "bootstrap4",
-        ajax: {
-            url: "/Transfer/UnitLoc",
-            dataType: "json",
-            data: function(params) {
-                var query = {
-                    loc: $("#OriginLocationId :selected").val(),
-                    sn: params.term
-                };
-                return query;
-            },
-            delay: 250
-            // TODO: change container look (ex https://select2.org/data-sources/ajax)
-        }
     });
 });
 
@@ -33,6 +17,7 @@ $("#set-current-time").click(function() {
     $("#dt-lastCheck").val(moment().format("YYYY-MM-DDTHH:mm"));
 });
 
+//#region MODALS
 // --- MODALS ---
 // Function for filling modal window for deleting/restoring with appropriate data
 $("#deleteRestoreModal").on("show.bs.modal", function(event) {
@@ -55,3 +40,4 @@ $("#deleteRestoreModal").on("show.bs.modal", function(event) {
 $(function () {
     $("#errorModal").modal("show");
 });
+//#endregion

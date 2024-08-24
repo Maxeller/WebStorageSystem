@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing;
+using WebStorageSystem.Areas.Locations.Data.Services;
+using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Areas.Products.Models;
@@ -13,16 +17,19 @@ using WebStorageSystem.Models.DataTables;
 namespace WebStorageSystem.Areas.Products.Controllers
 {
     [Area("Products")]
+    [Authorize(Roles = "Admin, Warehouse")]
     public class BundleController : Controller
     {
         private readonly BundleService _bundleService;
         private readonly UnitService _unitService;
+        private readonly LocationService _locationService;
         private readonly IMapper _mapper;
 
-        public BundleController(BundleService bundleService, UnitService unitService, IMapper mapper)
+        public BundleController(BundleService bundleService, UnitService unitService, LocationService locationService, IMapper mapper)
         {
             _bundleService = bundleService;
             _unitService = unitService;
+            _locationService = locationService;
             _mapper = mapper;
         }
 
@@ -43,20 +50,22 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         // GET: Products/Bundle/Create
-        public async Task<IActionResult> Create([FromQuery] bool getDeleted)
+        public async Task<IActionResult> Create()
         {
-            await CreateUnitDropdownList(getDeleted);
+            await CreateUnitDropdownList();
+            await CreateLocationDropdownList();
             return View();
         }
 
         // POST: Products/Bundle/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,SerialNumber,BundledUnitsIds,IsDeleted")] BundleModel bundleModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Create([Bind("Name,InventoryNumber,BundledUnitsIds,LocationId,DefaultLocationId,IsDeleted")] BundleModel bundleModel, [FromQuery] bool getDeleted)
         {
             if (!ModelState.IsValid)
             {
-                await CreateUnitDropdownList(getDeleted);
+                await CreateUnitDropdownList();
+                await CreateLocationDropdownList();
                 return View(bundleModel);
             }
 
@@ -74,29 +83,32 @@ namespace WebStorageSystem.Areas.Products.Controllers
             var bundle = await _bundleService.GetBundleAsync((int)id, getDeleted);
             if (bundle == null) return NotFound();
             var bundleModel = _mapper.Map<BundleModel>(bundle);
-            await CreateUnitDropdownList(getDeleted, bundleModel.BundledUnits);
+            await CreateUnitDropdownList(bundleModel.BundledUnits, true);
+            await CreateLocationDropdownList(bundleModel.Location, bundleModel.DefaultLocation);
             return View(bundleModel);
         }
 
         // POST: Products/Bundle/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,SerialNumber,BundledUnitsIds,Id,CreatedDate,IsDeleted,RowVersion")] BundleModel bundleModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,InventoryNumber,BundledUnitsIds,LocationId,DefaultLocationId,Id,CreatedDate,IsDeleted,RowVersion")] BundleModel bundleModel, bool getDeleted = false)
         {
             if (id != bundleModel.Id) return NotFound();
             if (!ModelState.IsValid)
             {
-                await CreateUnitDropdownList(getDeleted, bundleModel.BundledUnits);
+                await CreateUnitDropdownList(bundleModel.BundledUnits);
+                await CreateLocationDropdownList(bundleModel.Location, bundleModel.DefaultLocation);
                 return View(bundleModel);
             }
 
-            var units = await _unitService.GetUnitsAsync(bundleModel.BundledUnitsIds, getDeleted);
+            var units = await _unitService.GetUnitsAsync(bundleModel.BundledUnitsIds);
             var bundle = _mapper.Map<Bundle>(bundleModel);
+
             var (success, errorMessage) = await _bundleService.EditBundleAsync(bundle, units);
             if (success) return RedirectToAction(nameof(Index));
 
             if (await _bundleService.GetBundleAsync(bundle.Id) == null) return NotFound();
-            await CreateUnitDropdownList(getDeleted);
+            await CreateUnitDropdownList(bundleModel.BundledUnits, true);
             TempData["Error"] = errorMessage;
             return View(bundleModel);
         }
@@ -131,10 +143,11 @@ namespace WebStorageSystem.Areas.Products.Controllers
                 var results = await _bundleService.GetBundlesAsync(request);
                 foreach (var item in results.Data)
                 {
+                    var routeValues = new RouteValueDictionary { { "id", item.Id }, { "getDeleted", item.IsDeleted } };
                     item.Action = new Dictionary<string, string>
                     {
-                        {"Edit", Url.Action(nameof(Edit), new {item.Id})},
-                        {"Details", Url.Action(nameof(Details), new {item.Id})},
+                        {"Edit", Url.Action(nameof(Edit), routeValues)},
+                        {"Details", Url.Action(nameof(Details), routeValues)},
                         {"Delete", Url.Action(nameof(Delete), new {item.Id})},
                         {"Restore", Url.Action(nameof(Restore), new {item.Id})}
                     };
@@ -155,11 +168,21 @@ namespace WebStorageSystem.Areas.Products.Controllers
             }
         }
 
-        private async Task CreateUnitDropdownList(bool getDeleted = false, IEnumerable<UnitModel> selectedValues = null)
+        private async Task CreateUnitDropdownList(IEnumerable<UnitModel> selectedValues = null, bool getUnitsAlreadyInBundle = false)
         {
-            var units = await _unitService.GetUnitsAsync(getDeleted);
+            var units = getUnitsAlreadyInBundle
+                ? await _unitService.GetUnitsAsync()
+                : await _unitService.GetUnitsNotInBundleAsync();
             var unitModels = _mapper.Map<ICollection<UnitModel>>(units);
             ViewBag.Units = new MultiSelectList(unitModels, "Id", "InventoryNumberProduct", (selectedValues ?? Array.Empty<UnitModel>()).Select(s => s.Id).ToList());
+        }
+
+        private async Task CreateLocationDropdownList(object selectedLocation = null, object selectedDefaultLocation = null, bool getDeleted = false)
+        {
+            var locations = await _locationService.GetLocationsAsync(getDeleted);
+            var lModels = _mapper.Map<ICollection<LocationModel>>(locations);
+            ViewBag.Locations = new SelectList(lModels, "Id", "Name", selectedLocation);
+            ViewBag.DefaultLocations = new SelectList(lModels, "Id", "Name", selectedDefaultLocation);
         }
     }
 }

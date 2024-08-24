@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
@@ -31,7 +28,7 @@ namespace WebStorageSystem.Data.Services
             string extension = Path.GetExtension(imageModel.ImageFile.FileName);
             imageModel.ImageName = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
             string path = Path.Combine(webRootPath + "/upload/images/", fileName);
-            using (var fileStream = new FileStream(path, FileMode.Create))
+            await using (var fileStream = new FileStream(path, FileMode.Create))
             {
                 await imageModel.ImageFile.CopyToAsync(fileStream);
             }

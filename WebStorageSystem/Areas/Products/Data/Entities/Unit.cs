@@ -17,16 +17,22 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
         [DisplayName("Serial Number"), StringLength(100)]
         public string SerialNumber { get; set; }
 
-        [Required]
+        
         public Product Product { get; set; }
+        
+        [Required]
         public int ProductId { get; set; }
 
-        [Required]
+        
         public Location Location { get; set; }
+        
+        [Required]
         public int LocationId { get; set; }
 
-        [Required]
+        
         public Location DefaultLocation { get; set; }
+        
+        [Required]
         public int DefaultLocationId { get; set; }
 
         public Vendor Vendor { get; set; }
@@ -44,7 +50,9 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
 
         public DateTime? LastCheckTime { get; set; }
 
-        public IEnumerable<Transfer> Transfers { get; set; }
+        public bool HasDefect { get; set; }
+
+        public IEnumerable<SubTransfer> SubTransfers { get; set; }
         public IEnumerable<Defect> Defects { get; set; }
         public override DateTime CreatedDate { get; set; }
         public override DateTime ModifiedDate { get; set; }

@@ -22,12 +22,16 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
         [StringLength(200)]
         public string Webpage { get; set; }
 
-        [Required]
+        
         public ProductType ProductType { get; set; }
+        
+        [Required]
         public int ProductTypeId { get; set; }
 
-        [Required]
+        
         public Manufacturer Manufacturer { get; set; }
+        
+        [Required]
         public int ManufacturerId { get; set; }
 
         public ImageEntity Image { get; set; }

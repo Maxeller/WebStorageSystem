@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using WebStorageSystem.Areas.Defects.Data.Entities;
 using WebStorageSystem.Areas.Defects.Data.Services;
@@ -12,23 +15,29 @@ using WebStorageSystem.Areas.Defects.Models;
 using WebStorageSystem.Areas.Products.Data.Services;
 using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data.Entities.Identities;
+using WebStorageSystem.Data.Services;
 using WebStorageSystem.Models;
 using WebStorageSystem.Models.DataTables;
 
 namespace WebStorageSystem.Areas.Defects.Controllers
 {
     [Area("Defects")]
+    [Authorize(Roles = "User, Warehouse, Admin")]
     public class DefectController : Controller
     {
+        private readonly IWebHostEnvironment _hostEnvironment;
         private readonly DefectService _defectService;
         private readonly UnitService _unitService;
+        private readonly ImageService _imageService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
 
-        public DefectController(DefectService defectService, UnitService unitService, UserManager<ApplicationUser> userManager, IMapper mapper)
+        public DefectController(IWebHostEnvironment hostEnvironment, DefectService defectService, UnitService unitService, ImageService imageService, UserManager<ApplicationUser> userManager, IMapper mapper)
         {
+            _hostEnvironment = hostEnvironment;
             _defectService = defectService;
             _unitService = unitService;
+            _imageService = imageService;
             _userManager = userManager;
             _mapper = mapper;
         }
@@ -71,15 +80,15 @@ namespace WebStorageSystem.Areas.Defects.Controllers
                 return View(defectModel);
             }
 
-            var unit = await _unitService.GetUnitAsync(defectModel.UnitId);
-            var causedByUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == defectModel.CausedByUserId);
-            if (unit == null || causedByUser == null)
+            if (defectModel.Image.ImageFile != null)
             {
-                return NotFound();
+                var image = await _imageService.AddImageAsync(defectModel.Image, _hostEnvironment.WebRootPath);
+                defectModel.ImageId = image.Id;
             }
+            defectModel.Image = null;
+
             var defect = _mapper.Map<Defect>(defectModel);
-            defect.Unit = unit;
-            defect.CausedByUser = causedByUser;
+
             await _defectService.AddDefectAsync(defect);
             return RedirectToAction(nameof(Index));
         }
@@ -92,23 +101,30 @@ namespace WebStorageSystem.Areas.Defects.Controllers
             var defect = await _defectService.GetDefectAsync((int)id, getDeleted);
             if (defect == null) return NotFound();
             var defectModel = _mapper.Map<DefectModel>(defect);
-            await CreateUnitDropdownList(getDeleted, defectModel.Unit.Id);
+            await CreateUnitDropdownList(getDeleted, defectModel.UnitId);
+            await CreateUserDropdownList(getDeleted, defectModel.CausedByUserId);
             return View(defectModel);
         }
         
         // POST: Defects/Defect/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DefectNumber,UnitId,ReportedByUserId,CausedByUserId,Description,Notes,Image,State,CreatedDate,IsDeleted,RowVersion")] DefectModel defectModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DefectNumber,UnitId,ReportedByUserId,CausedByUserId,Description,Notes,Image,ImageId,State,CreatedDate,IsDeleted,RowVersion")] DefectModel defectModel, [FromQuery] bool getDeleted)
         {
             if (id != defectModel.Id) return NotFound();
             if (!ModelState.IsValid)
             {
-                await CreateUnitDropdownList(getDeleted, defectModel.Unit.Id);
-                await CreateUserDropdownList(getDeleted, defectModel.CausedByUser.Id);
+                await CreateUnitDropdownList(getDeleted, defectModel.UnitId);
+                await CreateUserDropdownList(getDeleted, defectModel.CausedByUserId);
                 return View(defectModel);
             }
 
+            if (defectModel.Image.ImageFile != null)
+            {
+                var image = await _imageService.AddImageAsync(defectModel.Image, _hostEnvironment.WebRootPath);
+                defectModel.ImageId = image.Id;
+            }
+            defectModel.Image = null;
             var defect = _mapper.Map<Defect>(defectModel);
 
             var (success, errorMessage) = await _defectService.EditDefectAsync(defect);
@@ -148,10 +164,11 @@ namespace WebStorageSystem.Areas.Defects.Controllers
                 var results = await _defectService.GetDefectsAsync(request);
                 foreach (var item in results.Data)
                 {
+                    var routeValues = new RouteValueDictionary { { "id", item.Id }, { "getDeleted", item.IsDeleted } };
                     item.Action = new Dictionary<string, string>
                     {
-                        {"Edit", Url.Action(nameof(Edit), new {item.Id})},
-                        {"Details", Url.Action(nameof(Details), new {item.Id})},
+                        {"Edit", Url.Action(nameof(Edit), routeValues)},
+                        {"Details", Url.Action(nameof(Details), routeValues)},
                         {"Delete", Url.Action(nameof(Delete), new {item.Id})},
                         {"Restore", Url.Action(nameof(Restore), new {item.Id})}
                     };

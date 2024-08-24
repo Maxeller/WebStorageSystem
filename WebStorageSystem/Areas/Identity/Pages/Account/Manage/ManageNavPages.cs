@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace WebStorageSystem.Areas.Identity.Pages.Account.Manage
@@ -24,6 +21,12 @@ namespace WebStorageSystem.Areas.Identity.Pages.Account.Manage
 
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
 
+        public static string SubscribeLocations => "SubscribeLocations";
+
+        public static string NewUser => "NewUser";
+
+        public static string AssignRoles => "AssignRoles";
+
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
         public static string EmailNavClass(ViewContext viewContext) => PageNavClass(viewContext, Email);
@@ -39,6 +42,12 @@ namespace WebStorageSystem.Areas.Identity.Pages.Account.Manage
         public static string PersonalDataNavClass(ViewContext viewContext) => PageNavClass(viewContext, PersonalData);
 
         public static string TwoFactorAuthenticationNavClass(ViewContext viewContext) => PageNavClass(viewContext, TwoFactorAuthentication);
+
+        public static string SubscribeLocationsNavClass(ViewContext viewContext) => PageNavClass(viewContext, SubscribeLocations);
+
+        public static string AssignRolesNavClass(ViewContext viewContext) => PageNavClass(viewContext, AssignRoles);
+
+        public static string NewUserNavClass(ViewContext viewContext) => PageNavClass(viewContext, NewUser);
 
         private static string PageNavClass(ViewContext viewContext, string page)
         {

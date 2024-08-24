@@ -13,23 +13,29 @@ namespace WebStorageSystem.Areas.Defects.Data.Entities
         [Required, StringLength(100)]
         public string DefectNumber { get; set; }
 
-        [Required]
+        
         public Unit Unit { get; set; }
+        [Required]
         public int UnitId { get; set; }
 
-        [Required]
         public ApplicationUser ReportedByUser { get; set; }
+        [Required]
         public string ReportedByUserId { get; set; }
 
         public ApplicationUser CausedByUser { get; set; }
         public string CausedByUserId { get; set; }
 
-        [Required]
+        //public Vendor RepairBy { get; set; }
+        //public int RepairBy { get; set; }
+            
+        [Required, StringLength(500)]
         public string Description { get; set; }
 
+        [StringLength(2000)]
         public string Notes { get; set; }
 
         public ImageEntity Image { get; set; }
+        public int ImageId { get; set; }
 
         public DefectState State { get; set; }
 
@@ -39,10 +45,13 @@ namespace WebStorageSystem.Areas.Defects.Data.Entities
         public override byte[] RowVersion { get; set; }
     }
 
-    public enum DefectState
+    public enum DefectState : ushort
     {
-        Broken,
-        InRepair,
-        Repaired
+        [Display(Name = "Broken")]
+        Broken = 1,
+        [Display(Name = "In repair")]
+        InRepair = 2,
+        [Display(Name = "Repaired")]
+        Repaired = 3
     }
 }
