@@ -9,10 +9,7 @@
     "outputFileName": "wwwroot/js/site.min.js",
     "inputFiles": [
       "wwwroot/js/site.js",
-      "wwwroot/js/datatable/dtLocations.js",
-      "wwwroot/js/datatable/dtProducts.js",
-      "wwwroot/js/datatable/dtDefects.js",
-      "wwwroot/js/datatable/dtTransfers.js"
+      "wwwroot/js/datatable/*.js"
     ],
     "minify": {
       "enabled": true,
