@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using WebStorageSystem.Areas.Locations.Data.Entities;
@@ -12,6 +13,7 @@ using WebStorageSystem.Models.DataTables;
 namespace WebStorageSystem.Areas.Locations.Controllers
 {
     [Area("Locations")]
+    [Authorize(Roles = "Admin")]
     public class LocationTypeController : Controller
     {
         private readonly LocationTypeService _locationTypeService;

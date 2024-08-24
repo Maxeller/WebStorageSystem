@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
@@ -19,7 +20,7 @@ using WebStorageSystem.Models.Transfers;
 
 namespace WebStorageSystem.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class TransferController : Controller
     {
         private readonly TransferService _transferService;

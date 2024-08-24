@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,6 +16,7 @@ using WebStorageSystem.Models.DataTables;
 namespace WebStorageSystem.Areas.Products.Controllers
 {
     [Area("Products")]
+    [Authorize(Roles = "Admin, Warehouse")]
     public class ProductController : Controller
     {
         private readonly IWebHostEnvironment _hostEnvironment;

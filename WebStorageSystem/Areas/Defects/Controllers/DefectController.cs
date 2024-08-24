@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,7 @@ using WebStorageSystem.Models.DataTables;
 namespace WebStorageSystem.Areas.Defects.Controllers
 {
     [Area("Defects")]
+    [Authorize]
     public class DefectController : Controller
     {
         private readonly IWebHostEnvironment _hostEnvironment;
