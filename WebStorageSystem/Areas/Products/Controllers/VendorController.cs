@@ -13,7 +13,7 @@ using WebStorageSystem.Models.DataTables;
 namespace WebStorageSystem.Areas.Products.Controllers
 {
     [Area("Products")]
-    [Authorize(Roles = "Admin, Warehouse")]
+    [Authorize(Roles = "Admin, Warehouse, User")]
 
     public class VendorController : Controller
     {
@@ -45,6 +45,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         // GET: VendorModels/Create
+        [Authorize(Roles = "Admin, Warehouse")]
         public IActionResult Create()
         {
             return View();
@@ -53,6 +54,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: VendorModels/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Create([Bind("Name,Address,Phone,Email,Website,IsDeleted")] VendorModel vendorModel)
         {
             if (!ModelState.IsValid) return View(vendorModel);
@@ -63,6 +65,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         // GET: VendorModels/Edit/5
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Edit(int? id, [FromQuery] bool getDeleted)
         {
             if (id == null) return BadRequest();
@@ -77,6 +80,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: VendorModels/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Edit(int id, [Bind("Name,Address,Phone,Email,Website,Id,CreatedDate,IsDeleted,RowVersion")] VendorModel vendorModel)
         {
             if (id != vendorModel.Id) return NotFound();
@@ -94,6 +98,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: VendorModels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
@@ -104,6 +109,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: VendorModels/Restore/5
         [HttpPost, ActionName("Restore")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
@@ -113,7 +119,6 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> LoadTable(DataTableRequest request)
         {
             try

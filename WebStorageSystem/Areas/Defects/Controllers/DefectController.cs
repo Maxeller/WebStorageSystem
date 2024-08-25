@@ -22,7 +22,7 @@ using WebStorageSystem.Models.DataTables;
 namespace WebStorageSystem.Areas.Defects.Controllers
 {
     [Area("Defects")]
-    [Authorize(Roles = "User, Warehouse, Admin")]
+    [Authorize(Roles = "Admin, Warehouse, User")]
     public class DefectController : Controller
     {
         private readonly IWebHostEnvironment _hostEnvironment;
@@ -61,6 +61,7 @@ namespace WebStorageSystem.Areas.Defects.Controllers
         }
 
         // GET: Defects/Defect/Create
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Create([FromQuery] bool getDeleted = false)
         {
             await CreateUnitDropdownList(getDeleted);
@@ -71,6 +72,7 @@ namespace WebStorageSystem.Areas.Defects.Controllers
         // POST: Defects/Defect/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Create([Bind("DefectNumber,UnitId,CausedByUserId,Description,Notes,Image,IsDeleted")] DefectModel defectModel, [FromQuery] bool getDeleted = false)
         {
             if (!ModelState.IsValid)
@@ -92,8 +94,9 @@ namespace WebStorageSystem.Areas.Defects.Controllers
             await _defectService.AddDefectAsync(defect);
             return RedirectToAction(nameof(Index));
         }
-        
+
         // GET: Defects/Defect/Edit/5
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Edit(int? id, [FromQuery] bool getDeleted = false)
         {
             if (id == null) return BadRequest();
@@ -109,6 +112,7 @@ namespace WebStorageSystem.Areas.Defects.Controllers
         // POST: Defects/Defect/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,DefectNumber,UnitId,ReportedByUserId,CausedByUserId,Description,Notes,Image,ImageId,State,CreatedDate,IsDeleted,RowVersion")] DefectModel defectModel, [FromQuery] bool getDeleted)
         {
             if (id != defectModel.Id) return NotFound();
@@ -137,6 +141,7 @@ namespace WebStorageSystem.Areas.Defects.Controllers
         // POST: Defects/Defect/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
@@ -147,6 +152,7 @@ namespace WebStorageSystem.Areas.Defects.Controllers
         // POST: Defects/Defect/Restore/5
         [HttpPost, ActionName("Restore")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
@@ -156,7 +162,6 @@ namespace WebStorageSystem.Areas.Defects.Controllers
         }
         
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> LoadTable(DataTableRequest request)
         {
             try

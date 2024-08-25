@@ -54,29 +54,28 @@ namespace WebStorageSystem.Extensions
         {
             Type entityType = typeof(TSource);
 
-            //Create x => x.PropName OR x => x.ParentClass.PropName
-            ParameterExpression arg = Expression.Parameter(entityType, "x");
-            MemberExpression property = GetProperty(arg, propertyName);
-            LambdaExpression selector = Expression.Lambda(property, arg);
+            // Vytvoreni x => x.PropName ci x => x.RodicovskaTrida.PropName
+            ParameterExpression arg = Expression.Parameter(entityType, "x"); // x
+            MemberExpression property = GetProperty(arg, propertyName); // x.PropName
+            LambdaExpression selector = Expression.Lambda(property, arg); // x => x.PropName
 
-            //Get System.Linq.Queryable.OrderBy() method.
+            // Ziskani metody System.Linq.Queryable.OrderBy()
             Type enumerableType = typeof(Queryable);
             MethodInfo method = enumerableType.GetMethods()
                 .Where(m => m.Name == "OrderBy" && m.IsGenericMethodDefinition)
                 .Where(m =>
                 {
+                    // Nalezeni spravne pretizeni metody, ktere ma dva parametry
                     var parameters = m.GetParameters().ToList();
-                    //Put more restriction here to ensure selecting the right overload                
-                    return parameters.Count == 2; //overload that has 2 parameters
+                    return parameters.Count == 2;
                 }).Single();
-            //The linq's OrderBy<TSource, TKey> has two generic types, which provided here
+
+            // OrderBy<TSource, TKey> - vyplneni TSource a TKey
             MethodInfo genericMethod = method.MakeGenericMethod(entityType, property.Type);
 
-            /*Call query.OrderBy(selector), with query and selector: x => x.PropName
-              Note that we pass the selector as Expression to the method and we don't compile it.
-              By doing so EF can extract "order by" columns and generate SQL for it.*/
-            IOrderedQueryable<TSource> newQuery =
-                (IOrderedQueryable<TSource>)genericMethod.Invoke(genericMethod, new object[] { query, selector });
+            // Zavolani query.OrderBy(selector) se zadanym query a vytvorenym selectorem
+
+            IOrderedQueryable<TSource> newQuery = (IOrderedQueryable<TSource>)genericMethod.Invoke(genericMethod, new object[] { query, selector });
             return newQuery;
         }
 

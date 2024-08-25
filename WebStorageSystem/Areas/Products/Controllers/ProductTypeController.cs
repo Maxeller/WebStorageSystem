@@ -13,7 +13,7 @@ using WebStorageSystem.Models.DataTables;
 namespace WebStorageSystem.Areas.Products.Controllers
 {
     [Area("Products")]
-    [Authorize(Roles = "Admin, Warehouse")]
+    [Authorize(Roles = "Admin, Warehouse, User")]
     public class ProductTypeController : Controller
     {
         private readonly ProductTypeService _productTypeService;
@@ -44,6 +44,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         // GET: ProductType/Create
+        [Authorize(Roles = "Admin, Warehouse")]
         public IActionResult Create()
         {
             return View();
@@ -52,6 +53,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: ProductType/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Create([Bind("Name,Description,IsDeleted")] ProductTypeModel productTypeModel)
         {
             if (!ModelState.IsValid) return View(productTypeModel);
@@ -62,6 +64,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         // GET: ProductType/Edit/5
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Edit(int? id, [FromQuery] bool getDeleted)
         {
             if (id == null) return BadRequest();
@@ -76,6 +79,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: ProductType/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Edit(int id, [Bind("Name,Description,Id,CreatedDate,IsDeleted,RowVersion")] ProductTypeModel productTypeModel)
         {
             if (id != productTypeModel.Id) return NotFound();
@@ -93,6 +97,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: ProductType/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
@@ -104,6 +109,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: ProductType/Restore/5
         [HttpPost, ActionName("Restore")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
@@ -113,7 +119,6 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> LoadTable(DataTableRequest request)
         {
             try

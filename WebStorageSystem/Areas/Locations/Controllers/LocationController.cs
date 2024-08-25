@@ -14,7 +14,7 @@ using WebStorageSystem.Models.DataTables;
 namespace WebStorageSystem.Areas.Locations.Controllers
 {
     [Area("Locations")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Warehouse,User")]
     public class LocationController : Controller
     {
         private readonly LocationService _locationService;
@@ -47,6 +47,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         }
 
         // GET: Locations/Location/Create
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromQuery] bool getDeleted = false)
         {
             await CreateLocationTypeDropdownList(getDeleted);
@@ -56,6 +57,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         // POST: Locations/Location/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Name,Description,Address,LocationTypeId,IsDeleted")] LocationModel locationModel, [FromQuery] bool getDeleted = false)
         {
             if (!ModelState.IsValid)
@@ -70,6 +72,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         }
 
         // GET: Locations/Location/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id, [FromQuery] bool getDeleted = false)
         {
             if (id == null) return BadRequest();
@@ -86,6 +89,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         // POST: Locations/Location/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Name,Description,Address,LocationTypeId,Id,CreatedDate,IsDeleted,RowVersion")] LocationModel locationModel, [FromQuery] bool getDeleted)
         {
             if (id != locationModel.Id) return NotFound();
@@ -104,6 +108,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         // POST: Locations/Location/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
@@ -114,6 +119,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         // POST: Locations/Location/Restore/5
         [HttpPost, ActionName("Restore")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
@@ -123,7 +129,6 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> LoadTable(DataTableRequest request)
         {
             try

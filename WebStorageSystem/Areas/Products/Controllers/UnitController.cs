@@ -16,7 +16,7 @@ using WebStorageSystem.Models.DataTables;
 namespace WebStorageSystem.Areas.Products.Controllers
 {
     [Area("Products")]
-    [Authorize(Roles = "Admin, Warehouse")]
+    [Authorize(Roles = "Admin, Warehouse, User")]
     public class UnitController : Controller
     {
         private readonly UnitService _unitService;
@@ -54,6 +54,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         // GET: Products/Unit/Create
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Create([FromQuery] bool getDeleted)
         {
             await CreateDropdownLists(getDeleted);
@@ -63,6 +64,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Products/Unit/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Create([Bind("InventoryNumber,SerialNumber,ProductId,LocationId,DefaultLocationId,VendorId,PartOfBundleId,ShelfNumber,Notes,IsDeleted")] UnitModel unitModel, [FromQuery] bool getDeleted)
         {
             if (!ModelState.IsValid)
@@ -77,6 +79,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         // GET: Products/Unit/Edit/5
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Edit(int? id, [FromQuery] bool getDeleted)
         {
             if (id == null) return BadRequest();
@@ -92,6 +95,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Products/Unit/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Edit(int id, [Bind("InventoryNumber,SerialNumber,ProductId,LocationId,DefaultLocationId,VendorId,PartOfBundleId,ShelfNumber,Notes,LastTransferTime,LastCheckTime,Id,CreatedDate,IsDeleted,RowVersion")] UnitModel unitModel, [FromQuery] bool getDeleted)
         {
             if (id != unitModel.Id) return NotFound();
@@ -111,6 +115,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Products/Unit/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
@@ -121,6 +126,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
         // POST: Products/Unit/Restore/5
         [HttpPost, ActionName("Restore")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Warehouse")]
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null) return BadRequest();
@@ -130,7 +136,6 @@ namespace WebStorageSystem.Areas.Products.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> LoadTable(DataTableRequest request)
         {
             try
