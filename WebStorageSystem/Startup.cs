@@ -151,7 +151,7 @@ namespace WebStorageSystem
 
             services.AddSession(options => // Session settings
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.IdleTimeout = TimeSpan.FromMinutes(10);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
@@ -159,7 +159,6 @@ namespace WebStorageSystem
             services.AddControllersWithViews(options =>
                 {
                     options.Filters.Add<ValidateModelFilter>();
-
                     options.RespectBrowserAcceptHeader = true;
                 })
                 .AddJsonOptions(options =>

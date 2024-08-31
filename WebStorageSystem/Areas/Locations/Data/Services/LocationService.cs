@@ -110,6 +110,7 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
             {
                 var prev = await _context.Locations.FirstAsync(l => l.Id == location.Id);
                 _context.Entry(prev).State = EntityState.Detached;
+                location.CreatedDate = prev.CreatedDate;
                 _context.Entry(location).State = EntityState.Modified;
                 _context.Locations.Update(location);
                 await _context.SaveChangesAsync();

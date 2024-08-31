@@ -29,7 +29,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         }
 
         // GET: Locations/Location
-        public IActionResult Index([FromQuery] bool getDeleted = false)
+        public IActionResult Index()
         {
             return View(new LocationModel());
         }

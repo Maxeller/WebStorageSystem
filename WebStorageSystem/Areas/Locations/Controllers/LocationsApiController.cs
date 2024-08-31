@@ -123,6 +123,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         public async Task<ActionResult> UpdateLocationType(int? id, [Bind("Name,Description,IsDeleted,RowVersion")] LocationTypeModel locationTypeModel)
         {
             if (id == null) return BadRequest();
+            locationTypeModel.Id = (int)id;
             var locationType = _mapper.Map<LocationType>(locationTypeModel);
             (bool success, string errMsg) = await _locationTypeService.EditLocationTypeAsync(locationType);
             if(!success) return BadRequest(errMsg);
@@ -200,7 +201,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         ///         "Name": "&lt;name&gt;",
         ///         "Description": "&lt;description&gt;",
         ///         "Address": "&lt;address&gt;",
-        ///         "LocationTypeId": "&lt;id&gt;",
+        ///         "LocationTypeId": &lt;id&gt;,
         ///         "IsDeleted": false
         ///     }
         ///     
@@ -231,7 +232,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         ///         "Name": "&lt;name&gt;",
         ///         "Description": "&lt;description&gt;",
         ///         "Address": "&lt;address&gt;",
-        ///         "LocationTypeId": "&lt;id&gt;",
+        ///         "LocationTypeId": &lt;id&gt;,
         ///         "RowVersion": "&lt;version&gt;"
         ///     }
         /// 
@@ -249,6 +250,7 @@ namespace WebStorageSystem.Areas.Locations.Controllers
         public async Task<ActionResult> UpdateLocation(int? id, [Bind("Name,Description,Address,LocationTypeId,IsDeleted,RowVersion")] LocationModel locationModel)
         {
             if (id == null) return BadRequest();
+            locationModel.Id = (int)id;
             var location = _mapper.Map<Location>(locationModel);
             (bool success, string errMsg) = await _locationService.EditLocationAsync(location);
             if (!success) return BadRequest(errMsg);

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -29,9 +30,7 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
 
             _getQuery = _context
                 .LocationTypes
-                .OrderBy(locationType => locationType.Name)
-                .Include(locationType => locationType.Locations)
-                .AsNoTracking();
+                .Include(locationType => locationType.Locations);
         }
 
         /// <summary>
@@ -42,7 +41,7 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         /// <returns>If found returns object, otherwise null</returns>
         public async Task<LocationType> GetLocationTypeAsync(int id, bool getDeleted = false)
         {
-            if (getDeleted) await _getQuery.IgnoreQueryFilters().FirstOrDefaultAsync(locationType => locationType.Id == id);
+            if (getDeleted) return await _getQuery.IgnoreQueryFilters().FirstOrDefaultAsync(locationType => locationType.Id == id);
             return await _getQuery.FirstOrDefaultAsync(locationType => locationType.Id == id);
         }
 
@@ -107,6 +106,10 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         {
             try
             {
+                var prev = await _context.LocationTypes.FirstAsync(lt => lt.Id == locationType.Id);
+                _context.Entry(prev).State = EntityState.Detached;
+                locationType.CreatedDate = prev.CreatedDate;
+                _context.Entry(locationType).State = EntityState.Modified;
                 _context.LocationTypes.Update(locationType);
                 await _context.SaveChangesAsync();
                 return (true, null);
