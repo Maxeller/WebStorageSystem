@@ -11,12 +11,12 @@ namespace WebStorageSystem.Controllers
 
         public HomeController(ILogger<HomeController> logger)
         {
-            _logger = logger; //TODO: Read documentation
+            _logger = logger;
         }
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToActionPreserveMethod("Index", "Transfer");
         }
 
         public IActionResult Privacy()
