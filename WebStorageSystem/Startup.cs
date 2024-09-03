@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SendGrid.Extensions.DependencyInjection;
 using WebStorageSystem.Areas.Defects.Data.Services;
 using WebStorageSystem.Areas.Identity;
 using WebStorageSystem.Areas.Locations.Data.Services;
@@ -57,6 +58,8 @@ namespace WebStorageSystem
             // SERVICES FOR DB QUERIES
             services.AddMyDbCommunicationServices();
             //services.AddDatabaseDeveloperPageExceptionFilter();
+
+            services.AddSendGrid(options => { options.ApiKey = Configuration["SendGrid:ApiKey"]; });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)

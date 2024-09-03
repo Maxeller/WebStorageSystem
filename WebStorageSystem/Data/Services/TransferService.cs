@@ -4,16 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+using WebStorageSystem.Areas.Identity;
 using WebStorageSystem.Areas.Products.Models;
 using WebStorageSystem.Data.Database;
-using WebStorageSystem.Data.Entities.Identities;
 using WebStorageSystem.Data.Entities.Transfers;
 using WebStorageSystem.Extensions;
 using WebStorageSystem.Models.DataTables;
 using WebStorageSystem.Models.Transfers;
+using Microsoft.Extensions.Configuration;
 
 namespace WebStorageSystem.Data.Services
 {
@@ -21,19 +23,24 @@ namespace WebStorageSystem.Data.Services
     {
         private readonly AppDbContext _context;
         private readonly IMapper _mapper;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly AppUserManager _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger _logger;
+        private readonly ISendGridClient _sendGridClient;
+        private readonly IConfiguration Configuration;
+
 
         private readonly IQueryable<MainTransfer> _getQuery;
         
-        public TransferService(AppDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, ILoggerFactory factory)
+        public TransferService(AppDbContext context, IMapper mapper, AppUserManager userManager, IHttpContextAccessor httpContextAccessor, ILoggerFactory factory, ISendGridClient sendGridClient, IConfiguration configuration)
         {
             _context = context;
             _mapper = mapper;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
             _logger = factory.CreateLogger<TransferService>();
+            _sendGridClient = sendGridClient;
+            Configuration = configuration;
 
             _getQuery = _context
                 .MainTransfers
@@ -219,6 +226,8 @@ namespace WebStorageSystem.Data.Services
             var row = _context.MainTransfers.Add(mainTransfer);
             await _context.SaveChangesAsync();
 
+            Dictionary<int, List<string>> transferredUnitsFromLocation = new Dictionary<int, List<string>>();
+
             foreach (var ub in selectedUnitBundle)
             {
                 var subTransfer = new SubTransfer
@@ -241,6 +250,12 @@ namespace WebStorageSystem.Data.Services
                         bundle.LocationId = subTransfer.DestinationLocationId;
                         _context.Bundles.Update(bundle);
 
+                        if (!transferredUnitsFromLocation.TryGetValue(subTransfer.OriginLocationId, out var listForUnits))
+                        {
+                            listForUnits = new List<string>();
+                            transferredUnitsFromLocation[subTransfer.OriginLocationId] = listForUnits;
+                        }
+
                         foreach (var bundledUnit in bundle.BundledUnits)
                         {
                             var unit = await _context.Units.FirstOrDefaultAsync(u => u.Id == bundledUnit.Id);
@@ -248,7 +263,9 @@ namespace WebStorageSystem.Data.Services
                             unit.LastTransferTime = DateTime.UtcNow;
                             unit.LocationId = subTransfer.DestinationLocationId;
                             _context.Units.Update(unit);
+                            listForUnits.Add(unit.InventoryNumber);
                         }
+                        transferredUnitsFromLocation[subTransfer.OriginLocationId].AddRange(listForUnits);
                     }
                 }
                 else
@@ -256,12 +273,21 @@ namespace WebStorageSystem.Data.Services
                     var unit = await _context.Units.FirstOrDefaultAsync(u => u.Id == ub.UnitId);
                     subTransfer.UnitId = unit.Id;
                     subTransfer.OriginLocationId = unit.LocationId;
+
+                    if (!transferredUnitsFromLocation.TryGetValue(subTransfer.OriginLocationId, out var listForUnits))
+                    {
+                        listForUnits = new List<string>();
+                        transferredUnitsFromLocation[subTransfer.OriginLocationId] = listForUnits;
+                    }
+
                     if (row.Entity.State == TransferState.Transferred)
                     {
                         _context.Entry(unit).State = EntityState.Modified;
                         unit.LastTransferTime = DateTime.UtcNow;
                         unit.LocationId = subTransfer.DestinationLocationId;
                         _context.Units.Update(unit);
+
+                        transferredUnitsFromLocation[subTransfer.OriginLocationId].Add(unit.InventoryNumber);
                     }
                 }
 
@@ -269,6 +295,7 @@ namespace WebStorageSystem.Data.Services
             }
             
             await _context.SaveChangesAsync();
+            await SendEmails(transferredUnitsFromLocation);
         }
 
         /// <summary>
@@ -328,6 +355,46 @@ namespace WebStorageSystem.Data.Services
                 _logger.LogError(ex, ex.Message);
                 return (false, ex.Message);
             }
+        }
+
+        private async Task<bool> SendEmails(Dictionary<int, List<string>> transferredUnitsFromLocation)
+        {
+            var users = await _context.ApplicationUsers.Include(u => u.SubscribedLocations).ToListAsync();
+            foreach (var user in users) 
+            {
+                foreach (var subscribedLocation in user.SubscribedLocations)
+                {
+                    var inDict = transferredUnitsFromLocation.TryGetValue(subscribedLocation.Id, out var units);
+                    if(!inDict) continue;
+
+                    var unitsAsString = string.Join(",", units);
+                    
+                    string body = $"Units with Inventory Numbers {unitsAsString} has been transferred from {subscribedLocation.Name}";
+                    var from = new EmailAddress(Configuration["SendGrid:SenderEmail"], Configuration["SendGrid:SenderUser"]);
+                    var to = new EmailAddress(user.Email);
+                    var msg = new SendGridMessage
+                    {
+                        From = from,
+                        Subject = $"Changes in {subscribedLocation.Name}"
+                    };
+                    msg.AddContent(MimeType.Text, body);
+                    msg.AddTo(to);
+                    var sandbox = Configuration["SendGrid:Sandbox"];
+                    if (sandbox == "1")
+                    {
+                        msg.MailSettings = new MailSettings
+                        {
+                            SandboxMode = new SandboxMode
+                            {
+                                Enable = true
+                            }
+                        };
+                    }
+                    var response = await _sendGridClient.SendEmailAsync(msg).ConfigureAwait(false);
+                }
+            }
+
+            return true;
         }
 
         /*
