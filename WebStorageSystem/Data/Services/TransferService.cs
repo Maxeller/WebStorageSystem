@@ -245,6 +245,7 @@ namespace WebStorageSystem.Data.Services
                         {
                             var unit = await _context.Units.FirstOrDefaultAsync(u => u.Id == bundledUnit.Id);
                             _context.Entry(unit).State = EntityState.Modified;
+                            unit.LastTransferTime = DateTime.UtcNow;
                             unit.LocationId = subTransfer.DestinationLocationId;
                             _context.Units.Update(unit);
                         }
@@ -258,6 +259,7 @@ namespace WebStorageSystem.Data.Services
                     if (row.Entity.State == TransferState.Transferred)
                     {
                         _context.Entry(unit).State = EntityState.Modified;
+                        unit.LastTransferTime = DateTime.UtcNow;
                         unit.LocationId = subTransfer.DestinationLocationId;
                         _context.Units.Update(unit);
                     }
@@ -293,6 +295,7 @@ namespace WebStorageSystem.Data.Services
                         {
                             var unit = await _context.Units.FirstOrDefaultAsync(u => u.Id == subTransfer.UnitId);
                             _context.Entry(unit).State = EntityState.Modified;
+                            unit.LastTransferTime = DateTime.UtcNow;
                             unit.LocationId = subTransfer.DestinationLocationId;
                             _context.Units.Update(unit);
                         }
@@ -307,6 +310,7 @@ namespace WebStorageSystem.Data.Services
                             {
                                 var unit = await _context.Units.FirstOrDefaultAsync(u => u.Id == bundledUnit.Id);
                                 _context.Entry(unit).State = EntityState.Modified;
+                                unit.LastTransferTime = DateTime.UtcNow;
                                 unit.LocationId = subTransfer.DestinationLocationId;
                                 _context.Units.Update(unit);
                             }

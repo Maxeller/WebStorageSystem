@@ -46,7 +46,7 @@ namespace WebStorageSystem.Areas.Products.Data.Entities
 
         public string Notes { get; set; }
 
-        public DateTime? LastTransferTime { get; set; } // TODO: Set while Transfering
+        public DateTime? LastTransferTime { get; set; }
 
         public DateTime? LastCheckTime { get; set; }
 
