@@ -84,6 +84,12 @@ namespace WebStorageSystem.Areas.Identity.Pages.Account.Manage
                 return RedirectToPage();
             }
 
+            var roles = await _roleManager.Roles.ToListAsync();
+            foreach (var role in roles)
+            {
+                await _userManager.RemoveFromRoleAsync(user, role.ToString());
+            }
+
             foreach (string roleId in Input.RolesId)
             {
                 var role = await _roleManager.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
