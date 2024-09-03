@@ -114,12 +114,12 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             }
             catch (DbUpdateConcurrencyException concurrencyException)
             {
-                // TODO: log
+                _logger.LogError(concurrencyException, concurrencyException.Message);
                 return (false, concurrencyException.Message); // TODO: Change to more friendly message
             }
             catch (Exception ex)
             {
-                // TODO: log
+                _logger.LogError(ex, ex.Message);
                 return (false, ex.Message); // TODO: Change to more friendly message
             }
         }

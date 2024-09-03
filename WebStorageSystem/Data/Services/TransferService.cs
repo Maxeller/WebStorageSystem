@@ -319,10 +319,10 @@ namespace WebStorageSystem.Data.Services
 
                 return (false, "Transfer State is not Prepared");
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                // TODO LOG
-                return (false, e.Message);
+                _logger.LogError(ex, ex.Message);
+                return (false, ex.Message);
             }
         }
 
