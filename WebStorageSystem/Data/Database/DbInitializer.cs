@@ -1,95 +1,153 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Entities;
-using WebStorageSystem.Data.Entities.Identities;
 
 namespace WebStorageSystem.Data.Database
 {
     public static class DbInitializer
     {
-        public static void Initialize(AppDbContext context)
+        public static async Task Initialize(AppDbContext context, IConfiguration configuration)
         {
-            context.Database.EnsureCreated();
+            await context.Database.MigrateAsync();
 
-            if(context.Products.Any()) return;
+            if (configuration["SeedDatabase"] == "0") return;
+
+            if (context.Manufacturers.Any()) return;
 
             var manufacturers = new[]
             {
-                new Manufacturer {Name = "Sony"},
-                new Manufacturer {Name = "Panasonic"}
+                new Manufacturer { Name = "Sony" },
+                new Manufacturer { Name = "Panasonic" }
             };
-            context.Manufacturers.AddRange(manufacturers);
-            context.SaveChanges();
+            await context.Manufacturers.AddRangeAsync(manufacturers);
+            await context.SaveChangesAsync();
 
             var productTypes = new[]
             {
-                new ProductType {Name = "Camera"},
-                new ProductType {Name = "Microphone"}
+                new ProductType { Name = "Camera" },
+                new ProductType { Name = "Microphone" }
             };
-            context.ProductTypes.AddRange(productTypes);
-            context.SaveChanges();
+            await context.ProductTypes.AddRangeAsync(productTypes);
+            await context.SaveChangesAsync();
 
             var vendors = new[]
             {
-                new Vendor {Name = "Vendor 1", Address = "Prague", Email = "worker@vendor1.com", Phone = "+420606120120"},
-                new Vendor {Name = "Vendor 2", Address = "Dublin", Email = "problems@vendor2.com", Phone = "+421555555555"}
+                new Vendor
+                {
+                    Name = "Vendor 1", Address = "Prague", Email = "worker@vendor1.com", Website = "vendor1.com",
+                    Phone = "+420606120120"
+                },
+                new Vendor
+                {
+                    Name = "Vendor 2", Address = "Dublin", Email = "problems@vendor2.com", Website = "vendor2.com",
+                    Phone = "+421555555555"
+                }
             };
-            context.Vendors.AddRange(vendors);
-            context.SaveChanges();
+            await context.Vendors.AddRangeAsync(vendors);
+            await context.SaveChangesAsync();
 
             var products = new[]
             {
-                new Product {Name = "Cam 3000", Manufacturer = manufacturers[0], ProductType = productTypes[0]},
-                new Product {Name = "Cam 5000", Manufacturer = manufacturers[0], ProductType = productTypes[0]},
-                new Product {Name = "SuperMic 2", Manufacturer = manufacturers[1], ProductType = productTypes[1]},
-                new Product {Name = "SuperMic 3", Manufacturer = manufacturers[1], ProductType = productTypes[1]},
+                new Product
+                {
+                    Name = "Cam 3000", ProductNumber = "SC3000", Manufacturer = manufacturers[0],
+                    ProductType = productTypes[0]
+                },
+                new Product
+                {
+                    Name = "Cam 5000", ProductNumber = "SC5000", Manufacturer = manufacturers[0],
+                    ProductType = productTypes[0]
+                },
+                new Product
+                {
+                    Name = "SuperMic 2", ProductNumber = "PSM2", Manufacturer = manufacturers[1],
+                    ProductType = productTypes[1]
+                },
+                new Product
+                {
+                    Name = "SuperMic 3", ProductNumber = "PSM3", Manufacturer = manufacturers[1],
+                    ProductType = productTypes[1]
+                },
             };
-            context.Products.AddRange(products);
-            context.SaveChanges();
+            await context.Products.AddRangeAsync(products);
+            await context.SaveChangesAsync();
 
             var locationTypes = new[]
             {
-                new LocationType { Name = "Storage"},
-                new LocationType { Name = "Car"},
+                new LocationType { Name = "Warehouse" },
+                new LocationType { Name = "Truck" },
             };
-            context.LocationTypes.AddRange(locationTypes);
-            context.SaveChanges();
+            await context.LocationTypes.AddRangeAsync(locationTypes);
+            await context.SaveChangesAsync();
 
             var locations = new[]
             {
-                new Location {Name = "Main Storage", LocationType = locationTypes[0]},
-                new Location {Name = "Car 1", LocationType = locationTypes[1]},
-                new Location {Name = "Car 2", LocationType = locationTypes[1]}
+                new Location { Name = "Main Warehouse", LocationType = locationTypes[0] },
+                new Location { Name = "Secondary Warehouse", LocationType = locationTypes[0] },
+                new Location { Name = "Truck 1", LocationType = locationTypes[1] },
+                new Location { Name = "SNG 1", LocationType = locationTypes[1] }
             };
-            context.Locations.AddRange(locations);
-            context.SaveChanges();
+            await context.Locations.AddRangeAsync(locations);
+            await context.SaveChangesAsync();
 
             var units = new[]
             {
-                new Unit {Product = products[0], InventoryNumber = "3000-1", Location = locations[0], Vendor = vendors[0]},
-                new Unit {Product = products[0], InventoryNumber = "3000-2", Location = locations[0], Vendor = vendors[0]},
-                new Unit {Product = products[0], InventoryNumber = "3000-3", Location = locations[1], Vendor = vendors[0]},
-                new Unit {Product = products[0], InventoryNumber = "3000-4", Location = locations[2], Vendor = vendors[0]},
-                new Unit {Product = products[1], InventoryNumber = "5000-1", Location = locations[2], Vendor = vendors[1]},
-                new Unit {Product = products[2], InventoryNumber = "PSM2-1", Location = locations[1], Vendor = vendors[1]},
-                new Unit {Product = products[2], InventoryNumber = "PSM2-2", Location = locations[2], Vendor = vendors[1]}
+                new Unit
+                {
+                    Product = products[0], InventoryNumber = "3000-1", SerialNumber = "bqKQ73cD",
+                    Location = locations[0], DefaultLocation = locations[0], Vendor = vendors[0]
+                },
+                new Unit
+                {
+                    Product = products[0], InventoryNumber = "3000-2", SerialNumber = "6CqncYDV",
+                    Location = locations[0], DefaultLocation = locations[0], Vendor = vendors[0]
+                },
+                new Unit
+                {
+                    Product = products[0], InventoryNumber = "3000-3", SerialNumber = "NkLdtVFr",
+                    Location = locations[1], DefaultLocation = locations[0], Vendor = vendors[0]
+                },
+                new Unit
+                {
+                    Product = products[0], InventoryNumber = "3000-4", SerialNumber = "86nsRZ7k",
+                    Location = locations[2], DefaultLocation = locations[0], Vendor = vendors[0]
+                },
+                new Unit
+                {
+                    Product = products[1], InventoryNumber = "5000-1", SerialNumber = "tHdSwPvK",
+                    Location = locations[2], DefaultLocation = locations[0], Vendor = vendors[1]
+                },
+                new Unit
+                {
+                    Product = products[1], InventoryNumber = "5000-2", SerialNumber = "UWpY8yQ5",
+                    Location = locations[2], DefaultLocation = locations[0], Vendor = vendors[1]
+                },
+                new Unit
+                {
+                    Product = products[2], InventoryNumber = "PSM2-1", SerialNumber = "VXwwReY9",
+                    Location = locations[1], DefaultLocation = locations[0], Vendor = vendors[1]
+                },
+                new Unit
+                {
+                    Product = products[2], InventoryNumber = "PSM2-2", SerialNumber = "anRtD7eU",
+                    Location = locations[2], DefaultLocation = locations[0], Vendor = vendors[1]
+                }
             };
-            context.Units.AddRange(units);
-            context.SaveChanges();
-            /*
-            var tu1 = new List<Unit> {units[2], units[5]};
-            var tu2 = new List<Unit> {units[3], units[4], units[6]};
-            var transfers = new[]
+            await context.Units.AddRangeAsync(units);
+            await context.SaveChangesAsync();
+
+            var bundledUnits = new List<Unit>() { units[4], units[5] };
+            var bundle = new Bundle
             {
-                new Transfer {OriginLocation = locations[0], DestinationLocation = locations[1], Units = tu1.AsQueryable()},
-                new Transfer {OriginLocation = locations[0], DestinationLocation = locations[2], Units = tu2.AsQueryable()}
+                Name = "Bundle Cam 5000", InventoryNumber = "B5000", BundledUnits = bundledUnits,
+                Location = locations[2], DefaultLocation = locations[0]
             };
-            //context.Transfers.AddRange(transfers);
-            context.SaveChanges();
-            */
-            var admin = new ApplicationUser { IsAdmin = true, }; // TODO: Add admin
-            context.ApplicationUsers.Add(admin);
-            context.SaveChanges();
+            await context.Bundles.AddAsync(bundle);
+            await context.SaveChangesAsync();
         }
     }
 }
