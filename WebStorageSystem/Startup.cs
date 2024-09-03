@@ -39,7 +39,6 @@ namespace WebStorageSystem
         {
             // DATABASE
             services.AddMyDatabaseConfiguration(Configuration.GetConnectionString("LocalDb"), _env);
-            //services.AddMyDatabaseConfiguration("Data Source=(localdb)\\mssqllocaldb;Initial Catalog=WSSTest;Integrated Security=True;Multiple Active Result Sets=True", _env);
             
 
             // IDENTITY
@@ -62,8 +61,6 @@ namespace WebStorageSystem
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
-            CreateRoles(serviceProvider).Wait();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -83,6 +80,8 @@ namespace WebStorageSystem
 
                 app.UpdateMigrations(); // Applies migrations to DB on Production
             }
+
+            CreateRoles(serviceProvider).Wait(); // Creates user roles and admin user with admin role
 
             app.UseHttpsRedirection();
 
@@ -194,7 +193,7 @@ namespace WebStorageSystem
                     options.EnableSensitiveDataLogging(true);
                     options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
                 }
-                // TODO: Add UseSQLite
+
                 options.UseSqlServer(connectionString, options =>
                 {
                     options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
