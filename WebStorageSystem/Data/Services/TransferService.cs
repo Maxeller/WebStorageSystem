@@ -263,9 +263,9 @@ namespace WebStorageSystem.Data.Services
                             unit.LastTransferTime = DateTime.UtcNow;
                             unit.LocationId = subTransfer.DestinationLocationId;
                             _context.Units.Update(unit);
-                            listForUnits.Add(unit.InventoryNumber);
+
+                            transferredUnitsFromLocation[subTransfer.OriginLocationId].Add(unit.InventoryNumber);
                         }
-                        transferredUnitsFromLocation[subTransfer.OriginLocationId].AddRange(listForUnits);
                     }
                 }
                 else
@@ -308,6 +308,9 @@ namespace WebStorageSystem.Data.Services
             try
             {
                 var mainTransfer = await _context.MainTransfers.FirstOrDefaultAsync(mt => mt.Id == mainTransferId);
+
+                Dictionary<int, List<string>> transferredUnitsFromLocation = new Dictionary<int, List<string>>();
+
                 if (mainTransfer is { State: TransferState.Prepared })
                 {
                     _context.Entry(mainTransfer).State = EntityState.Modified;
@@ -318,6 +321,12 @@ namespace WebStorageSystem.Data.Services
                     var subTransfers = await _context.SubTransfers.Where(st => st.MainTransferId == mainTransferId).ToListAsync();
                     foreach (var subTransfer in subTransfers)
                     {
+                        if (!transferredUnitsFromLocation.TryGetValue(subTransfer.OriginLocationId, out var listForUnits))
+                        {
+                            listForUnits = new List<string>();
+                            transferredUnitsFromLocation[subTransfer.OriginLocationId] = listForUnits;
+                        }
+
                         if (subTransfer.BundleId == null)
                         {
                             var unit = await _context.Units.FirstOrDefaultAsync(u => u.Id == subTransfer.UnitId);
@@ -325,6 +334,8 @@ namespace WebStorageSystem.Data.Services
                             unit.LastTransferTime = DateTime.UtcNow;
                             unit.LocationId = subTransfer.DestinationLocationId;
                             _context.Units.Update(unit);
+
+                            transferredUnitsFromLocation[subTransfer.OriginLocationId].Add(unit.InventoryNumber);
                         }
                         else
                         {
@@ -340,6 +351,8 @@ namespace WebStorageSystem.Data.Services
                                 unit.LastTransferTime = DateTime.UtcNow;
                                 unit.LocationId = subTransfer.DestinationLocationId;
                                 _context.Units.Update(unit);
+
+                                transferredUnitsFromLocation[subTransfer.OriginLocationId].Add(unit.InventoryNumber);
                             }
                         }
                     }
@@ -391,6 +404,7 @@ namespace WebStorageSystem.Data.Services
                         };
                     }
                     var response = await _sendGridClient.SendEmailAsync(msg).ConfigureAwait(false);
+                    if (!response.IsSuccessStatusCode) _logger.LogError(response.ToString());
                 }
             }
 
