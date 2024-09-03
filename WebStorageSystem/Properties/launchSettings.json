@@ -28,7 +28,7 @@
       },
       "distributionName": ""
     },
-    "WBS - Prod": {
+    "WSS - Prod": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

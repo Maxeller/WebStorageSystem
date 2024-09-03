@@ -18,7 +18,7 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 render: function (data, type, row) {
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
             },
             {
@@ -26,7 +26,7 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 render: function (data, type, row) {
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
             },
             {
@@ -133,7 +133,7 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 render: function (data, type, row) {
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
             },
             {
@@ -141,7 +141,7 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 render: function (data, type, row) {
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
             },
             {
@@ -263,7 +263,7 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 render: function (data, type, row) {
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
             },
             {
@@ -271,7 +271,7 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 render: function (data, type, row) {
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
             },
             {
@@ -398,7 +398,7 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 render: function (data, type, row) {
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
             },
             {
@@ -406,7 +406,7 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 render: function (data, type, row) {
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
             },
             {
@@ -697,7 +697,7 @@ $(document).ready(function () {
                 orderable: true,
                 render: function (data, type, row) {
                     if (data)
-                        return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
+                        return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                     else
                         return null;
                 }
@@ -708,7 +708,7 @@ $(document).ready(function () {
                 orderable: true,
                 render: function (data, type, row) {
                     if (data)
-                        return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
+                        return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                     else
                         return null;
                 }
