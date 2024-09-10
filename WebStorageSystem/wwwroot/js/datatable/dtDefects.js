@@ -6,37 +6,44 @@ $(document).ready(function () {
             {
                 data: "DefectNumber",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 1,
             },
             {
                 data: "Unit.InventoryNumber",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 4,
             },
             {
                 data: "Unit.Product.Manufacturer.Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 10,
             },
             {
                 data: "Unit.Product.Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 11,
             },
             {
                 data: "Unit.Product.ProductType.Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 12,
             },
             {
                 data: "Unit.Location.Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 20,
             },
             {
                 data: "State",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 3,
                 render: function (data, type, row) {
                     switch (data) {
                         case (1): return "Broken";
@@ -54,12 +61,14 @@ $(document).ready(function () {
             {
                 data: "ReportedByUser.UserName",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 30,
             },
             {
                 data: "CausedByUser.UserName",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 31
             },
             {
                 data: "CreatedDate",
@@ -81,6 +90,7 @@ $(document).ready(function () {
                 data: "Action",
                 searchable: false,
                 orderable: false,
+                responsivePriority: 2,
                 render: function (data, type, row) {
                     var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> `;
                     s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> `;
@@ -106,61 +116,55 @@ $(document).ready(function () {
             layout: {
                 topEnd: null
             },
+            responsive: true,
+            columns: myColumns,
             initComplete: function () {
-                // Creation of search bars for searchable columns
                 $("#dtDefect thead tr").after("<tr>");
-                var counter = 0;
-                $("#dtDefect thead th").each(function () {
-                    var title = $("#dtDefect thead th").eq($(this).index()).text();
-                    if (myColumns[counter].searchable && title != "State") {
-                        if (myColumns[counter].data.includes("IsDeleted")) {
-                            $("#dtDefect thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
-                        } else if (myColumns[counter].data.includes("Date")) {
-                            $("#dtDefect thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
-                        } else {
-                            $("#dtDefect thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
-                        }
-                    } else {
-                        $("#dtDefect thead tr:last").append(`<th></th>`);
-                    }
-                    counter++;
-                });
-                $("#dtDefect thead th:last").after("</tr>");
-
-                // Creation of trigger for search event
-                table.columns().every(function (index) {
+                this.api().columns().every(function () {
                     var column = this;
-                    var elem = $(`#dtDefect thead tr:last th:eq(${index}) input`);
+                    var index = column.index();
+                    var searchable = myColumns[index].searchable;
+                    var isVisible = column.responsiveHidden(); // returns true if visible
+                    var data = myColumns[index].data;
+                    var title = column.header().textContent;
 
-                    if (elem.is("#searchCheckbox")) {
-                        elem.on("click", function () {
-                            column.search(this.checked).draw();
-                        });
-                    } else if (elem.is("#searchDate")) {
-                        elem.on("change", function () {
-                            column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
-                        });
-                    } else {
-                        elem.on("keyup clear", function () {
-                            column.search(this.value).draw();
-                        });
+                    if (searchable && isVisible && index !== 6) {
+                        if (data.includes("IsDeleted")) {
+                            $("#dtDefect thead tr:last")
+                                .append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
+                            $("#dtDefect thead tr:last th:last input")
+                                .on("click", function () {
+                                    column.search(this.checked).draw();
+                                });
+                        } else if (data.includes("Date")) {
+                            $("#dtDefect thead tr:last")
+                                .append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
+                            $("#dtDefect thead tr:last th:last input")
+                                .on("change", function () {
+                                    column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
+                                });
+                        } else {
+                            $("#dtDefect thead tr:last")
+                                .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                            $("#dtDefect thead tr:last th:last input")
+                                .on("keyup change clear", function () {
+                                    if (column.search() !== this.value) {
+                                        column.search(this.value).draw();
+                                    }
+                                });
+                        }
                     }
-                });
 
-                this.api()
-                    .columns(6)
-                    .every(function () {
-                        var column = this;
-
+                    if (index === 6) {
                         // Create select element and listener
                         var select = $('<select><option value="">Show all</option></select>')
-                            .appendTo($(`#dtDefect thead tr:nth-child(2) th:nth-child(7)`))
+                            .appendTo($(`#dtDefect thead tr:last`))
                             .on('change', function () {
                                 column
                                     .search($(this).val(), { exact: true })
                                     .draw();
                             });
-           
+
                         var states = ["Broken", "In repair", "Repaired"];
 
                         // Add list of options
@@ -173,10 +177,9 @@ $(document).ready(function () {
                                     '<option value="' + d + '">' + states[d] + '</option>'
                                 );
                             });
-                   
-                    });
-            },
-            columns: myColumns
+                    }
+                });
+            }
         });
     }
 });

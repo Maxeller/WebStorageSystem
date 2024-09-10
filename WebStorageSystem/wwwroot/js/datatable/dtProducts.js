@@ -6,12 +6,14 @@ $(document).ready(function () {
             {
                 data: "Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 1
             },
             {
                 data: "Description",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 3
             },
             {
                 data: "CreatedDate",
@@ -43,6 +45,7 @@ $(document).ready(function () {
                 data: "Action",
                 searchable: false,
                 orderable: false,
+                responsivePriority: 2,
                 render: function (data, type, row) {
                     var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> `;
                     s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> `;
@@ -68,48 +71,52 @@ $(document).ready(function () {
             layout: {
                 topEnd: null
             },
-            columns: myColumns
-        });
+            responsive: true,
+            columns: myColumns,
+            initComplete: function () {
+                $("#dtManufacturer thead tr").after("<tr>");
+                this.api().columns().every(function () {
+                    var column = this;
+                    var index = column.index();
+                    var searchable = myColumns[index].searchable;
+                    var isVisible = column.responsiveHidden(); // returns true if visible
+                    var data = myColumns[index].data;
+                    var title = column.header().textContent;
 
-        // Creation of search bars for searchable columns
-        $("#dtManufacturer thead tr").after("<tr>");
-        var counter = 0;
-        $("#dtManufacturer thead th").each(function () {
-            var title = $("#dtManufacturer thead th").eq($(this).index()).text();
-            if (myColumns[counter].searchable) {
-                if (myColumns[counter].data.includes("IsDeleted")) {
-                    $("#dtManufacturer thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
-                } else if (myColumns[counter].data.includes("Date")) {
-                    $("#dtManufacturer thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
-                } else {
-                    $("#dtManufacturer thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
-                }
-            } else {
-                $("#dtManufacturer thead tr:last").append(`<th></th>`);
+                    if (searchable && isVisible) {
+                        if (data.includes("IsDeleted")) {
+                            $("#dtManufacturer thead tr:last")
+                                .append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
+                            $("#dtManufacturer thead tr:last th:last input")
+                                .on("click", function () {
+                                    column.search(this.checked).draw();
+                                });
+                        } else if (data.includes("Date")) {
+                            $("#dtManufacturer thead tr:last")
+                                .append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
+                            $("#dtManufacturer thead tr:last th:last input")
+                                .on("change", function () {
+                                    column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
+                                });
+                        } else {
+                            $("#dtManufacturer thead tr:last")
+                                .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                            $("#dtManufacturer thead tr:last th:last input")
+                                .on("keyup change clear", function () {
+                                    if (column.search() !== this.value) {
+                                        column.search(this.value).draw();
+                                    }
+                                });
+                        }
+                    }
+
+                    if (!searchable && isVisible) {
+                        $("#dtManufacturer thead tr:last").append(`<th></th>`);
+                    }
+                });
             }
-            counter++;
         });
-        $("#dtManufacturer thead th:last").after("</tr>");
-
-        // Creation of trigger for search event
-        table.columns().every(function (index) {
-            var column = this;
-            var elem = $(`#dtManufacturer thead tr:last th:eq(${index}) input`);
-
-            if (elem.is("#searchCheckbox")) {
-                elem.on("click", function () {
-                    column.search(this.checked).draw();
-                });
-            } else if (elem.is("#searchDate")) {
-                elem.on("change", function () {
-                    column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
-                });
-            } else {
-                elem.on("keyup clear", function () {
-                    column.search(this.value).draw();
-                });
-            }
-        });
+        table.columns(4).search("false").draw();
     }
 });
 
@@ -121,12 +128,14 @@ $(document).ready(function () {
             {
                 data: "Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 1
             },
             {
                 data: "Description",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 3,
             },
             {
                 data: "CreatedDate",
@@ -158,6 +167,7 @@ $(document).ready(function () {
                 data: "Action",
                 searchable: false,
                 orderable: false,
+                responsivePriority: 2,
                 render: function (data, type, row) {
                     var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> `;
                     s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> `;
@@ -183,46 +193,50 @@ $(document).ready(function () {
             layout: {
                 topEnd: null
             },
-            columns: myColumns
-        });
+            responsive: true,
+            columns: myColumns,
+            initComplete: function () {
+                $("#dtProductType thead tr").after("<tr>");
+                this.api().columns().every(function () {
+                    var column = this;
+                    var index = column.index();
+                    var searchable = myColumns[index].searchable;
+                    var isVisible = column.responsiveHidden(); // returns true if visible
+                    var data = myColumns[index].data;
+                    var title = column.header().textContent;
 
-        // Creation of search bars for searchable columns
-        $("#dtProductType thead tr").after("<tr>");
-        var counter = 0;
-        $("#dtProductType thead th").each(function () {
-            var title = $("#dtProductType thead th").eq($(this).index()).text();
-            if (myColumns[counter].searchable) {
-                if (myColumns[counter].data.includes("IsDeleted")) {
-                    $("#dtProductType thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
-                } else if (myColumns[counter].data.includes("Date")) {
-                    $("#dtProductType thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
-                } else {
-                    $("#dtProductType thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
-                }
-            } else {
-                $("#dtProductType thead tr:last").append(`<th></th>`);
-            }
-            counter++;
-        });
-        $("#dtProductType thead th:last").after("</tr>");
+                    if (searchable && isVisible) {
+                        if (data.includes("IsDeleted")) {
+                            $("#dtProductType thead tr:last")
+                                .append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
+                            $("#dtProductType thead tr:last th:last input")
+                                .on("click", function () {
+                                    column.search(this.checked).draw();
+                                });
+                        } else if (data.includes("Date")) {
+                            $("#dtProductType thead tr:last")
+                                .append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
+                            $("#dtProductType thead tr:last th:last input")
+                                .on("change", function () {
+                                    column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
+                                });
+                        } else {
+                            $("#dtProductType thead tr:last")
+                                .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                            $("#dtProductType thead tr:last th:last input")
+                                .on("keyup change clear", function () {
+                                    if (column.search() !== this.value) {
+                                        column.search(this.value).draw();
+                                    }
+                                });
+                        }
+                    }
 
-        // Creation of trigger for search event
-        table.columns().every(function (index) {
-            var column = this;
-            var elem = $(`#dtProductType thead tr:last th:eq(${index}) input`);
-
-            if (elem.is("#searchCheckbox")) {
-                elem.on("click", function () {
-                    column.search(this.checked).draw();
+                    if (!searchable && isVisible) {
+                        $("#dtProductType thead tr:last").append(`<th></th>`);
+                    }
                 });
-            } else if (elem.is("#searchDate")) {
-                elem.on("change", function () {
-                    column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
-                });
-            } else {
-                elem.on("keyup clear", function () {
-                    column.search(this.value).draw();
-                });
+                table.columns(4).search("false").draw();
             }
         });
     }
@@ -236,7 +250,8 @@ $(document).ready(function () {
             {
                 data: "Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 1
             },
             {
                 data: "Address",
@@ -246,12 +261,14 @@ $(document).ready(function () {
             {
                 data: "Phone",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 4
             },
             {
                 data: "Email",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 3
             },
             {
                 data: "Website",
@@ -288,6 +305,7 @@ $(document).ready(function () {
                 data: "Action",
                 searchable: false,
                 orderable: false,
+                responsivePriority: 2,
                 render: function (data, type, row) {
                     var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> `;
                     s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> `;
@@ -313,48 +331,52 @@ $(document).ready(function () {
             layout: {
                 topEnd: null
             },
-            columns: myColumns
-        });
+            responsive: true,
+            columns: myColumns,
+            initComplete: function () {
+                $("#dtVendor thead tr").after("<tr>");
+                this.api().columns().every(function () {
+                    var column = this;
+                    var index = column.index();
+                    var searchable = myColumns[index].searchable;
+                    var isVisible = column.responsiveHidden(); // returns true if visible
+                    var data = myColumns[index].data;
+                    var title = column.header().textContent;
 
-        // Creation of search bars for searchable columns
-        $("#dtVendor thead tr").after("<tr>");
-        var counter = 0;
-        $("#dtVendor thead th").each(function () {
-            var title = $("#dtVendor thead th").eq($(this).index()).text();
-            if (myColumns[counter].searchable) {
-                if (myColumns[counter].data.includes("IsDeleted")) {
-                    $("#dtVendor thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
-                } else if (myColumns[counter].data.includes("Date")) {
-                    $("#dtVendor thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
-                } else {
-                    $("#dtVendor thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
-                }
-            } else {
-                $("#dtVendor thead tr:last").append(`<th></th>`);
+                    if (searchable && isVisible) {
+                        if (data.includes("IsDeleted")) {
+                            $("#dtVendor thead tr:last")
+                                .append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
+                            $("#dtVendor thead tr:last th:last input")
+                                .on("click", function () {
+                                    column.search(this.checked).draw();
+                                });
+                        } else if (data.includes("Date")) {
+                            $("#dtVendor thead tr:last")
+                                .append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
+                            $("#dtVendor thead tr:last th:last input")
+                                .on("change", function () {
+                                    column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
+                                });
+                        } else {
+                            $("#dtVendor thead tr:last")
+                                .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                            $("#dtVendor thead tr:last th:last input")
+                                .on("keyup change clear", function () {
+                                    if (column.search() !== this.value) {
+                                        column.search(this.value).draw();
+                                    }
+                                });
+                        }
+                    }
+
+                    if (!searchable && isVisible) {
+                        $("#dtVendor thead tr:last").append(`<th></th>`);
+                    }
+                });
             }
-            counter++;
         });
-        $("#dtVendor thead th:last").after("</tr>");
-
-        // Creation of trigger for search event
-        table.columns().every(function (index) {
-            var column = this;
-            var elem = $(`#dtVendor thead tr:last th:eq(${index}) input`);
-
-            if (elem.is("#searchCheckbox")) {
-                elem.on("click", function () {
-                    column.search(this.checked).draw();
-                });
-            } else if (elem.is("#searchDate")) {
-                elem.on("change", function () {
-                    column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
-                });
-            } else {
-                elem.on("keyup clear", function () {
-                    column.search(this.value).draw();
-                });
-            }
-        });
+        table.columns(7).search("false").draw();
     }
 });
 
@@ -366,12 +388,14 @@ $(document).ready(function () {
             {
                 data: "Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 1,
             },
             {
                 data: "ProductNumber",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 3,
             },
             {
                 data: "Description",
@@ -386,12 +410,14 @@ $(document).ready(function () {
             {
                 data: "ProductType.Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 4
             },
             {
                 data: "Manufacturer.Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 5
             },
             {
                 data: "CreatedDate",
@@ -423,6 +449,7 @@ $(document).ready(function () {
                 data: "Action",
                 searchable: false,
                 orderable: false,
+                responsivePriority: 2,
                 render: function (data, type, row) {
                     var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> `;
                     s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> `;
@@ -448,48 +475,52 @@ $(document).ready(function () {
             layout: {
                 topEnd: null
             },
-            columns: myColumns
-        });
+            responsive: true,
+            columns: myColumns,
+            initComplete: function () {
+                $("#dtProduct thead tr").after("<tr>");
+                this.api().columns().every(function () {
+                    var column = this;
+                    var index = column.index();
+                    var searchable = myColumns[index].searchable;
+                    var isVisible = column.responsiveHidden(); // returns true if visible
+                    var data = myColumns[index].data;
+                    var title = column.header().textContent;
 
-        // Creation of search bars for searchable columns
-        $("#dtProduct thead tr").after("<tr>");
-        var counter = 0;
-        $("#dtProduct thead th").each(function () {
-            var title = $("#dtProduct thead th").eq($(this).index()).text();
-            if (myColumns[counter].searchable) {
-                if (myColumns[counter].data.includes("IsDeleted")) {
-                    $("#dtProduct thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
-                } else if (myColumns[counter].data.includes("Date")) {
-                    $("#dtProduct thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
-                } else {
-                    $("#dtProduct thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
-                }
-            } else {
-                $("#dtProduct thead tr:last").append(`<th></th>`);
+                    if (searchable && isVisible) {
+                        if (data.includes("IsDeleted")) {
+                            $("#dtProduct thead tr:last")
+                                .append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
+                            $("#dtProduct thead tr:last th:last input")
+                                .on("click", function () {
+                                    column.search(this.checked).draw();
+                                });
+                        } else if (data.includes("Date")) {
+                            $("#dtProduct thead tr:last")
+                                .append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
+                            $("#dtProduct thead tr:last th:last input")
+                                .on("change", function () {
+                                    column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
+                                });
+                        } else {
+                            $("#dtProduct thead tr:last")
+                                .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                            $("#dtProduct thead tr:last th:last input")
+                                .on("keyup change clear", function () {
+                                    if (column.search() !== this.value) {
+                                        column.search(this.value).draw();
+                                    }
+                                });
+                        }
+                    }
+
+                    if (!searchable && isVisible) {
+                        $("#dtProduct thead tr:last").append(`<th></th>`);
+                    }
+                });
             }
-            counter++;
         });
-        $("#dtProduct thead th:last").after("</tr>");
-
-        // Creation of trigger for search event
-        table.columns().every(function (index) {
-            var column = this;
-            var elem = $(`#dtProduct thead tr:last th:eq(${index}) input`);
-
-            if (elem.is("#searchCheckbox")) {
-                elem.on("click", function () {
-                    column.search(this.checked).draw();
-                });
-            } else if (elem.is("#searchDate")) {
-                elem.on("change", function () {
-                    column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
-                });
-            } else {
-                elem.on("keyup clear", function () {
-                    column.search(this.value).draw(); 
-                });
-            }
-        });
+        table.columns(8).search("false").draw();
     }
 });
 
@@ -501,12 +532,14 @@ $(document).ready(function () {
             {
                 data: "Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 4,
             },
             {
                 data: "InventoryNumber",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 1
             },
             {
                 data: "Location.Name",
@@ -527,6 +560,7 @@ $(document).ready(function () {
                 data: "BundledUnits",
                 searchable: true,
                 orderable: false,
+                responsivePriority: 3,
                 render: function (data, type, row) {
                     var s = "";
                     for(const i in data) {
@@ -559,6 +593,7 @@ $(document).ready(function () {
                 data: "Action",
                 searchable: false,
                 orderable: false,
+                responsivePriority: 2,
                 render: function (data, type, row) {
                     var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> `;
                     s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> `;
@@ -584,48 +619,52 @@ $(document).ready(function () {
             layout: {
                 topEnd: null
             },
-            columns: myColumns
-        });
+            responsive: true,
+            columns: myColumns,
+            initComplete: function () {
+                $("#dtBundle thead tr").after("<tr>");
+                this.api().columns().every(function () {
+                    var column = this;
+                    var index = column.index();
+                    var searchable = myColumns[index].searchable;
+                    var isVisible = column.responsiveHidden(); // returns true if visible
+                    var data = myColumns[index].data;
+                    var title = column.header().textContent;
 
-        // Creation of search bars for searchable columns
-        $("#dtBundle thead tr").after("<tr>");
-        var counter = 0;
-        $("#dtBundle thead th").each(function () {
-            var title = $("#dtBundle thead th").eq($(this).index()).text();
-            if (myColumns[counter].searchable) {
-                if (myColumns[counter].data.includes("IsDeleted") || myColumns[counter].data.includes("HasDefect")) {
-                    $("#dtBundle thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
-                } else if (myColumns[counter].data.includes("Date")) {
-                    $("#dtBundle thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
-                } else {
-                    $("#dtBundle thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
-                }
-            } else {
-                $("#dtBundle thead tr:last").append(`<th></th>`);
+                    if (searchable && isVisible) {
+                        if (data.includes("IsDeleted")) {
+                            $("#dtBundle thead tr:last")
+                                .append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
+                            $("#dtBundle thead tr:last th:last input")
+                                .on("click", function () {
+                                    column.search(this.checked).draw();
+                                });
+                        } else if (data.includes("Date")) {
+                            $("#dtBundle thead tr:last")
+                                .append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
+                            $("#dtBundle thead tr:last th:last input")
+                                .on("change", function () {
+                                    column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
+                                });
+                        } else {
+                            $("#dtBundle thead tr:last")
+                                .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                            $("#dtBundle thead tr:last th:last input")
+                                .on("keyup change clear", function () {
+                                    if (column.search() !== this.value) {
+                                        column.search(this.value).draw();
+                                    }
+                                });
+                        }
+                    }
+
+                    if (!searchable && isVisible) {
+                        $("#dtBundle thead tr:last").append(`<th></th>`);
+                    }
+                });
             }
-            counter++;
         });
-        $("#dtBundle thead th:last").after("</tr>");
-
-        // Creation of trigger for search event
-        table.columns().every(function (index) {
-            var column = this;
-            var elem = $(`#dtBundle thead tr:last th:eq(${index}) input`);
-
-            if (elem.is("#searchCheckbox")) {
-                elem.on("click", function () {
-                    column.search(this.checked).draw();
-                });
-            } else if (elem.is("#searchDate")) {
-                elem.on("change", function () {
-                    column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
-                });
-            } else {
-                elem.on("keyup clear", function () {
-                    column.search(this.value).draw();
-                });
-            }
-        });
+        table.columns(7).search("false").draw();
     }
 });
 
@@ -637,27 +676,32 @@ $(document).ready(function () {
             {
                 data: "InventoryNumber",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 1
             },
             {
                 data: "Product.ProductType.Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 6
             },
             {
                 data: "Product.Manufacturer.Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 5
             },
             {
                 data: "Product.Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 4
             },
             {
                 data: "SerialNumber",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                responsivePriority: 3
             },
             {
                 data: "Location.Name",
@@ -678,7 +722,8 @@ $(document).ready(function () {
                 data: "PartOfBundle.Name",
                 searchable: true,
                 orderable: true,
-                defaultContent: ""
+                defaultContent: "",
+                responsivePriority: 7,
             },
             {
                 data: "Notes",
@@ -737,6 +782,7 @@ $(document).ready(function () {
                 data: "Action",
                 searchable: false,
                 orderable: false,
+                responsivePriority: 2,
                 render: function (data, type, row) {
                     var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> `;
                     s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> `;
@@ -762,47 +808,51 @@ $(document).ready(function () {
             layout: {
                 topEnd: null
             },
-            columns: myColumns
-        });
+            responsive: true,
+            columns: myColumns,
+            initComplete: function () {
+                $("#dtUnit thead tr").after("<tr>");
+                this.api().columns().every(function () {
+                    var column = this;
+                    var index = column.index();
+                    var searchable = myColumns[index].searchable;
+                    var isVisible = column.responsiveHidden(); // returns true if visible
+                    var data = myColumns[index].data;
+                    var title = column.header().textContent;
 
-        // Creation of search bars for searchable columns
-        $("#dtUnit thead tr").after("<tr>");
-        var counter = 0;
-        $("#dtUnit thead th").each(function () {
-            var title = $("#dtUnit thead th").eq($(this).index()).text();
-            if (myColumns[counter].searchable) {
-                if (myColumns[counter].data.includes("IsDeleted") || myColumns[counter].data.includes("HasDefect")) {
-                    $("#dtUnit thead tr:last").append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
-                } else if (myColumns[counter].data.includes("Date")) {
-                    $("#dtUnit thead tr:last").append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
-                } else {
-                    $("#dtUnit thead tr:last").append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
-                }
-            } else {
-                $("#dtUnit thead tr:last").append(`<th></th>`);
+                    if (searchable && isVisible) {
+                        if (data.includes("IsDeleted")) {
+                            $("#dtUnit thead tr:last")
+                                .append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
+                            $("#dtUnit thead tr:last th:last input")
+                                .on("click", function () {
+                                    column.search(this.checked).draw();
+                                });
+                        } else if (data.includes("Date")) {
+                            $("#dtUnit thead tr:last")
+                                .append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
+                            $("#dtUnit thead tr:last th:last input")
+                                .on("change", function () {
+                                    column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
+                                });
+                        } else {
+                            $("#dtUnit thead tr:last")
+                                .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                            $("#dtUnit thead tr:last th:last input")
+                                .on("keyup change clear", function () {
+                                    if (column.search() !== this.value) {
+                                        column.search(this.value).draw();
+                                    }
+                                });
+                        }
+                    }
+
+                    if (!searchable && isVisible) {
+                        $("#dtUnit thead tr:last").append(`<th></th>`);
+                    }
+                });
             }
-            counter++;
         });
-        $("#dtUnit thead th:last").after("</tr>");
-
-        // Creation of trigger for search event
-        table.columns().every(function (index) {
-            var column = this;
-            var elem = $(`#dtUnit thead tr:last th:eq(${index}) input`);
-
-            if (elem.is("#searchCheckbox")) {
-                elem.on("click", function () {
-                    column.search(this.checked).draw();
-                });
-            } else if (elem.is("#searchDate")) {
-                elem.on("change", function () {
-                    column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
-                });
-            } else {
-                elem.on("keyup clear", function () {
-                    column.search(this.value).draw();
-                });
-            }
-        });
+        table.columns(14).search("false").draw();
     }
 });
