@@ -1,52 +1,69 @@
 # WebStorageSystem
 
-## Documentation
+## Dependencies
 
-## Dev Documentaion
+### Server-side Dependencies
+AutoMapper.Extensions.Microsoft.DependencyInjection@8.1.1
 
-### Configuration
-- https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-3.1
+BarCode@2024.7.2
 
-### Razor Runtime Compilation
-- https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-compilation?view=aspnetcore-3.1&tabs=visual-studio
-- https://blog.elmah.io/add-razor-runtime-compilation-when-developing-asp-net-core/
+BuildBundlerMinifier@3.2.449
 
-### LibMan
-- https://itnext.io/upgrade-an-asp-net-core-application-to-bootstrap-4-78cc2daf6450
-- https://docs.microsoft.com/en-us/aspnet/core/client-side/libman/libman-vs?view=aspnetcore-3.1
-- https://stackoverflow.com/questions/48481003/how-to-use-bootstrap-4-in-asp-net-core
+LinqKit.Microsoft.EntityFrameworkCore@5.1.5
 
-### HTTPS
-- https://docs.microsoft.com/en-us/aspnet/core/security/enforcing-ssl?view=aspnetcore-3.1&tabs=visual-studio
+Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore@3.1.23
 
-### Bundle & Minification
-- https://docs.microsoft.com/en-us/aspnet/core/client-side/bundling-and-minification?view=aspnetcore-3.1
-- Nuget: BuildBundlerMinifier
+Microsoft.AspNetCore.Identity.EntityFrameworkCore@3.1.32
 
-### MVC Scaffolding
- - https://github.com/dotnet/Scaffolding
+Microsoft.AspNetCore.Identity.UI@3.1.32
 
-### GDPR
-- https://docs.microsoft.com/en-us/aspnet/core/security/gdpr?view=aspnetcore-3.1
+Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation@3.1.23
 
-### DB - EFCore
-- https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/?view=aspnetcore-3.1
-- Data Annotation
-- Relationships via FluentAPI
-    - One to Many https://www.learnentityframeworkcore.com/configuration/one-to-many-relationship-configuration
-    - Many to Many https://www.learnentityframeworkcore.com/configuration/many-to-many-relationship-configuration
-- Concurrency https://www.learnentityframeworkcore.com/concurrency
-- Global Query Filters https://docs.microsoft.com/en-us/ef/core/querying/filters
+Microsoft.EntityFrameworkCore.Design@5.0.15
 
-### Automapper
-- https://automapper.org/
-- https://code-maze.com/automapper-net-core/
-- Problem of overposting https://andrewlock.net/preventing-mass-assignment-or-over-posting-in-asp-net-core/
+Microsoft.EntityFrameworkCore.Sqlite@3.1.32
 
-### Authentication & Authorization - IdentityCore
-- https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-3.1&tabs=visual-studio
-- Scaffolding https://docs.microsoft.com/en-us/aspnet/core/security/authentication/scaffold-identity?view=aspnetcore-3.1&tabs=visual-studio
+Microsoft.EntityFrameworkCore.SqlServer@5.0.15
 
+Microsoft.EntityFrameworkCore.SqlServer.Design@1.1.6
 
-### Performance
-- https://docs.microsoft.com/en-us/aspnet/core/performance/performance-best-practices?view=aspnetcore-3.1
+Microsoft.EntityFrameworkCore.Tools@5.0.15
+
+Microsoft.VisualStudio.Web.BrowserLink@2.2.0
+
+Microsoft.VisualStudio.Web.CodeGeneration.Design@3.1.5
+
+SendGrid@9.29.3
+
+SendGrid.Extensions.DependencyInjection@1.0.1
+
+Swashbuckle.AspNetCore@6.3.0
+
+System.Text.Json@8.0.4
+
+Z.EntityFramework.Plus.EFCore@5.103.1
+
+### Client-side Dependencies
+jquery@3.7.1
+
+jquery-validate@1.21.0
+
+jquery-validation-unobtrusive@4.0.0
+
+popper.js@2.5.2
+
+tippy.js@6.2.6
+
+twitter-bootstrap@4.5.3
+
+select2@4.0.13
+
+luxon@2.1.1
+
+dataTables.js@2.1.5
+
+dataTables.bootstrap4.js@2.1.5
+
+dataTables.responsive.js@3.0.3
+
+responsive.bootstrap4.js@3.0.3
