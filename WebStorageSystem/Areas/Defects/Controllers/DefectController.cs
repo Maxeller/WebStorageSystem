@@ -162,6 +162,7 @@ namespace WebStorageSystem.Areas.Defects.Controllers
         }
         
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoadTable(DataTableRequest request)
         {
             try

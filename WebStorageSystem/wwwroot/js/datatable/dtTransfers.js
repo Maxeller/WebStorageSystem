@@ -8,6 +8,7 @@ $(document).ready(function() {
                 searchable: true,
                 orderable: true,
                 responsivePriority: 1,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "MainTransfer.TransferTime",
@@ -51,12 +52,14 @@ $(document).ready(function() {
                 searchable: true,
                 orderable: true,
                 responsivePriority: 3,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "DestinationLocation.Name",
                 searchable: true,
                 orderable: true,
                 responsivePriority: 4,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "UnitBundleView.InventoryNumber",
@@ -94,7 +97,10 @@ $(document).ready(function() {
             serverSide: true,
             ajax: {
                 url: "Transfer/LoadTable",
-                type: "POST"
+                type: "POST",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value
+                }
             },
             layout: {
                 topEnd: null
@@ -182,7 +188,8 @@ $(document).ready(function () {
                 data: "OriginLocation.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 2
+                responsivePriority: 2,
+                render: $.fn.dataTable.render.text()
             }
         ];
 
@@ -194,6 +201,9 @@ $(document).ready(function () {
             ajax: {
                 url: "/Transfer/LoadTableDetails",
                 type: "POST",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value
+                },
                 data: {
                     "AdditionalData": {
                         "MainTransferId": $('#MainTransferId').val()
@@ -241,13 +251,15 @@ $(document).ready(function () {
                 data: "InventoryNumber",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 1
+                responsivePriority: 1,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Unit.Product.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 2
+                responsivePriority: 2,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Bundle.BundledUnits",
@@ -266,14 +278,16 @@ $(document).ready(function () {
                 data: "Location.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 4
+                responsivePriority: 4,
+                render: $.fn.dataTable.render.text()
 
             },
             {
                 data: "DefaultLocation.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 20
+                responsivePriority: 20,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "HasDefect",
@@ -295,7 +309,10 @@ $(document).ready(function () {
             serverSide: true,
             ajax: {
                 url: "/Transfer/LoadUnitBundleView",
-                type: "POST"
+                type: "POST",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value
+                }
             },
             layout: {
                 topEnd: null

@@ -8,36 +8,42 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 responsivePriority: 1,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Unit.InventoryNumber",
                 searchable: true,
                 orderable: true,
                 responsivePriority: 4,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Unit.Product.Manufacturer.Name",
                 searchable: true,
                 orderable: true,
                 responsivePriority: 10,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Unit.Product.Name",
                 searchable: true,
                 orderable: true,
                 responsivePriority: 11,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Unit.Product.ProductType.Name",
                 searchable: true,
                 orderable: true,
                 responsivePriority: 12,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Unit.Location.Name",
                 searchable: true,
                 orderable: true,
                 responsivePriority: 20,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "State",
@@ -49,26 +55,29 @@ $(document).ready(function () {
                         case (1): return "Broken";
                         case (2): return "In repair";
                         case (3): return "Repaired";
-                        default: "Unknown";
+                        default: return "Unknown";
                     }
                 }
             },
             {
                 data: "Description",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "ReportedByUser.UserName",
                 searchable: true,
                 orderable: true,
                 responsivePriority: 30,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "CausedByUser.UserName",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 31
+                responsivePriority: 31,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "CreatedDate",
@@ -111,7 +120,10 @@ $(document).ready(function () {
             serverSide: true,
             ajax: {
                 url: "Defect/LoadTable",
-                type: "POST"
+                type: "POST",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value
+                }
             },
             layout: {
                 topEnd: null

@@ -1,7 +1,9 @@
-﻿@model UnitModel
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@model UnitModel
 
 @{
     ViewData["Title"] = "List of Units";
+    var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
 <h1>List of Units</h1>
@@ -10,29 +12,29 @@
     <a asp-action="Create">Create New Unit</a>
 </p>
 
-@Html.AntiForgeryToken()
 <table id="dtUnit" class="table table-striped table-bordered table-dark table-responsive">
     <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.InventoryNumber)</th>
-            <th>Product Type</th>
-            <th>Manufacturer</th>
-            <th>Product</th>
-            <th>@Html.DisplayNameFor(model => model.SerialNumber)</th>
-            <th>Current Location</th>
-            <th>Default Location</th>
-            <th>@Html.DisplayNameFor(model => model.ShelfNumber)</th>
-            <th>Bundle</th>
-            <th>@Html.DisplayNameFor(model => model.Notes)</th>
-            <th>Vendor</th>
-            <th>@Html.DisplayNameFor(model => model.LastTransferTime)</th>
-            <th>@Html.DisplayNameFor(model => model.LastCheckTime)</th>
-            <th>@Html.DisplayNameFor(model => model.HasDefect)</th>
-            <th>@Html.DisplayNameFor(model => model.IsDeleted)</th>
-            <th>@Html.DisplayNameFor(model => model.Action)</th>
-        </tr>
+    <tr>
+        <th>@Html.DisplayNameFor(model => model.InventoryNumber)</th>
+        <th>Product Type</th>
+        <th>Manufacturer</th>
+        <th>Product</th>
+        <th>@Html.DisplayNameFor(model => model.SerialNumber)</th>
+        <th>Current Location</th>
+        <th>Default Location</th>
+        <th>@Html.DisplayNameFor(model => model.ShelfNumber)</th>
+        <th>Bundle</th>
+        <th>@Html.DisplayNameFor(model => model.Notes)</th>
+        <th>Vendor</th>
+        <th>@Html.DisplayNameFor(model => model.LastTransferTime)</th>
+        <th>@Html.DisplayNameFor(model => model.LastCheckTime)</th>
+        <th>@Html.DisplayNameFor(model => model.HasDefect)</th>
+        <th>@Html.DisplayNameFor(model => model.IsDeleted)</th>
+        <th>@Html.DisplayNameFor(model => model.Action)</th>
+    </tr>
     </thead>
 </table>
+<input id="RequestVerificationToken" type="hidden" value="@requestToken" />
 
 <partial name="DeleteRestoreModal" />
 @if (TempData["Error"] != null)

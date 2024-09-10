@@ -7,13 +7,15 @@ $(document).ready(function () {
                 data: "Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 1
+                responsivePriority: 1,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Description",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 3
+                responsivePriority: 3,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "CreatedDate",
@@ -66,7 +68,10 @@ $(document).ready(function () {
             serverSide: true,
             ajax: {
                 url: "Manufacturer/LoadTable",
-                type: "POST"
+                type: "POST",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value
+                }
             },
             layout: {
                 topEnd: null
@@ -129,13 +134,15 @@ $(document).ready(function () {
                 data: "Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 1
+                responsivePriority: 1,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Description",
                 searchable: true,
                 orderable: true,
                 responsivePriority: 3,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "CreatedDate",
@@ -188,7 +195,10 @@ $(document).ready(function () {
             serverSide: true,
             ajax: {
                 url: "ProductType/LoadTable",
-                type: "POST"
+                type: "POST",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value
+                }
             },
             layout: {
                 topEnd: null
@@ -251,29 +261,34 @@ $(document).ready(function () {
                 data: "Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 1
+                responsivePriority: 1,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Address",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Phone",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 4
+                responsivePriority: 4,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Email",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 3
+                responsivePriority: 3,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Website",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "CreatedDate",
@@ -326,7 +341,10 @@ $(document).ready(function () {
             serverSide: true,
             ajax: {
                 url: "Vendor/LoadTable",
-                type: "POST"
+                type: "POST",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value
+                }
             },
             layout: {
                 topEnd: null
@@ -390,34 +408,40 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 responsivePriority: 1,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "ProductNumber",
                 searchable: true,
                 orderable: true,
                 responsivePriority: 3,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Description",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Webpage",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "ProductType.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 4
+                responsivePriority: 4,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Manufacturer.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 5
+                responsivePriority: 5,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "CreatedDate",
@@ -470,7 +494,10 @@ $(document).ready(function () {
             serverSide: true,
             ajax: {
                 url: "Product/LoadTable",
-                type: "POST"
+                type: "POST",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value
+                }
             },
             layout: {
                 topEnd: null
@@ -534,27 +561,32 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 responsivePriority: 4,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "InventoryNumber",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 1
+                responsivePriority: 1,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Location.Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "DefaultLocation.Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "NumberOfUnits",
                 searchable: false,
-                orderable: false
+                orderable: false,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "BundledUnits",
@@ -614,7 +646,10 @@ $(document).ready(function () {
             serverSide: true,
             ajax: {
                 url: "Bundle/LoadTable",
-                type: "POST"
+                type: "POST",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value
+                }
             },
             layout: {
                 topEnd: null
@@ -677,46 +712,54 @@ $(document).ready(function () {
                 data: "InventoryNumber",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 1
+                responsivePriority: 1,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Product.ProductType.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 6
+                responsivePriority: 6,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Product.Manufacturer.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 5
+                responsivePriority: 5,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Product.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 4
+                responsivePriority: 4,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "SerialNumber",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 3
+                responsivePriority: 3,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Location.Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "DefaultLocation.Name",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "ShelfNumber",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "PartOfBundle.Name",
@@ -724,17 +767,20 @@ $(document).ready(function () {
                 orderable: true,
                 defaultContent: "",
                 responsivePriority: 7,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Notes",
                 searchable: true,
-                orderable: true
+                orderable: true,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Vendor.Name",
                 searchable: true,
                 orderable: true,
-                defaultContent: ""
+                defaultContent: "",
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "LastTransferTime",
@@ -803,7 +849,10 @@ $(document).ready(function () {
             serverSide: true,
             ajax: {
                 url: "Unit/LoadTable",
-                type: "POST"
+                type: "POST",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value
+                }
             },
             layout: {
                 topEnd: null
@@ -821,7 +870,7 @@ $(document).ready(function () {
                     var title = column.header().textContent;
 
                     if (searchable && isVisible) {
-                        if (data.includes("IsDeleted")) {
+                        if (data.includes("IsDeleted") || data.includes("HasDefect")) {
                             $("#dtUnit thead tr:last")
                                 .append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
                             $("#dtUnit thead tr:last th:last input")

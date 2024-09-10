@@ -1,7 +1,9 @@
-﻿@model MainTransferModel
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@model MainTransferModel
 
 @{
     ViewData["Title"] = "Details Transfer " + @Model.TransferNumber;
+    var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
 <h1>Details</h1>
@@ -52,6 +54,7 @@
                 </tr>
                 </thead>
             </table>
+            <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
         </dd>
         <dt class="col-sm-2">
             Created Date

@@ -1,7 +1,9 @@
-﻿@model LocationTypeModel
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@model LocationTypeModel
 
 @{
     ViewData["Title"] = "Location Type List";
+    var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
 <h1>List of Location Types</h1>
@@ -23,6 +25,7 @@
         </tr>
     </thead>
 </table>
+<input id="RequestVerificationToken" type="hidden" value="@requestToken" />
 
 <partial name="DeleteRestoreModal" />
 @if (TempData["Error"] != null)

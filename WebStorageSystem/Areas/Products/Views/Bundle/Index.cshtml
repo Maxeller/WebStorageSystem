@@ -1,7 +1,9 @@
-﻿@model BundleModel
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@model BundleModel
 
 @{
     ViewData["Title"] = "List of Bundles";
+    var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
 <h1>List of Bundles</h1>
@@ -10,22 +12,22 @@
     <a asp-action="Create">Create New Bundle</a>
 </p>
 
-@Html.AntiForgeryToken()
 <table id="dtBundle" class="table table-striped table-bordered table-dark table-responsive">
     <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Name)</th>
-            <th>@Html.DisplayNameFor(model => model.InventoryNumber)</th>
-            <th>@Html.DisplayNameFor(model => model.Location)</th>
-            <th>@Html.DisplayNameFor(model => model.DefaultLocation)</th>
-            <th>@Html.DisplayNameFor(model => model.NumberOfUnits)</th>
-            <th>@Html.DisplayNameFor(model => model.BundledUnits)</th>
-            <th>@Html.DisplayNameFor(model => model.HasDefect)</th>
-            <th>@Html.DisplayNameFor(model => model.IsDeleted)</th>
-            <th>@Html.DisplayNameFor(model => model.Action)</th>
-        </tr>
+    <tr>
+        <th>@Html.DisplayNameFor(model => model.Name)</th>
+        <th>@Html.DisplayNameFor(model => model.InventoryNumber)</th>
+        <th>@Html.DisplayNameFor(model => model.Location)</th>
+        <th>@Html.DisplayNameFor(model => model.DefaultLocation)</th>
+        <th>@Html.DisplayNameFor(model => model.NumberOfUnits)</th>
+        <th>@Html.DisplayNameFor(model => model.BundledUnits)</th>
+        <th>@Html.DisplayNameFor(model => model.HasDefect)</th>
+        <th>@Html.DisplayNameFor(model => model.IsDeleted)</th>
+        <th>@Html.DisplayNameFor(model => model.Action)</th>
+    </tr>
     </thead>
 </table>
+<input id="RequestVerificationToken" type="hidden" value="@requestToken" />
 
 <partial name="DeleteRestoreModal" />
 @if (TempData["Error"] != null)

@@ -86,6 +86,7 @@ namespace WebStorageSystem.Controllers
 
         // POST: Transfer/LoadTable
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoadTable(DataTableRequest request)
         {
             try
@@ -119,6 +120,7 @@ namespace WebStorageSystem.Controllers
 
         // POST: Transfer/LoadUnitBundleView
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoadUnitBundleView(DataTableRequest request)
         {
             try
@@ -142,6 +144,7 @@ namespace WebStorageSystem.Controllers
 
         // POST: Transfer/LoadTableDetails
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoadTableDetails(DataTableRequest request)
         {
             try

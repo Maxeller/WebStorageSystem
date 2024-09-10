@@ -7,21 +7,22 @@ $(document).ready(function() {
                 data: "Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 1
+                responsivePriority: 1,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Description",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 3
+                responsivePriority: 3,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "CreatedDate",
                 searchable: true,
                 orderable: true,
                 render: function(data, type, row) {
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal()
-                        .toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
             },
             {
@@ -29,8 +30,7 @@ $(document).ready(function() {
                 searchable: true,
                 orderable: true,
                 render: function(data, type, row) {
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal()
-                        .toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
             },
             {
@@ -40,8 +40,7 @@ $(document).ready(function() {
                 render: function(data, type, row) {
                     var s = "";
                     if (row.IsDeleted === true) s = "checked";
-                    return `<div class="form-check"><input class="form-check-input" type="checkbox" disabled ${s
-                        }></div>`;
+                    return `<div class="form-check"><input class="form-check-input" type="checkbox" disabled ${s}></div>`;
                 }
             },
             {
@@ -74,7 +73,8 @@ $(document).ready(function() {
             ajax: {
                 url: "LocationType/LoadTable",
                 type: "POST",
-                data: {
+                headers: {
+                    "RequestVerificationToken" : document.getElementById("RequestVerificationToken").value
                 }
             },
             layout: {
@@ -138,25 +138,29 @@ $(document).ready(function() {
                 data: "Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 1
+                responsivePriority: 1,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Description",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 5
+                responsivePriority: 5,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "Address",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 4
+                responsivePriority: 4,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "LocationType.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 3
+                responsivePriority: 3,
+                render: $.fn.dataTable.render.text()
             },
             {
                 data: "CreatedDate",
@@ -209,7 +213,10 @@ $(document).ready(function() {
             serverSide: true,
             ajax: {
                 url: "Location/LoadTable",
-                type: "POST"
+                type: "POST",
+                headers: {
+                    "RequestVerificationToken": document.getElementById("RequestVerificationToken").value
+                }
             },
             layout: {
                 topEnd: null

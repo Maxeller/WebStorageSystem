@@ -25,7 +25,7 @@ namespace WebStorageSystem.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<string> Version()
         {
-            return Ok("v1"); //TODO: Move to DB or config
+            return Ok("v1");
         }
 
         /// <summary>

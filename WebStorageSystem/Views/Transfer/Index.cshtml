@@ -1,7 +1,9 @@
-﻿@model SubTransferModel
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@model SubTransferModel
 
 @{
     ViewData["Title"] = "List of Transfers";
+    var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
 <h1>List of Transfers</h1>
@@ -10,18 +12,18 @@
     <a asp-action="Create">Create New Transfer</a>
 </p>
 
-@Html.AntiForgeryToken()
 <table id="dtTransfer" class="table table-striped table-bordered table-dark">
     <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.MainTransfer.TransferNumber)</th>
-            <th>@Html.DisplayNameFor(model => model.MainTransfer.TransferTime)</th>
-            <th>@Html.DisplayNameFor(model => model.MainTransfer.State)</th>
-            <th>@Html.DisplayNameFor(model => model.MainTransfer.User.UserName)</th>
-            <th>Origin Location</th>
-            <th>Destination Location</th>
-            <th>Inventory Number</th>
-            <th>@Html.DisplayNameFor(model => model.Action)</th>
-        </tr>
+    <tr>
+        <th>@Html.DisplayNameFor(model => model.MainTransfer.TransferNumber)</th>
+        <th>@Html.DisplayNameFor(model => model.MainTransfer.TransferTime)</th>
+        <th>@Html.DisplayNameFor(model => model.MainTransfer.State)</th>
+        <th>@Html.DisplayNameFor(model => model.MainTransfer.User.UserName)</th>
+        <th>Origin Location</th>
+        <th>Destination Location</th>
+        <th>Inventory Number</th>
+        <th>@Html.DisplayNameFor(model => model.Action)</th>
+    </tr>
     </thead>
 </table>
+<input id="RequestVerificationToken" type="hidden" value="@requestToken" />

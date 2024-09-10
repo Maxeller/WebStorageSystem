@@ -1,7 +1,9 @@
-﻿@model VendorModel
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@model VendorModel
 
 @{
     ViewData["Title"] = "Vendors List";
+    var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
 <h1>List of Vendors</h1>
@@ -10,22 +12,22 @@
     <a asp-action="Create">Create New Vendor</a>
 </p>
 
-@Html.AntiForgeryToken()
 <table id="dtVendor" class="table table-striped table-bordered table-dark table-responsive">
     <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Name)</th>
-            <th>@Html.DisplayNameFor(model => model.Address)</th>
-            <th>@Html.DisplayNameFor(model => model.Phone)</th>
-            <th>@Html.DisplayNameFor(model => model.Email)</th>
-            <th>@Html.DisplayNameFor(model => model.Website)</th>
-            <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
-            <th>@Html.DisplayNameFor(model => model.ModifiedDate)</th>
-            <th>@Html.DisplayNameFor(model => model.IsDeleted)</th>
-            <th>@Html.DisplayNameFor(model => model.Action)</th>
-        </tr>
+    <tr>
+        <th>@Html.DisplayNameFor(model => model.Name)</th>
+        <th>@Html.DisplayNameFor(model => model.Address)</th>
+        <th>@Html.DisplayNameFor(model => model.Phone)</th>
+        <th>@Html.DisplayNameFor(model => model.Email)</th>
+        <th>@Html.DisplayNameFor(model => model.Website)</th>
+        <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
+        <th>@Html.DisplayNameFor(model => model.ModifiedDate)</th>
+        <th>@Html.DisplayNameFor(model => model.IsDeleted)</th>
+        <th>@Html.DisplayNameFor(model => model.Action)</th>
+    </tr>
     </thead>
 </table>
+<input id="RequestVerificationToken" type="hidden" value="@requestToken" />
 
 <partial name="DeleteRestoreModal" />
 @if (TempData["Error"] != null)
