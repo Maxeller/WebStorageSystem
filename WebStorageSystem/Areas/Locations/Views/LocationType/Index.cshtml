@@ -13,7 +13,8 @@
     </p>
 </div>
 
-<table id="dtLocationType" class="table table-striped table-bordered table-dark table-responsive">
+
+<table id="dtLocationType" class="table table-striped table-bordered table-dark nowrap" style="width:100%">
     <thead>
         <tr>
             <th>@Html.DisplayNameFor(model => model.Name)</th>
@@ -26,6 +27,7 @@
     </thead>
 </table>
 <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
+
 
 <partial name="DeleteRestoreModal" />
 @if (TempData["Error"] != null)

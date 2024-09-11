@@ -14,9 +14,9 @@ $(document).ready(function() {
                 data: "MainTransfer.TransferTime",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 11,
+                responsivePriority: 21,
                 render: function(data, type, row) {
-                    if (row.MainTransfer.State == 1) return "Not Yet Transfered";
+                    if (row.MainTransfer.State == 1) return "Not Yet Transferred";
                     return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
                 }
             },
@@ -24,7 +24,7 @@ $(document).ready(function() {
                 data: "MainTransfer.State",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 10,
+                responsivePriority: 20,
                 render: function(data, type, row) {
                     switch (data) {
                     case (1):
@@ -40,7 +40,7 @@ $(document).ready(function() {
                 data: "MainTransfer.User.UserName",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 20,
+                responsivePriority: 22,
                 render: function(data, type, row) {
                     const words = data.split("@");
                     return words[0];
@@ -50,21 +50,21 @@ $(document).ready(function() {
                 data: "OriginLocation.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 3,
+                responsivePriority: 15,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "DestinationLocation.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 4,
+                responsivePriority: 16,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "UnitBundleView.InventoryNumber",
                 searchable: true,
                 orderable: false,
-                responsivePriority: 5,
+                responsivePriority: 2,
                 defaultContent: "",
                 render: function(data, type, row) {
                     if (row.BundleId == null) {
@@ -78,12 +78,12 @@ $(document).ready(function() {
                 data: "Action",
                 searchable: false,
                 orderable: false,
-                responsivePriority: 2,
+                responsivePriority: 10,
                 render: function(data, type, row) {
                     var s = "";
                     if (row.Action.Transfer != null)
-                        s = `<a href="${row.Action.Transfer}" class="text-primary">Transfer</a> `;
-                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a>`;
+                        s = `<a href="${row.Action.Transfer}" class="text-primary">Transfer</a> <br />`;
+                        s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a>`;
                     return s;
                 }
             }
@@ -124,7 +124,7 @@ $(document).ready(function() {
                     if (searchable && isVisible && index !== 2) {
                         if (data.includes("IsDeleted")) {
                             $("#dtTransfer thead tr:last")
-                                .append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
+                                .append(`<th><div class="form-check"><input class="form-check-input w-100" type="checkbox" id="searchCheckbox"></div></th>`);
                             $("#dtTransfer thead tr:last th:last input")
                                 .on("click", function() {
                                         column.search(this.checked).draw();
@@ -138,7 +138,7 @@ $(document).ready(function() {
                                 });
                         } else {
                             $("#dtTransfer thead tr:last")
-                                .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                                .append(`<th><input class="search w-100" placeholder="Search ${title}" /></th>`);
                             $("#dtTransfer thead tr:last th:last input")
                                 .on("keyup change clear", function() {
                                     if (column.search() !== this.value) {
@@ -235,7 +235,7 @@ $(document).ready(function () {
 
                     if (searchable && isVisible) {
                         $("#dtTransferDetails thead tr:last")
-                            .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                            .append(`<th><input class="search w-100" placeholder="Search ${title}" /></th>`);
                         $("#dtTransferDetails thead tr:last th:last input")
                             .on("keyup change clear", function () {
                                 if (column.search() !== this.value) {
@@ -305,7 +305,7 @@ $(document).ready(function () {
                 render: function (data, type, row) {
                     var s = "";
                     if (row.HasDefect === true) s = "checked";
-                    return `<div class="form-check"><input class="form-check-input" type="checkbox" disabled ${s}></div>`;
+                    return `<div class="form-check"><input class="form-check-input w-100" type="checkbox" disabled ${s}></div>`;
                 }
             },
         ];
@@ -348,7 +348,7 @@ $(document).ready(function () {
                     if (searchable && isVisible) {
                         if (data.includes("HasDefect")) {
                             $("#dtCreateTransfer thead tr:last")
-                                .append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
+                                .append(`<th><div class="form-check"><input class="form-check-input w-100" type="checkbox" id="searchCheckbox"></div></th>`);
                             $("#dtCreateTransfer thead tr:last th:last input")
                                 .on("click", function() {
                                         column.search(this.checked).draw();
@@ -362,7 +362,7 @@ $(document).ready(function () {
                                     });
                         } else {
                             $("#dtCreateTransfer thead tr:last")
-                                .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                                .append(`<th><input class="search w-100" placeholder="Search ${title}" /></th>`);
                             $("#dtCreateTransfer thead tr:last th:last input")
                                 .on("keyup change clear", function() {
                                         if (column.search() !== this.value) {

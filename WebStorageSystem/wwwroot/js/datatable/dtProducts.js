@@ -14,7 +14,7 @@ $(document).ready(function () {
                 data: "Description",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 3,
+                responsivePriority: 100,
                 render: $.fn.dataTable.render.text()
             },
             {
@@ -29,6 +29,7 @@ $(document).ready(function () {
                 data: "ModifiedDate",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 9000,
                 render: function (data, type, row) {
                     return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
@@ -37,24 +38,27 @@ $(document).ready(function () {
                 data: "IsDeleted",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 200,
                 render: function (data, type, row) {
                     var s = "";
                     if (row.IsDeleted === true) s = "checked";
-                    return `<div class="form-check"><input class="form-check-input" type="checkbox" disabled ${s}></div>`;
+                    return `<div class="form-check"><input class="form-check-input w-100" type="checkbox" disabled ${s}></div>`;
                 }
             },
             {
                 data: "Action",
                 searchable: false,
                 orderable: false,
-                responsivePriority: 2,
+                responsivePriority: 10,
                 render: function (data, type, row) {
-                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> `;
-                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> `;
+                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> <br />`;
+                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> <br />`;
                     if (!row.IsDeleted) {
-                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
+                        s = s +
+                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
                     } else {
-                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
+                        s = s +
+                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
                     }
                     return s;
                 }
@@ -99,7 +103,7 @@ $(document).ready(function () {
                     if (searchable && isVisible) {
                         if (data.includes("IsDeleted")) {
                             $("#dtManufacturer thead tr:last")
-                                .append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
+                                .append(`<th><div class="form-check"><input class="form-check-input w-100" type="checkbox" id="searchCheckbox"></div></th>`);
                             $("#dtManufacturer thead tr:last th:last input")
                                 .on("click", function () {
                                     column.search(this.checked).draw();
@@ -113,7 +117,7 @@ $(document).ready(function () {
                                 });
                         } else {
                             $("#dtManufacturer thead tr:last")
-                                .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                                .append(`<th><input class="search w-100" placeholder="Search ${title}" /></th>`);
                             $("#dtManufacturer thead tr:last th:last input")
                                 .on("keyup change clear", function () {
                                     if (column.search() !== this.value) {
@@ -148,7 +152,7 @@ $(document).ready(function () {
                 data: "Description",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 3,
+                responsivePriority: 100,
                 render: $.fn.dataTable.render.text()
             },
             {
@@ -163,6 +167,7 @@ $(document).ready(function () {
                 data: "ModifiedDate",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 9000,
                 render: function (data, type, row) {
                     return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
@@ -171,24 +176,27 @@ $(document).ready(function () {
                 data: "IsDeleted",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 200,
                 render: function (data, type, row) {
                     var s = "";
                     if (row.IsDeleted === true) s = "checked";
-                    return `<div class="form-check"><input class="form-check-input" type="checkbox" disabled ${s}></div>`;
+                    return `<div class="form-check"><input class="form-check-input w-100" type="checkbox" disabled ${s}></div>`;
                 }
             },
             {
                 data: "Action",
                 searchable: false,
                 orderable: false,
-                responsivePriority: 2,
+                responsivePriority: 10,
                 render: function (data, type, row) {
-                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> `;
-                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> `;
+                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> <br />`;
+                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> <br />`;
                     if (!row.IsDeleted) {
-                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
+                        s = s +
+                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
                     } else {
-                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
+                        s = s +
+                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
                     }
                     return s;
                 }
@@ -233,7 +241,7 @@ $(document).ready(function () {
                     if (searchable && isVisible) {
                         if (data.includes("IsDeleted")) {
                             $("#dtProductType thead tr:last")
-                                .append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
+                                .append(`<th><div class="form-check"><input class="form-check-input w-100" type="checkbox" id="searchCheckbox"></div></th>`);
                             $("#dtProductType thead tr:last th:last input")
                                 .on("click", function () {
                                     column.search(this.checked).draw();
@@ -247,7 +255,7 @@ $(document).ready(function () {
                                 });
                         } else {
                             $("#dtProductType thead tr:last")
-                                .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                                .append(`<th><input class="search w-100" placeholder="Search ${title}" /></th>`);
                             $("#dtProductType thead tr:last th:last input")
                                 .on("keyup change clear", function () {
                                     if (column.search() !== this.value) {
@@ -282,26 +290,28 @@ $(document).ready(function () {
                 data: "Address",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 23,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "Phone",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 4,
+                responsivePriority: 20,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "Email",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 3,
+                responsivePriority: 21,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "Website",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 22,
                 render: $.fn.dataTable.render.text()
             },
             {
@@ -316,6 +326,7 @@ $(document).ready(function () {
                 data: "ModifiedDate",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 9000,
                 render: function (data, type, row) {
                     return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
@@ -324,24 +335,27 @@ $(document).ready(function () {
                 data: "IsDeleted",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 200,
                 render: function (data, type, row) {
                     var s = "";
                     if (row.IsDeleted === true) s = "checked";
-                    return `<div class="form-check"><input class="form-check-input" type="checkbox" disabled ${s}></div>`;
+                    return `<div class="form-check"><input class="form-check-input w-100" type="checkbox" disabled ${s}></div>`;
                 }
             },
             {
                 data: "Action",
                 searchable: false,
                 orderable: false,
-                responsivePriority: 2,
+                responsivePriority: 10,
                 render: function (data, type, row) {
-                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> `;
-                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> `;
+                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> <br />`;
+                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> <br />`;
                     if (!row.IsDeleted) {
-                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
+                        s = s +
+                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
                     } else {
-                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
+                        s = s +
+                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
                     }
                     return s;
                 }
@@ -386,7 +400,7 @@ $(document).ready(function () {
                     if (searchable && isVisible) {
                         if (data.includes("IsDeleted")) {
                             $("#dtVendor thead tr:last")
-                                .append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
+                                .append(`<th><div class="form-check"><input class="form-check-input w-100" type="checkbox" id="searchCheckbox"></div></th>`);
                             $("#dtVendor thead tr:last th:last input")
                                 .on("click", function () {
                                     column.search(this.checked).draw();
@@ -400,7 +414,7 @@ $(document).ready(function () {
                                 });
                         } else {
                             $("#dtVendor thead tr:last")
-                                .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                                .append(`<th><input class="search w-100" placeholder="Search ${title}" /></th>`);
                             $("#dtVendor thead tr:last th:last input")
                                 .on("keyup change clear", function () {
                                     if (column.search() !== this.value) {
@@ -435,33 +449,35 @@ $(document).ready(function () {
                 data: "ProductNumber",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 3,
+                responsivePriority: 20,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "Description",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 30,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "Webpage",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 31,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "ProductType.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 4,
+                responsivePriority: 21,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "Manufacturer.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 5,
+                responsivePriority: 22,
                 render: $.fn.dataTable.render.text()
             },
             {
@@ -476,6 +492,7 @@ $(document).ready(function () {
                 data: "ModifiedDate",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 9000,
                 render: function (data, type, row) {
                     return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
@@ -484,24 +501,27 @@ $(document).ready(function () {
                 data: "IsDeleted",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 200,
                 render: function (data, type, row) {
                     var s = "";
                     if (row.IsDeleted === true) s = "checked";
-                    return `<div class="form-check"><input class="form-check-input" type="checkbox" disabled ${s}></div>`;
+                    return `<div class="form-check"><input class="form-check-input w-100" type="checkbox" disabled ${s}></div>`;
                 }
             },
             {
                 data: "Action",
                 searchable: false,
                 orderable: false,
-                responsivePriority: 2,
+                responsivePriority: 10,
                 render: function (data, type, row) {
-                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> `;
-                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> `;
+                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> <br />`;
+                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> <br />`;
                     if (!row.IsDeleted) {
-                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
+                        s = s +
+                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
                     } else {
-                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
+                        s = s +
+                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
                     }
                     return s;
                 }
@@ -546,7 +566,7 @@ $(document).ready(function () {
                     if (searchable && isVisible) {
                         if (data.includes("IsDeleted")) {
                             $("#dtProduct thead tr:last")
-                                .append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
+                                .append(`<th><div class="form-check"><input class="form-check-input w-100" type="checkbox" id="searchCheckbox"></div></th>`);
                             $("#dtProduct thead tr:last th:last input")
                                 .on("click", function () {
                                     column.search(this.checked).draw();
@@ -560,7 +580,7 @@ $(document).ready(function () {
                                 });
                         } else {
                             $("#dtProduct thead tr:last")
-                                .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                                .append(`<th><input class="search w-100" placeholder="Search ${title}" /></th>`);
                             $("#dtProduct thead tr:last th:last input")
                                 .on("keyup change clear", function () {
                                     if (column.search() !== this.value) {
@@ -588,7 +608,7 @@ $(document).ready(function () {
                 data: "Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 4,
+                responsivePriority: 3,
                 render: $.fn.dataTable.render.text()
             },
             {
@@ -602,25 +622,28 @@ $(document).ready(function () {
                 data: "Location.Name",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 30,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "DefaultLocation.Name",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 31,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "NumberOfUnits",
                 searchable: false,
                 orderable: false,
+                responsivePriority: 20,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "BundledUnits",
                 searchable: true,
                 orderable: false,
-                responsivePriority: 3,
+                responsivePriority: 2,
                 render: function (data, type, row) {
                     var s = "";
                     for(const i in data) {
@@ -633,6 +656,7 @@ $(document).ready(function () {
                 data: "HasDefect",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 40,
                 render: function (data, type, row) {
                     var s = "";
                     if (row.HasDefect === true) s = "checked";
@@ -643,24 +667,27 @@ $(document).ready(function () {
                 data: "IsDeleted",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 200,
                 render: function (data, type, row) {
                     var s = "";
                     if (row.IsDeleted === true) s = "checked";
-                    return `<div class="form-check"><input class="form-check-input" type="checkbox" disabled ${s}></div>`;
+                    return `<div class="form-check"><input class="form-check-input w-100" type="checkbox" disabled ${s}></div>`;
                 }
             },
             {
                 data: "Action",
                 searchable: false,
                 orderable: false,
-                responsivePriority: 2,
+                responsivePriority: 10,
                 render: function (data, type, row) {
-                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> `;
-                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> `;
+                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> <br />`;
+                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> <br />`;
                     if (!row.IsDeleted) {
-                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
+                        s = s +
+                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
                     } else {
-                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
+                        s = s +
+                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
                     }
                     return s;
                 }
@@ -719,7 +746,7 @@ $(document).ready(function () {
                                 });
                         } else {
                             $("#dtBundle thead tr:last")
-                                .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                                .append(`<th><input class="search w-100" placeholder="Search ${title}" /></th>`);
                             $("#dtBundle thead tr:last th:last input")
                                 .on("keyup change clear", function () {
                                     if (column.search() !== this.value) {
@@ -754,40 +781,42 @@ $(document).ready(function () {
                 data: "Product.ProductType.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 6,
+                responsivePriority: 20,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "Product.Manufacturer.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 5,
+                responsivePriority: 21,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "Product.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 4,
+                responsivePriority: 22,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "SerialNumber",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 3,
+                responsivePriority: 2,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "Location.Name",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 30,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "DefaultLocation.Name",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 31,
                 render: $.fn.dataTable.render.text()
             },
             {
@@ -795,7 +824,7 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 defaultContent: "",
-                responsivePriority: 7,
+                responsivePriority: 23,
                 render: $.fn.dataTable.render.text()
             },
             {
@@ -803,12 +832,14 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 defaultContent: "",
+                responsivePriority: 32,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "LastTransferTime",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 40,
                 render: function (data, type, row) {
                     if (data)
                         return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
@@ -820,6 +851,7 @@ $(document).ready(function () {
                 data: "LastCheckTime",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 41,
                 render: function (data, type, row) {
                     if (data)
                         return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
@@ -831,34 +863,38 @@ $(document).ready(function () {
                 data: "HasDefect",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 42,
                 render: function (data, type, row) {
                     var s = "";
                     if (row.HasDefect === true) s = "checked";
-                    return `<div class="form-check"><input class="form-check-input" type="checkbox" disabled ${s}></div>`;
+                    return `<div class="form-check"><input class="form-check-input w-100" type="checkbox" disabled ${s}></div>`;
                 }
             },
             {
                 data: "IsDeleted",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 200,
                 render: function (data, type, row) {
                     var s = "";
                     if (row.IsDeleted === true) s = "checked";
-                    return `<div class="form-check"><input class="form-check-input" type="checkbox" disabled ${s}></div>`;
+                    return `<div class="form-check"><input class="form-check-input w-100" type="checkbox" disabled ${s}></div>`;
                 }
             },
             {
                 data: "Action",
                 searchable: false,
                 orderable: false,
-                responsivePriority: 2,
+                responsivePriority: 10,
                 render: function (data, type, row) {
-                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> `;
-                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> `;
+                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> <br />`;
+                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> <br />`;
                     if (!row.IsDeleted) {
-                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
+                        s = s +
+                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
                     } else {
-                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
+                        s = s +
+                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
                     }
                     return s;
                 }
@@ -904,7 +940,7 @@ $(document).ready(function () {
                     if (searchable && isVisible) {
                         if (data.includes("IsDeleted") || data.includes("HasDefect")) {
                             $("#dtUnit thead tr:last")
-                                .append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
+                                .append(`<th><div class="form-check"><input class="form-check-input w-100" type="checkbox" id="searchCheckbox"></div></th>`);
                             $("#dtUnit thead tr:last th:last input")
                                 .on("click", function () {
                                     column.search(this.checked).draw();
@@ -918,7 +954,7 @@ $(document).ready(function () {
                                 });
                         } else {
                             $("#dtUnit thead tr:last")
-                                .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                                .append(`<th><input class="search w-100" placeholder="Search ${title}" /></th>`);
                             $("#dtUnit thead tr:last th:last input")
                                 .on("keyup change clear", function () {
                                     if (column.search() !== this.value) {

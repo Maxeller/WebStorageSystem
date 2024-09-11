@@ -14,35 +14,35 @@ $(document).ready(function () {
                 data: "Unit.InventoryNumber",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 4,
+                responsivePriority: 2,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "Unit.Product.Manufacturer.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 10,
+                responsivePriority: 20,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "Unit.Product.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 11,
+                responsivePriority: 21,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "Unit.Product.ProductType.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 12,
+                responsivePriority: 22,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "Unit.Location.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 20,
+                responsivePriority: 30,
                 render: $.fn.dataTable.render.text()
             },
             {
@@ -63,13 +63,14 @@ $(document).ready(function () {
                 data: "Description",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 40,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "ReportedByUser.UserName",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 30,
+                responsivePriority: 50,
                 render: function (data, type, row) {
                     const words = data.split("@");
                     return words[0];
@@ -79,7 +80,7 @@ $(document).ready(function () {
                 data: "CausedByUser.UserName",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 31,
+                responsivePriority: 51,
                 render: function (data, type, row) {
                     const words = data.split("@");
                     return words[0];
@@ -90,29 +91,32 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 render: function (data, type, row) {
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
             },
             {
                 data: "ModifiedDate",
                 searchable: true,
                 orderable: true,
+                responsivePriority: 9000,
                 render: function (data, type, row) {
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
             },
             {
                 data: "Action",
                 searchable: false,
                 orderable: false,
-                responsivePriority: 2,
+                responsivePriority: 10,
                 render: function (data, type, row) {
-                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> `;
-                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> `;
+                    var s = `<a href="${row.Action.Edit}" class="text-primary">Edit</a> <br />`;
+                    s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> <br />`;
                     if (!row.IsDeleted) {
-                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
+                        s = s +
+                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
                     } else {
-                        s = s + `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
+                        s = s +
+                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
                     }
                     return s;
                 }
@@ -157,7 +161,7 @@ $(document).ready(function () {
                     if (searchable && isVisible && index !== 6) {
                         if (data.includes("IsDeleted")) {
                             $("#dtDefect thead tr:last")
-                                .append(`<th><div class="form-check"><input class="form-check-input" type="checkbox" id="searchCheckbox"></div></th>`);
+                                .append(`<th><div class="form-check"><input class="form-check-input w-100" type="checkbox" id="searchCheckbox"></div></th>`);
                             $("#dtDefect thead tr:last th:last input")
                                 .on("click", function () {
                                     column.search(this.checked).draw();
@@ -171,7 +175,7 @@ $(document).ready(function () {
                                 });
                         } else {
                             $("#dtDefect thead tr:last")
-                                .append(`<th><input type="search" placeholder="Search ${title}" /></th>`);
+                                .append(`<th><input class="search w-100" placeholder="Search ${title}" /></th>`);
                             $("#dtDefect thead tr:last th:last input")
                                 .on("keyup change clear", function () {
                                     if (column.search() !== this.value) {
