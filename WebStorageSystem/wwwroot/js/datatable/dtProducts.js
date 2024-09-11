@@ -78,6 +78,10 @@ $(document).ready(function () {
             },
             responsive: true,
             columns: myColumns,
+            searchCols: [
+                null, null, null, null, { search: "false" }, null
+            ],
+            order: [[0, "asc"]],
             initComplete: function () {
                 $("#dtManufacturer thead tr").after("<tr>");
                 this.api().columns().every(function () {
@@ -121,7 +125,6 @@ $(document).ready(function () {
                 });
             }
         });
-        table.columns(4).search("false").draw();
     }
 });
 
@@ -205,6 +208,10 @@ $(document).ready(function () {
             },
             responsive: true,
             columns: myColumns,
+            searchCols: [
+                null, null, null, null, { search: "false" }, null
+            ],
+            order: [[0, "asc"]],
             initComplete: function () {
                 $("#dtProductType thead tr").after("<tr>");
                 this.api().columns().every(function () {
@@ -246,7 +253,6 @@ $(document).ready(function () {
                         $("#dtProductType thead tr:last").append(`<th></th>`);
                     }
                 });
-                table.columns(4).search("false").draw();
             }
         });
     }
@@ -351,6 +357,10 @@ $(document).ready(function () {
             },
             responsive: true,
             columns: myColumns,
+            searchCols: [
+                null, null, null, null, null, null, null, { search: "false" }, null
+            ],
+            order: [[0, "asc"]],
             initComplete: function () {
                 $("#dtVendor thead tr").after("<tr>");
                 this.api().columns().every(function () {
@@ -394,7 +404,6 @@ $(document).ready(function () {
                 });
             }
         });
-        table.columns(7).search("false").draw();
     }
 });
 
@@ -504,6 +513,10 @@ $(document).ready(function () {
             },
             responsive: true,
             columns: myColumns,
+            searchCols: [
+                null, null, null, null, null, null, null, null, { search: "false" }, null
+            ],
+            order: [[0, "asc"]],
             initComplete: function () {
                 $("#dtProduct thead tr").after("<tr>");
                 this.api().columns().every(function () {
@@ -547,7 +560,6 @@ $(document).ready(function () {
                 });
             }
         });
-        table.columns(8).search("false").draw();
     }
 });
 
@@ -656,6 +668,10 @@ $(document).ready(function () {
             },
             responsive: true,
             columns: myColumns,
+            searchCols: [
+                null, null, null, null, null, null, null, { search: "false" }, null
+            ],
+            order: [[0, "asc"]],
             initComplete: function () {
                 $("#dtBundle thead tr").after("<tr>");
                 this.api().columns().every(function () {
@@ -699,7 +715,6 @@ $(document).ready(function () {
                 });
             }
         });
-        table.columns(7).search("false").draw();
     }
 });
 
@@ -756,23 +771,11 @@ $(document).ready(function () {
                 render: $.fn.dataTable.render.text()
             },
             {
-                data: "ShelfNumber",
-                searchable: true,
-                orderable: true,
-                render: $.fn.dataTable.render.text()
-            },
-            {
                 data: "PartOfBundle.Name",
                 searchable: true,
                 orderable: true,
                 defaultContent: "",
                 responsivePriority: 7,
-                render: $.fn.dataTable.render.text()
-            },
-            {
-                data: "Notes",
-                searchable: true,
-                orderable: true,
                 render: $.fn.dataTable.render.text()
             },
             {
@@ -859,6 +862,11 @@ $(document).ready(function () {
             },
             responsive: true,
             columns: myColumns,
+            
+            searchCols: [
+                null, null, null, null, null, null, null, null, null, null, null, { search: "false" }, { search: "false" }, null
+            ],
+            order: [[0, "asc"]],
             initComplete: function () {
                 $("#dtUnit thead tr").after("<tr>");
                 this.api().columns().every(function () {
@@ -902,6 +910,5 @@ $(document).ready(function () {
                 });
             }
         });
-        table.columns(14).search("false").draw();
     }
 });

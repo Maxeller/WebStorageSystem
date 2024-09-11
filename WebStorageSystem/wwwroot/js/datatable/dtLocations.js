@@ -21,7 +21,7 @@ $(document).ready(function() {
                 data: "CreatedDate",
                 searchable: true,
                 orderable: true,
-                render: function(data, type, row) {
+                render: function (data, type, row) {
                     return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
             },
@@ -82,6 +82,10 @@ $(document).ready(function() {
             },
             responsive: true,
             columns: myColumns,
+            searchCols: [
+                null, null, null, null, {search: "false"}, null
+            ],
+            order: [[0, "asc"]],
             initComplete: function() {
                 $("#dtLocationType thead tr").after("<tr>");
                 this.api().columns().every(function() {
@@ -125,7 +129,6 @@ $(document).ready(function() {
                 });
             }
         });
-        table.columns(4).search("false").draw();
     }
 });
 
@@ -223,6 +226,10 @@ $(document).ready(function() {
             },
             responsive: true,
             columns: myColumns,
+            searchCols: [
+                null, null, null, null, null, null, { search: "false" }, null
+            ],
+            order: [[0, "asc"]],
             initComplete: function () {
                 $("#dtLocation thead tr").after("<tr>");
                 this.api().columns().every(function () {
@@ -266,6 +273,5 @@ $(document).ready(function() {
                 });
             }
         });
-        table.columns(6).search("false").draw();
     }
 });

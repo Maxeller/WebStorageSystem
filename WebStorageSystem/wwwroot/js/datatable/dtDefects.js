@@ -70,14 +70,20 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 responsivePriority: 30,
-                render: $.fn.dataTable.render.text()
+                render: function (data, type, row) {
+                    const words = data.split("@");
+                    return text(words[0]);
+                }
             },
             {
                 data: "CausedByUser.UserName",
                 searchable: true,
                 orderable: true,
                 responsivePriority: 31,
-                render: $.fn.dataTable.render.text()
+                render: function (data, type, row) {
+                    const words = data.split("@");
+                    return text(words[0]);
+                }
             },
             {
                 data: "CreatedDate",
@@ -130,6 +136,10 @@ $(document).ready(function () {
             },
             responsive: true,
             columns: myColumns,
+            searchCols: [
+                null, null, null, null, null, null, null, null, null, null, null, null, null
+            ],
+            order: [[0, "asc"]],
             initComplete: function () {
                 $("#dtDefect thead tr").after("<tr>");
                 this.api().columns().every(function () {

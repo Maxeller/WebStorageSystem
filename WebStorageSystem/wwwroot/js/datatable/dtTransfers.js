@@ -17,8 +17,7 @@ $(document).ready(function() {
                 responsivePriority: 11,
                 render: function(data, type, row) {
                     if (row.MainTransfer.State == 1) return "Not Yet Transfered";
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal()
-                        .toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT") // Formats data from UTC to local time
                 }
             },
             {
@@ -107,6 +106,7 @@ $(document).ready(function() {
             },
             responsive: true,
             columns: myColumns,
+            order: [[0, "asc"]],
             initComplete: function() {
                 $("#dtTransfer thead tr").after("<tr>");
                 this.api().columns().every(function() {
@@ -319,6 +319,10 @@ $(document).ready(function () {
             },
             responsive: true,
             columns: myColumns,
+            searchCols: [
+                null, null, null, null, null, { search: "false" }
+            ],
+            order: [[0, "asc"]],
             initComplete: function() {
                 $("#dtCreateTransfer thead tr").after("<tr>");
                 this.api().columns().every(function() {
@@ -358,7 +362,6 @@ $(document).ready(function () {
                 });
             }
         });
-        table.columns(5).search("false").draw();
 
         $('#dtCreateTransfer tbody').on('click', 'tr', function () {
             $(this).toggleClass('selected');
