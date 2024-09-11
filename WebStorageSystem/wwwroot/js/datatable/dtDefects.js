@@ -134,7 +134,11 @@ $(document).ready(function () {
             layout: {
                 topEnd: null
             },
-            responsive: true,
+            responsive: {
+                details: {
+                    display: $.fn.dataTable.Responsive.display.childRow
+                }
+            },
             columns: myColumns,
             searchCols: [
                 null, null, null, null, null, null, null, null, null, null, null, null, null

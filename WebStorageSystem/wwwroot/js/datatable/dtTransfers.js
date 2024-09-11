@@ -104,7 +104,11 @@ $(document).ready(function() {
             layout: {
                 topEnd: null
             },
-            responsive: true,
+            responsive: {
+                details: {
+                    display: $.fn.dataTable.Responsive.display.childRow
+                }
+            },
             columns: myColumns,
             order: [[0, "asc"]],
             initComplete: function() {
@@ -213,7 +217,11 @@ $(document).ready(function () {
             layout: {
                 topEnd: null
             },
-            responsive: true,
+            responsive: {
+                details: {
+                    display: $.fn.dataTable.Responsive.display.childRow
+                }
+            },
             columns: myColumns,
             initComplete: function () {
                 $("#dtTransferDetails thead tr").after("<tr>");
@@ -317,7 +325,11 @@ $(document).ready(function () {
             layout: {
                 topEnd: null
             },
-            responsive: true,
+            responsive: {
+                details: {
+                    display: $.fn.dataTable.Responsive.display.childRowImmediate
+                }
+            },
             columns: myColumns,
             searchCols: [
                 null, null, null, null, null, { search: "false" }
