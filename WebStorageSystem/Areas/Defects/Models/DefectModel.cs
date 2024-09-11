@@ -33,7 +33,7 @@ namespace WebStorageSystem.Areas.Defects.Models
         public string Notes { get; set; }
 
         public ImageEntityModel Image { get; set; }
-        public int ImageId { get; set; }
+        public int? ImageId { get; set; }
 
         public DefectState State { get; set; }
 

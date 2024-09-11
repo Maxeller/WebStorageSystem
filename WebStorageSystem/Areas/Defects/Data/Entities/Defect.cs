@@ -24,9 +24,6 @@ namespace WebStorageSystem.Areas.Defects.Data.Entities
 
         public ApplicationUser CausedByUser { get; set; }
         public string CausedByUserId { get; set; }
-
-        //public Vendor RepairBy { get; set; }
-        //public int RepairBy { get; set; }
             
         [Required, StringLength(500)]
         public string Description { get; set; }
@@ -35,7 +32,7 @@ namespace WebStorageSystem.Areas.Defects.Data.Entities
         public string Notes { get; set; }
 
         public ImageEntity Image { get; set; }
-        public int ImageId { get; set; }
+        public int? ImageId { get; set; }
 
         public DefectState State { get; set; }
 

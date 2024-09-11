@@ -72,7 +72,7 @@ $(document).ready(function () {
                 responsivePriority: 30,
                 render: function (data, type, row) {
                     const words = data.split("@");
-                    return text(words[0]);
+                    return words[0];
                 }
             },
             {
@@ -82,7 +82,7 @@ $(document).ready(function () {
                 responsivePriority: 31,
                 render: function (data, type, row) {
                     const words = data.split("@");
-                    return text(words[0]);
+                    return words[0];
                 }
             },
             {
@@ -196,7 +196,7 @@ $(document).ready(function () {
                             .sort()
                             .each(function (d, j) {
                                 select.append(
-                                    '<option value="' + d + '">' + states[d] + '</option>'
+                                    '<option value="' + d + '">' + states[d-1] + '</option>'
                                 );
                             });
                     }
