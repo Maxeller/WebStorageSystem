@@ -74,7 +74,7 @@
             Bar Code
         </dt>
         <dd class="col-sm-10">
-            @Html.Raw(Model.BarCode)
+            <img src="data:image/png;base64, @Model.BarCode" alt="Barcode"/>
         </dd>
         <dt class="col-sm-2">
             Last Transfer Date

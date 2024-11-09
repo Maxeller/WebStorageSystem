@@ -4,10 +4,11 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
-using IronBarCode;
+using NetBarcode;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Models;
 using WebStorageSystem.Models.Transfers;
+using Type = NetBarcode.Type;
 
 namespace WebStorageSystem.Areas.Products.Models
 {
@@ -16,7 +17,7 @@ namespace WebStorageSystem.Areas.Products.Models
         [Required, StringLength(100)] public string Name { get; set; }
 
         [Required, DisplayName("Inventory Number")]
-        public string InventoryNumber { get; set; } //TODO: compatibility with code reader
+        public string InventoryNumber { get; set; }
 
         [DisplayName("Bundled Units")] public IEnumerable<UnitModel> BundledUnits { get; set; }
 
@@ -47,12 +48,8 @@ namespace WebStorageSystem.Areas.Products.Models
             get
             {
                 if (InventoryNumber == null) return "";
-                GeneratedBarcode barcode = BarcodeWriter
-                    .CreateBarcode(InventoryNumber, BarcodeEncoding.Code128)
-                    .ResizeTo(250, 50)
-                    .AddAnnotationTextAboveBarcode(Name)
-                    .AddAnnotationTextBelowBarcode(InventoryNumber);
-                return barcode.ToHtmlTag();
+                var barcode = new Barcode(InventoryNumber, Type.Code128);
+                return barcode.GetBase64Image();
             }
         }
 

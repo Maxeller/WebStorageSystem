@@ -1,4 +1,4 @@
-﻿using IronBarCode;
+﻿using NetBarcode;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,6 +8,7 @@ using WebStorageSystem.Areas.Defects.Models;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Models;
 using WebStorageSystem.Models.Transfers;
+using Type = NetBarcode.Type;
 
 namespace WebStorageSystem.Areas.Products.Models
 {
@@ -55,13 +56,9 @@ namespace WebStorageSystem.Areas.Products.Models
         {
             get
             {
-                if (Product == null) return "";
-                GeneratedBarcode barcode = BarcodeWriter
-                    .CreateBarcode(InventoryNumber, BarcodeEncoding.Code128)
-                    .ResizeTo(250, 50)
-                .AddAnnotationTextAboveBarcode($"{Product.Manufacturer.Name} {Product.Name} ")
-                    .AddAnnotationTextBelowBarcode(InventoryNumber);
-                return barcode.ToHtmlTag();
+                if (InventoryNumber == null) return "";
+                var barcode = new Barcode(InventoryNumber, Type.Code128);
+                return barcode.GetBase64Image();
             }
         }
 
