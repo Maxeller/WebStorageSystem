@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using WebStorageSystem.Data.Entities.Identities
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -23,38 +29,41 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="LayoutPartial/_LoginPartial"/>
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <div class="dropdown show">
-                                <a class="nav-link text-dark dropdown-toggle" href="#" role="button" id="locationsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Locations
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="locationsDropdown">
-                                    <a class="dropdown-item" asp-area="Locations" asp-controller="Location" asp-action="Index">Locations</a>
-                                    <a class="dropdown-item" asp-area="Locations" asp-controller="LocationType" asp-action="Index">Location Types</a>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <div class="dropdown show">
+                                    <a class="nav-link text-dark dropdown-toggle" href="#" role="button" id="locationsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Locations
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="locationsDropdown">
+                                        <a class="dropdown-item" asp-area="Locations" asp-controller="Location" asp-action="Index">Locations</a>
+                                        <a class="dropdown-item" asp-area="Locations" asp-controller="LocationType" asp-action="Index">Location Types</a>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <div class="dropdown show">
-                                <a class="nav-link text-dark dropdown-toggle" href="#" role="button" id="productsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Products
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="productsDropdown">
-                                    <a class="dropdown-item" asp-area="Products" asp-controller="Manufacturer" asp-action="Index">Manufacturers</a>
-                                    <a class="dropdown-item" asp-area="Products" asp-controller="ProductType" asp-action="Index">Product Types</a>
-                                    <a class="dropdown-item" asp-area="Products" asp-controller="Vendor" asp-action="Index">Vendors</a>
-                                    <a class="dropdown-item" asp-area="Products" asp-controller="Product" asp-action="Index">Products</a>
-                                    <a class="dropdown-item" asp-area="Products" asp-controller="Unit" asp-action="Index">Units</a>
-                                    <a class="dropdown-item" asp-area="Products" asp-controller="Bundle" asp-action="Index">Bundles</a>
+                            </li>
+                            <li class="nav-item">
+                                <div class="dropdown show">
+                                    <a class="nav-link text-dark dropdown-toggle" href="#" role="button" id="productsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Products
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="productsDropdown">
+                                        <a class="dropdown-item" asp-area="Products" asp-controller="Manufacturer" asp-action="Index">Manufacturers</a>
+                                        <a class="dropdown-item" asp-area="Products" asp-controller="ProductType" asp-action="Index">Product Types</a>
+                                        <a class="dropdown-item" asp-area="Products" asp-controller="Vendor" asp-action="Index">Vendors</a>
+                                        <a class="dropdown-item" asp-area="Products" asp-controller="Product" asp-action="Index">Products</a>
+                                        <a class="dropdown-item" asp-area="Products" asp-controller="Unit" asp-action="Index">Units</a>
+                                        <a class="dropdown-item" asp-area="Products" asp-controller="Bundle" asp-action="Index">Bundles</a>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" role="button" asp-area="" asp-controller="Transfer" asp-action="Index">Transfers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" role="button" asp-area="Defects" asp-controller="Defect" asp-action="Index">Defects</a>
-                        </li>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" role="button" asp-area="" asp-controller="Transfer" asp-action="Index">Transfers</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" role="button" asp-area="Defects" asp-controller="Defect" asp-action="Index">Defects</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -66,13 +75,13 @@
             @RenderBody()
         </main>
     </div>
-    <!--
+    @*
     <footer class="border-top footer text-muted">
         <div class="container-fluid">
             &copy; 2020 - WebStorageSystem - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    -->
+    *@
     <partial name="LayoutPartial/_LayoutScriptsPartial"/>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
