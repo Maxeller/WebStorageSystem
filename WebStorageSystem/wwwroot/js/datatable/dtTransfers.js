@@ -150,7 +150,7 @@ $(document).ready(function() {
 
                     if (index === 2) {
                         // Create select element and listener
-                        var select = $('<select><option value="">Select all</option></select>')
+                        var select = $('<th><select><option value="">Select all</option></select></th>')
                             .appendTo($(`#dtTransfer thead tr:last`))
                             .on('change', function() {
                                 column.search($(this).val(), { exact: true }).draw();

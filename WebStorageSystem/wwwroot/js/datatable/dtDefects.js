@@ -187,7 +187,7 @@ $(document).ready(function () {
 
                     if (index === 6) {
                         // Create select element and listener
-                        var select = $('<select><option value="">Show all</option></select>')
+                        var select = $('<th><select><option value="">Show all</option></select></th>')
                             .appendTo($(`#dtDefect thead tr:last`))
                             .on('change', function () {
                                 column
