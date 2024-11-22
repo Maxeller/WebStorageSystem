@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Areas.Products.Data.Entities;
@@ -14,7 +16,14 @@ namespace WebStorageSystem.Data.Database
         {
             await context.Database.MigrateAsync();
 
-            if (configuration["SeedDatabase"] == "0") return;
+            if (configuration["Database:Truncate"] == "1")
+            {
+                await context.Database.GetService<IMigrator>().MigrateAsync("0");
+                await context.Database.GetService<IMigrator>().MigrateAsync();
+            }
+
+            if (configuration["Database:Seed"] == "0") return;
+            
 
             if (context.Manufacturers.Any()) return;
 

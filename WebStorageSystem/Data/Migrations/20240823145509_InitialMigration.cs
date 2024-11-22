@@ -734,7 +734,7 @@ namespace WebStorageSystem.Data.Migrations
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
 
-            migrationBuilder.Sql(@"CREATE VIEW [dbo].UnitBundleView
+            migrationBuilder.Sql(@"CREATE OR ALTER VIEW [dbo].UnitBundleView
 	                                AS 
 		                            SELECT Units.InventoryNumber, Units.Id AS UnitId, NULL AS BundleId, Units.LocationId, Units.DefaultLocationId, Units.HasDefect, 'Unit' AS TableName FROM Units
 		                                WHERE Units.PartOfBundleId IS NULL
