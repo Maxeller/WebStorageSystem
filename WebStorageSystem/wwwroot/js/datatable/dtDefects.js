@@ -186,9 +186,11 @@ $(document).ready(function () {
                     }
 
                     if (index === 6) {
+                        var header = $("<th></th>").appendTo($(`#dtDefect thead tr:last`));
+
                         // Create select element and listener
-                        var select = $('<th><select><option value="">Show all</option></select></th>')
-                            .appendTo($(`#dtDefect thead tr:last`))
+                        var select = $('<select><option value="">Show all</option></select>')
+                            .appendTo(header)
                             .on('change', function () {
                                 column
                                     .search($(this).val(), { exact: true })

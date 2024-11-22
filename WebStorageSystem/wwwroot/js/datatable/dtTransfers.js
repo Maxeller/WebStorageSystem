@@ -149,9 +149,11 @@ $(document).ready(function() {
                     }
 
                     if (index === 2) {
+                        var header = $("<th></th>").appendTo($(`#dtTransfer thead tr:last`));
+
                         // Create select element and listener
-                        var select = $('<th><select><option value="">Select all</option></select></th>')
-                            .appendTo($(`#dtTransfer thead tr:last`))
+                        var select = $('<select><option value="">Select all</option></select>')
+                            .appendTo(header)
                             .on('change', function() {
                                 column.search($(this).val(), { exact: true }).draw();
                             });
@@ -161,7 +163,7 @@ $(document).ready(function() {
                         // Add list of options
                         column.data().unique().sort().each(function(d, j) {
                                 select.append('<option value="' + d + '">' + states[d-1] + '</option>');
-                            });
+                        });
                     }
                 });
             }
