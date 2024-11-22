@@ -30,6 +30,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
             _getQuery = _context
                 .Vendors
                 .OrderBy(vendor => vendor.Name)
+                .Include(vendor => vendor.Units)
                 .AsNoTracking();
 
         }
@@ -129,10 +130,10 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// </summary>
         /// <param name="id">Entry ID</param>
         /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
-        public async Task DeleteVendorAsync(int id)
+        public async Task<(bool Success, string ErrorMessage)> DeleteVendorAsync(int id)
         {
             var vendor = await GetVendorAsync(id, true);
-            await DeleteVendorAsync(vendor);
+            return await DeleteVendorAsync(vendor);
         }
 
         /// <summary>
@@ -140,10 +141,12 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// </summary>
         /// <param name="vendor">Object for deletion</param>
         /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
-        public async Task DeleteVendorAsync(Vendor vendor)
+        public async Task<(bool Success, string ErrorMessage)> DeleteVendorAsync(Vendor vendor)
         {
-            _context.Vendors.Remove(vendor); // TODO: Cascading
+            if (vendor.Units.Any(unit => !unit.IsDeleted)) return (false, "Vendor cannot be deleted.<br/>It's used in existing Unit.");
+            _context.Vendors.Remove(vendor);
             await _context.SaveChangesAsync();
+            return (true, null);
         }
 
         /// <summary>

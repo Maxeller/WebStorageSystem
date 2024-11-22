@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -64,6 +63,8 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         /// <returns>DataTableDbResult</returns>
         public async Task<DataTableDbResult<LocationTypeModel>> GetLocationTypesAsync(DataTableRequest request, bool getDeleted = false)
         {
+            _logger.LogTrace("Entered GetLocationTypesAsync");
+
             var query = _context
                 .LocationTypes
                 .AsNoTracking()

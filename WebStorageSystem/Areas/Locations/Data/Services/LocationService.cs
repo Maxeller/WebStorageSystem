@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Areas.Locations.Models;
+using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Data.Database;
 using WebStorageSystem.Extensions;
 using WebStorageSystem.Models.DataTables;
@@ -31,6 +32,12 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
                 .Locations
                 .OrderBy(location => location.Name)
                 .Include(location => location.LocationType)
+                .Include(location => location.Units)
+                .Include(location => location.DefaultUnits)
+                .Include(location => location.Bundles)
+                .Include(location => location.DefaultBundles)
+                .Include(location => location.OriginTransfers)
+                .Include(location => location.DestinationTransfers)
                 .AsNoTracking();
         }
 
@@ -146,7 +153,10 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
         public async Task<(bool Success, string ErrorMessage)> DeleteLocationAsync(Location location)
         {
-            _context.Locations.Remove(location); // TODO: Determine if cascading
+            if (location.Units.Any(unit => !unit.IsDeleted) || location.DefaultUnits.Any(unit => !unit.IsDeleted)) return (false, "Location cannot be deleted.<br /> It's used as Location in existing Unit(s)");
+            if (location.Bundles.Any(bundle => !bundle.IsDeleted) || location.DefaultBundles.Any(bundle => !bundle.IsDeleted)) return (false, "Location cannot be deleted.<br /> It's used as Location in existing Bundle(s)");
+            if (location.OriginTransfers.Any() || location.DestinationTransfers.Any()) return (false, "Location cannot be deleted.<br /> It's used as Location in existing Transfer(s)");
+            _context.Locations.Remove(location);
             await _context.SaveChangesAsync();
             return (true, null);
         }

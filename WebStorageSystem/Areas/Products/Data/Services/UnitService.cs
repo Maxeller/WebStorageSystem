@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +41,8 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                     .ThenInclude(location => location.LocationType)
                 .Include(unit => unit.Vendor)
                 .Include(unit => unit.PartOfBundle)
+                .Include(unit => unit.Defects)
+                .Include(unit => unit.SubTransfers)
                 .AsNoTracking();
         }
 
@@ -228,7 +231,10 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
         public async Task<(bool Success, string ErrorMessage)> DeleteUnitAsync(Unit unit)
         {
-            _context.Units.Remove(unit); // TODO: Determine if cascading
+            if (unit.PartOfBundle != null) return (false, "Unit cannot be deleted.<br/>It's used in existing Bundle.");
+            if (unit.Defects.Any(defect => !defect.IsDeleted)) return (false, "Unit cannot be deleted.<br/>It's used in existing Defect.");
+            if (unit.SubTransfers.Any()) return (false, "Unit cannot be deleted.<br/>It's used in Transfers.");
+            _context.Units.Remove(unit);
             await _context.SaveChangesAsync();
             return (true, null);
         }

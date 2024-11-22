@@ -33,6 +33,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
                 .Include(product => product.ProductType)
                 .Include(product => product.Manufacturer)
                 .Include(product => product.Image)
+                .Include(product => product.Units)
                 .AsNoTracking();
         }
 
@@ -150,7 +151,8 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
         public async Task<(bool Success, string ErrorMessage)> DeleteProductAsync(Product product)
         {
-            _context.Products.Remove(product); // TODO: Determine if cascading
+            if (product.Units.Any(unit => !unit.IsDeleted)) return (false, "Product cannot be deleted.<br/>It's used in existing Unit.");
+            _context.Products.Remove(product);
             await _context.SaveChangesAsync();
             return (true, null);
         }

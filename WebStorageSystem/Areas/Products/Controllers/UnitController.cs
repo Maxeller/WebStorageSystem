@@ -119,7 +119,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return BadRequest();
-            await _unitService.DeleteUnitAsync((int)id);
+            (bool success, string errorMessage) = await _unitService.DeleteUnitAsync((int)id);
+            if (!success) TempData["Error"] = errorMessage;
             return RedirectToAction(nameof(Index));
         }
 

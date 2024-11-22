@@ -142,7 +142,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
         public async Task<(bool Success, string ErrorMessage)> DeleteManufacturerAsync(Manufacturer manufacturer)
         {
-            if (manufacturer.Products.Count(product => !product.IsDeleted) != 0) return (false, "Manufacturer cannot be deleted.<br/>It's used in existing Product.");
+            if (manufacturer.Products.Any(product => !product.IsDeleted)) return (false, "Manufacturer cannot be deleted.<br/>It's used in existing Product.");
             _context.Manufacturers.Remove(manufacturer);
             await _context.SaveChangesAsync();
             return (true, null);

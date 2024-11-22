@@ -234,7 +234,8 @@ namespace WebStorageSystem.Areas.Defects.Data.Services
         /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
         public async Task<(bool Success, string ErrorMessage)> DeleteDefectAsync(Defect defect)
         {
-            _context.Defects.Remove(defect); // TODO: Determine if cascading
+            if (!defect.Unit.IsDeleted) return (false, "Defect cannot be deleted.<br/>Unit in Defect are in use.");
+            _context.Defects.Remove(defect);
             await _context.SaveChangesAsync();
             return (true, null);
         }

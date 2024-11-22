@@ -183,7 +183,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <returns>Return tuple if deleting was successful, if not error message is provided</returns>
         public async Task<(bool Success, string ErrorMessage)> DeleteBundleAsync(Bundle bundle)
         {
-            if (bundle.BundledUnits.Count(unit => !unit.IsDeleted) != 0) return (false, "Bundle cannot be deleted.<br/>Units used in bundle are in use.");
+            if (bundle.BundledUnits.Any(unit => !unit.IsDeleted)) return (false, "Bundle cannot be deleted.<br/>Units used in bundle are in use.");
             _context.Bundles.Remove(bundle);
             await _context.SaveChangesAsync();
             return (true, null);
