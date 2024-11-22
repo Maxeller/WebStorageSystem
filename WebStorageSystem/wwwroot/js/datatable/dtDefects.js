@@ -113,10 +113,10 @@ $(document).ready(function () {
                     s = s + `<a href="${row.Action.Details}" class="text-primary">Details</a> <br />`;
                     if (!row.IsDeleted) {
                         s = s +
-                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.Name}">Delete</a>`;
+                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Delete}" data-name="${row.DefectNumber}">Delete</a>`;
                     } else {
                         s = s +
-                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.Name}">Restore</a>`;
+                            `<a href="#" class="text-primary" data-toggle="modal" data-target="#deleteRestoreModal" data-url="${row.Action.Restore}" data-name="${row.DefectNumber}">Restore</a>`;
                     }
                     return s;
                 }
