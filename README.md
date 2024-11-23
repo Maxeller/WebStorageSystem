@@ -1,11 +1,25 @@
 # WebStorageSystem
 
+## Requirements
+.NET Core 3.1
+
+MS SQL Server
+
+SendGrid API key for sending emails (if you wanna use email sending)
+
+## How To Run
+Set connection string in appsettings.json
+
+Set name of connection string in Startup.cs at line 42
+
+Setup SendGrid API KEY and email in appsettings.json
+
+Setup Admin account in appsettings.json (or leave default values)
+
 ## Dependencies
 
 ### Server-side Dependencies
 AutoMapper.Extensions.Microsoft.DependencyInjection@8.1.1
-
-BarCode@2024.7.2
 
 BuildBundlerMinifier@3.2.449
 
@@ -32,6 +46,8 @@ Microsoft.EntityFrameworkCore.Tools@5.0.15
 Microsoft.VisualStudio.Web.BrowserLink@2.2.0
 
 Microsoft.VisualStudio.Web.CodeGeneration.Design@3.1.5
+
+NetBarcode@1.7.2
 
 SendGrid@9.29.3
 
