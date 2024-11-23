@@ -158,7 +158,7 @@ $(document).ready(function () {
                     var data = myColumns[index].data;
                     var title = column.header().textContent;
 
-                    if (searchable && isVisible && index !== 6) {
+                    if (searchable && isVisible) {
                         if (data.includes("IsDeleted")) {
                             $("#dtDefect thead tr:last")
                                 .append(`<th><div class="form-check"><input class="form-check-input w-100" type="checkbox" id="searchCheckbox"></div></th>`);
@@ -173,6 +173,30 @@ $(document).ready(function () {
                                 .on("change", function () {
                                     column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
                                 });
+                        } else if (data.includes("State")) {
+                            var header = $("<th></th>").appendTo($(`#dtDefect thead tr:last`));
+
+                            // Create select element and listener
+                            var select = $('<select class="w-100"><option value="">Show all</option></select>')
+                                .appendTo(header)
+                                .on('change', function () {
+                                    column
+                                        .search($(this).val(), { exact: true })
+                                        .draw();
+                                });
+
+                            var states = ["Broken", "In repair", "Repaired"];
+
+                            // Add list of options
+                            column
+                                .data()
+                                .unique()
+                                .sort()
+                                .each(function (d, j) {
+                                    select.append(
+                                        '<option value="' + d + '">' + states[d - 1] + '</option>'
+                                    );
+                                });
                         } else {
                             $("#dtDefect thead tr:last")
                                 .append(`<th><input class="search w-100" placeholder="Search ${title}" /></th>`);
@@ -183,32 +207,6 @@ $(document).ready(function () {
                                     }
                                 });
                         }
-                    }
-
-                    if (index === 6) {
-                        var header = $("<th></th>").appendTo($(`#dtDefect thead tr:last`));
-
-                        // Create select element and listener
-                        var select = $('<select class="w-100"><option value="">Show all</option></select>')
-                            .appendTo(header)
-                            .on('change', function () {
-                                column
-                                    .search($(this).val(), { exact: true })
-                                    .draw();
-                            });
-
-                        var states = ["Broken", "In repair", "Repaired"];
-
-                        // Add list of options
-                        column
-                            .data()
-                            .unique()
-                            .sort()
-                            .each(function (d, j) {
-                                select.append(
-                                    '<option value="' + d + '">' + states[d-1] + '</option>'
-                                );
-                            });
                     }
                 });
             }
