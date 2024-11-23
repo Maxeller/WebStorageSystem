@@ -157,7 +157,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         {
             var vendor = await GetVendorAsync(id, true);
             vendor.IsDeleted = false;
-            _context.Update(vendor); // TODO: Determine if cascading
+            _context.Update(vendor);
             await _context.SaveChangesAsync();
         }
 
@@ -169,8 +169,8 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <returns>True if entry exists</returns>
         public async Task<bool> VendorExistsAsync(int id, bool getDeleted)
         {
-            var vendor = await GetVendorAsync(id, getDeleted);
-            return vendor != null;
+            if (getDeleted) return await _context.Vendors.AsNoTracking().IgnoreQueryFilters().AnyAsync(vendor => vendor.Id == id);
+            return await _context.Vendors.AsNoTracking().AnyAsync(vendor => vendor.Id == id);
         }
     }
 }

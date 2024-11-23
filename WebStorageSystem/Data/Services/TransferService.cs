@@ -101,10 +101,10 @@ namespace WebStorageSystem.Data.Services
                 .Include(st => st.DestinationLocation)
                     .ThenInclude(location => location.LocationType)
                 .Include(st => st.Unit)
-                    .ThenInclude(unit => unit.Product)
-                        .ThenInclude(product => product.ProductType)
+                    //.ThenInclude(unit => unit.Product)
+                        //.ThenInclude(product => product.ProductType)
                 .Include(subTransfer => subTransfer.Unit)
-                    .ThenInclude(unit => unit.Vendor)
+                    //.ThenInclude(unit => unit.Vendor)
                 .Include(subTransfer => subTransfer.Bundle)
                 .AsNoTracking();
 

@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebStorageSystem.Areas.Locations.Data.Entities;
 using WebStorageSystem.Areas.Locations.Models;
-using WebStorageSystem.Areas.Products.Data.Entities;
 using WebStorageSystem.Data.Database;
 using WebStorageSystem.Extensions;
 using WebStorageSystem.Models.DataTables;
@@ -181,7 +180,7 @@ namespace WebStorageSystem.Areas.Locations.Data.Services
         /// <returns>True if entry exists</returns>
         public async Task<bool> LocationExistsAsync(int id, bool getDeleted)
         {
-            if (getDeleted) await _context.Locations.AsNoTracking().IgnoreQueryFilters().AnyAsync(location => location.Id == id);
+            if (getDeleted) return await _context.Locations.AsNoTracking().IgnoreQueryFilters().AnyAsync(location => location.Id == id);
             return await _context.Locations.AsNoTracking().AnyAsync(location => location.Id == id);
         }
     }

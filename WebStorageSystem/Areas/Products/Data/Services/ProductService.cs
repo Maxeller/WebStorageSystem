@@ -177,7 +177,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <returns>True if entry exists</returns>
         public async Task<bool> ProductExistsAsync(int id, bool getDeleted)
         {
-            if (getDeleted) await _context.Products.AsNoTracking().IgnoreQueryFilters().AnyAsync(product => product.Id == id);
+            if (getDeleted) return await _context.Products.AsNoTracking().IgnoreQueryFilters().AnyAsync(product => product.Id == id);
             return await _context.Products.AsNoTracking().AnyAsync(product => product.Id == id);
         }
     }

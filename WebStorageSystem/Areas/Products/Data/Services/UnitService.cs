@@ -259,7 +259,7 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// <returns>True if entry exists</returns>
         public async Task<bool> UnitExistsAsync(int id, bool getDeleted)
         {
-            if (getDeleted) await _context.Units.AsNoTracking().IgnoreQueryFilters().AnyAsync(unit => unit.Id == id);
+            if (getDeleted) return await _context.Units.AsNoTracking().IgnoreQueryFilters().AnyAsync(unit => unit.Id == id);
             return await _context.Units.AsNoTracking().AnyAsync(unit => unit.Id == id);
         }
     }
