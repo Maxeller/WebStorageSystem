@@ -82,7 +82,7 @@ namespace WebStorageSystem.Areas.Defects.Controllers
                 return View(defectModel);
             }
 
-            if (defectModel.Image.ImageFile != null)
+            if (defectModel.Image?.ImageFile != null)
             {
                 var image = await _imageService.AddImageAsync(defectModel.Image, _hostEnvironment.WebRootPath);
                 defectModel.ImageId = image.Id;

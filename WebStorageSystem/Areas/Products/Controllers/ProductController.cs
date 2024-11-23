@@ -74,7 +74,7 @@ namespace WebStorageSystem.Areas.Products.Controllers
                 return View(productModel);
             }
 
-            if (productModel.Image.ImageFile != null)
+            if (productModel.Image?.ImageFile != null)
             {
                 var image = await _imageService.AddImageAsync(productModel.Image, _hostEnvironment.WebRootPath);
                 productModel.ImageId = image.Id;
