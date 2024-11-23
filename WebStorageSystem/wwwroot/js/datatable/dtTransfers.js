@@ -152,7 +152,7 @@ $(document).ready(function() {
                         var header = $("<th></th>").appendTo($(`#dtTransfer thead tr:last`));
 
                         // Create select element and listener
-                        var select = $('<select><option value="">Select all</option></select>')
+                        var select = $('<select class="w-100"><option value="">Select all</option></select>')
                             .appendTo(header)
                             .on('change', function() {
                                 column.search($(this).val(), { exact: true }).draw();

@@ -189,7 +189,7 @@ $(document).ready(function () {
                         var header = $("<th></th>").appendTo($(`#dtDefect thead tr:last`));
 
                         // Create select element and listener
-                        var select = $('<select><option value="">Show all</option></select>')
+                        var select = $('<select class="w-100"><option value="">Show all</option></select>')
                             .appendTo(header)
                             .on('change', function () {
                                 column
