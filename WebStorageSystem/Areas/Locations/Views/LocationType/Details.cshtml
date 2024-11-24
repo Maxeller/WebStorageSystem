@@ -34,13 +34,13 @@
         <dt class="col-sm-2">
             Created Date
         </dt>
-        <dd id="ddCD" class="col-sm-10">
+        <dd id="ddCD" class="col-sm-10">            
             <script type="text/javascript">
                 window.addEventListener('load', function() {
-                    let data = "@Model.CreatedDate";
-                    let date = luxon.DateTime.fromFormat(data, "dd.MM.yyyy H:mm:ss", { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT");
-                    document.getElementById("ddCD").innerHTML = date;
-                })
+                        let data = '@Model.CreatedDate.ToString("s")';
+                        let date = luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT");
+                        document.getElementById("ddCD").innerHTML = date;
+                });
             </script>
         </dd>
         <dt class="col-sm-2">
@@ -49,10 +49,10 @@
         <dd id="ddMD" class="col-sm-10">
             <script type="text/javascript">
                 window.addEventListener('load', function() {
-                    let data = "@Model.ModifiedDate";
-                    let date = luxon.DateTime.fromFormat(data, "dd.MM.yyyy H:mm:ss", { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT");
-                    document.getElementById("ddMD").innerHTML = date;
-                })
+                        let data = '@Model.ModifiedDate.ToString("s")';
+                        let date = luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT");
+                        document.getElementById("ddMD").innerHTML = date;
+                });
             </script>
         </dd>
         <dt class="col-sm-2">
