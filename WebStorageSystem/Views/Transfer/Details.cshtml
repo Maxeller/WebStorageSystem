@@ -27,8 +27,14 @@
         <dt class="col-sm-2">
             Transfer Time
         </dt>
-        <dd class="col-sm-10">
-            @Model.TransferTime
+        <dd id="ddTT" class="col-sm-10">
+            <script type="text/javascript">
+                window.addEventListener('load', function () {
+                    let data = "@Model.TransferTime";
+                    let date = luxon.DateTime.fromFormat(data, "dd.MM.yyyy H:mm:ss", { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT");
+                    document.getElementById("ddTT").innerHTML = date;
+                })
+            </script>
         </dd>
         <dt class="col-sm-2">
             User 
@@ -59,8 +65,14 @@
         <dt class="col-sm-2">
             Created Date
         </dt>
-        <dd class="col-sm-10">
-            @Model.CreatedDate
+        <dd id="ddCD" class="col-sm-10">
+            <script type="text/javascript">
+                window.addEventListener('load', function() {
+                    let data = "@Model.CreatedDate";
+                    let date = luxon.DateTime.fromFormat(data, "dd.MM.yyyy H:mm:ss", { zone: "utc" }).toLocal().toFormat("dd.LL.yyyy TT");
+                    document.getElementById("ddCD").innerHTML = date;
+                })
+            </script>
         </dd>
     </dl>
     <input id="MainTransferId" type="hidden" asp-for="Id" />

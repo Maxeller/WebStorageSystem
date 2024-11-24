@@ -14,7 +14,7 @@ $(document).ready(function() {
 
 // Sets current time for Last Check property in Unit
 $("#set-current-time").click(function() {
-    $("#dt-lastCheck").val(moment().format("YYYY-MM-DDTHH:mm"));
+    $("#dt-lastCheck").val(luxon.DateTime.local().toISO());
 });
 
 //#region MODALS
