@@ -56,7 +56,7 @@ namespace WebStorageSystem.Data.Database
                     .HasMany(manufacturer => manufacturer.Products)
                     .WithOne(product => product.Manufacturer)
                     .IsRequired()
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
                 entity.HasQueryFilter(manufacturer => !manufacturer.IsDeleted);
                 entity.ToTable("Manufacturers");
             });
@@ -66,7 +66,7 @@ namespace WebStorageSystem.Data.Database
                     .HasMany(productType => productType.Products)
                     .WithOne(product => product.ProductType)
                     .IsRequired()
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
                 entity.HasQueryFilter(productType => !productType.IsDeleted);
                 entity.ToTable("ProductTypes");
             });
@@ -75,7 +75,7 @@ namespace WebStorageSystem.Data.Database
                 entity
                     .HasMany(vendor => vendor.Units)
                     .WithOne(unit => unit.Vendor)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
                 entity.HasQueryFilter(vendor => !vendor.IsDeleted);
                 entity.ToTable("Vendors");
             });
@@ -86,7 +86,7 @@ namespace WebStorageSystem.Data.Database
                     .HasMany(product => product.Units)
                     .WithOne(unit => unit.Product)
                     .IsRequired()
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
                 entity.HasQueryFilter(product => !product.IsDeleted);
                 entity.ToTable("Products");
             });
@@ -141,7 +141,7 @@ namespace WebStorageSystem.Data.Database
                     .HasOne(location => location.LocationType)
                     .WithMany(locationType => locationType.Locations)
                     .IsRequired()
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
                 entity.HasQueryFilter(location => !location.IsDeleted);
                 entity.ToTable("Locations");
             });
