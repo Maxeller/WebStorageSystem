@@ -133,7 +133,7 @@ namespace WebStorageSystem
             var admin = new ApplicationUser
             {
                 UserName = Configuration["Admin:UserName"],
-                Email = Configuration["Admin:UserName"],
+                Email = Configuration["Admin:UserName"]
             };
             
             var user = await userManager.FindByEmailAsync(Configuration["Admin:UserName"]);
@@ -193,7 +193,7 @@ namespace WebStorageSystem
             {
                 if (env.IsDevelopment())
                 {
-                    options.EnableSensitiveDataLogging(true);
+                    options.EnableSensitiveDataLogging();
                     options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
                 }
 
