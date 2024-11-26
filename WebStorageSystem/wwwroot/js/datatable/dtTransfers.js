@@ -361,45 +361,36 @@ $(document).ready(function() {
                     if (searchable && isVisible) {
                         if (data.includes("HasDefect")) {
                             $("#dtCreateTransfer thead tr:last")
-                                .append(
-                                    `<th><div class="form-check"><input class="form-check-input w-100" type="checkbox" id="searchCheckbox"></div></th>`);
+                                .append(`<th><div class="form-check"><input class="form-check-input w-100" type="checkbox" id="searchCheckbox"></div></th>`);
                             $("#dtCreateTransfer thead tr:last th:last input")
-                                .on("click",
-                                    function() {
-                                        column.search(this.checked).draw();
-                                    });
+                                .on("click", function() {
+                                    column.search(this.checked).draw();
+                                });
                         } else if (data.includes("Date")) {
                             $("#dtCreateTransfer thead tr:last")
-                                .append(
-                                    `<th><input type="datetime-local" id="searchDate" placeholder="Search ${title
-                                    }" /></th>`);
+                                .append(`<th><input type="datetime-local" id="searchDate" placeholder="Search ${title}" /></th>`);
                             $("#dtCreateTransfer thead tr:last th:last input")
-                                .on("change",
-                                    function() {
-                                        column.search(luxon.DateTime.fromISO(this.value).toUTC().toString())
-                                            .draw(); // convert date from local time to UTC
-                                    });
+                                .on("change", function () {
+                                    column.search(luxon.DateTime.fromISO(this.value).toUTC().toString()).draw(); // convert date from local time to UTC
+                                });
                         } else {
                             $("#dtCreateTransfer thead tr:last")
                                 .append(`<th><input class="search w-100" placeholder="Search ${title}" /></th>`);
                             $("#dtCreateTransfer thead tr:last th:last input")
-                                .on("keyup change clear",
-                                    function() {
+                                .on("keyup change clear", function() {
                                         if (column.search() !== this.value) {
                                             column.search(this.value).draw();
                                         }
-                                    });
+                                });
                         }
                     }
                 });
             }
         });
 
-        $("#dtCreateTransfer tbody").on("click",
-            "tr",
-            function() {
+        $("#dtCreateTransfer tbody").on("click", "tr", function() {
                 $(this).toggleClass("selected");
-            });
+        });
 
         $('input[name="btnCreateTransfer"]').click(function() {
             var selectedRows = table.rows(".selected").data();
