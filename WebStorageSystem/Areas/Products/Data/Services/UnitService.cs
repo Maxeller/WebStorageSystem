@@ -96,8 +96,9 @@ namespace WebStorageSystem.Areas.Products.Data.Services
         /// Gets entries from DB that are not in Bundle
         /// </summary>
         /// <returns>Collection of entities</returns>
-        public async Task<IEnumerable<Unit>> GetUnitsNotInBundleAsync()
+        public async Task<IEnumerable<Unit>> GetUnitsNotInBundleAsync(bool getDeleted = false)
         {
+            if (getDeleted) return await _getQuery.Where(u => u.PartOfBundle == null).IgnoreQueryFilters().ToListAsync();
             return await _getQuery.Where(u => u.PartOfBundle == null).ToListAsync();
         }
 

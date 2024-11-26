@@ -52,5 +52,7 @@ namespace WebStorageSystem.Areas.Products.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public override Dictionary<string, string> Action { get; set; }
         public override int Id { get; set; }
+
+        public string ManufacturerNameType => $"{Manufacturer?.Name} {Name} ({ProductType?.Name})";
     }
 }

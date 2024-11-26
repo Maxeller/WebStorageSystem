@@ -183,21 +183,21 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             var products = await _productService.GetProductsAsync(getDeleted);
             var pModels = _mapper.Map<IEnumerable<ProductModel>>(products);
-            ViewBag.Products = new SelectList(pModels, "Id", "Name", selectedProduct);
+            ViewBag.Products = new SelectList(pModels, "Id", "ManufacturerNameType", selectedProduct);
         }
 
         private async Task CreateLocationDropdownList(bool getDeleted, object selectedLocation)
         {
             var locations = await _locationService.GetLocationsAsync(getDeleted);
             var lModels = _mapper.Map<IEnumerable<LocationModel>>(locations);
-            ViewBag.Locations = new SelectList(lModels, "Id", "Name", selectedLocation);
+            ViewBag.Locations = new SelectList(lModels, "Id", "NameType", selectedLocation);
         }
 
         private async Task CreateDefaultLocationDropdownList(bool getDeleted, object selectedLocation)
         {
             var locations = await _locationService.GetLocationsAsync(getDeleted);
             var lModels = _mapper.Map<IEnumerable<LocationModel>>(locations);
-            ViewBag.DefaultLocations = new SelectList(lModels, "Id", "Name", selectedLocation);
+            ViewBag.DefaultLocations = new SelectList(lModels, "Id", "NameType", selectedLocation);
         }
 
         private async Task CreateVendorDropdownList(bool getDeleted, object selectedVendor)

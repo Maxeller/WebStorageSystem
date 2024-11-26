@@ -77,14 +77,7 @@ namespace WebStorageSystem.Areas.Products.Models
         [JsonIgnore]
         public IEnumerable<DefectModel> Defects { get; set; }
 
-        public string InventoryNumberProduct
-        {
-            get
-            {
-                if (Product == null) return InventoryNumber;
-                return InventoryNumber + " (" + Product.Name + ")";
-            }
-        }
+        public string InventoryNumberProduct => $"{Product?.Manufacturer?.Name} {Product?.Name} ({Product?.ProductType?.Name}) - {InventoryNumber}";
 
         [Display(Name = "Creation Date")]
         public override DateTime CreatedDate { get; set; }

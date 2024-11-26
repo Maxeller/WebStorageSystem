@@ -57,5 +57,7 @@ namespace WebStorageSystem.Areas.Locations.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull), XmlIgnore]
         public override Dictionary<string, string> Action { get; set; }
         public override int Id { get; set; }
+
+        public string NameType => $"{Name} ({LocationType?.Name})";
     }
 }

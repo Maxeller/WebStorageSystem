@@ -187,8 +187,8 @@ namespace WebStorageSystem.Areas.Products.Controllers
         {
             var locations = await _locationService.GetLocationsAsync(getDeleted);
             var lModels = _mapper.Map<ICollection<LocationModel>>(locations);
-            ViewBag.Locations = new SelectList(lModels, "Id", "Name", selectedLocation);
-            ViewBag.DefaultLocations = new SelectList(lModels, "Id", "Name", selectedDefaultLocation);
+            ViewBag.Locations = new SelectList(lModels, "Id", "NameType", selectedLocation);
+            ViewBag.DefaultLocations = new SelectList(lModels, "Id", "NameType", selectedDefaultLocation);
         }
     }
 }

@@ -23,15 +23,12 @@ namespace WebStorageSystem.Controllers
     {
         private readonly TransferService _transferService;
         private readonly LocationService _locationService;
-        private readonly UnitService _unitService;
         private readonly IMapper _mapper;
 
-        public TransferController(TransferService transferService, LocationService locationService, UnitService unitService,
-            IMapper mapper)
+        public TransferController(TransferService transferService, LocationService locationService, IMapper mapper)
         {
             _transferService = transferService;
             _locationService = locationService;
-            _unitService = unitService;
             _mapper = mapper;
         }
 
@@ -170,7 +167,7 @@ namespace WebStorageSystem.Controllers
         {
             var locations = await _locationService.GetLocationsAsync(getDeleted);
             var lModels = _mapper.Map<ICollection<LocationModel>>(locations);
-            ViewBag.Locations = new SelectList(lModels, "Id", "Name", selectedUnits);
+            ViewBag.Locations = new SelectList(lModels, "Id", "NameType", selectedUnits);
         }
     }
 }
