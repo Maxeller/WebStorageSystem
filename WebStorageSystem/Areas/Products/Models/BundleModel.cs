@@ -48,7 +48,7 @@ namespace WebStorageSystem.Areas.Products.Models
             get
             {
                 if (InventoryNumber == null) return "";
-                var barcode = new Barcode(InventoryNumber, Type.Code128);
+                var barcode = new Barcode(InventoryNumber, Type.Code128, true);
                 return barcode.GetBase64Image();
             }
         }
