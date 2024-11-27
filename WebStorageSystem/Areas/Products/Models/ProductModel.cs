@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 using WebStorageSystem.Models;
 
 namespace WebStorageSystem.Areas.Products.Models
@@ -53,6 +54,7 @@ namespace WebStorageSystem.Areas.Products.Models
         public override Dictionary<string, string> Action { get; set; }
         public override int Id { get; set; }
 
+        [JsonIgnore, XmlIgnore]
         public string ManufacturerNameType => $"{Manufacturer?.Name} {Name} ({ProductType?.Name})";
     }
 }

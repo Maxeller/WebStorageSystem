@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 using WebStorageSystem.Areas.Defects.Models;
 using WebStorageSystem.Areas.Locations.Models;
 using WebStorageSystem.Models;
@@ -77,8 +78,6 @@ namespace WebStorageSystem.Areas.Products.Models
         [JsonIgnore]
         public IEnumerable<DefectModel> Defects { get; set; }
 
-        public string InventoryNumberProduct => $"{Product?.Manufacturer?.Name} {Product?.Name} ({Product?.ProductType?.Name}) - {InventoryNumber}";
-
         [Display(Name = "Creation Date")]
         public override DateTime CreatedDate { get; set; }
 
@@ -94,5 +93,8 @@ namespace WebStorageSystem.Areas.Products.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public override Dictionary<string, string> Action { get; set; }
         public override int Id { get; set; }
+
+        [JsonIgnore, XmlIgnore]
+        public string InventoryNumberProduct => $"{Product?.Manufacturer?.Name} {Product?.Name} ({Product?.ProductType?.Name}) - {InventoryNumber}";
     }
 }
