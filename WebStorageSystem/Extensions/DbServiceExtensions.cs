@@ -163,7 +163,7 @@ namespace WebStorageSystem.Extensions
                     method = typeof(bool).GetMethod("Equals", new[] { typeof(bool) });
                     constant = Expression.Constant(b, typeof(bool));
                 }
-                else if (int.TryParse(searchValue, out int i) && columnName == "State")
+                else if (int.TryParse(searchValue, out int i) && columnName.Contains("State"))
                 {
                     switch (entityType.Name)
                     {
@@ -174,7 +174,7 @@ namespace WebStorageSystem.Extensions
                             constant = Expression.Constant(searchAsEnum, typeof(Object));
                             break;
                         }
-                        case "MainTransfer":
+                        case "SubTransfer":
                         {
                             method = typeof(TransferState).GetMethod("Equals", new[] { typeof(TransferState) });
                             var searchAsEnum = Enum.ToObject(typeof(TransferState), i);
