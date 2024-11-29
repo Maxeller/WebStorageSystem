@@ -11,21 +11,10 @@ $(document).ready(function() {
                 render: $.fn.dataTable.render.text()
             },
             {
-                data: "MainTransfer.TransferTime",
-                searchable: true,
-                orderable: true,
-                responsivePriority: 21,
-                render: function(data, type, row) {
-                    if (row.MainTransfer.State == 1) return "Not Yet Transferred";
-                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal()
-                        .toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
-                }
-            },
-            {
                 data: "MainTransfer.State",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 20,
+                responsivePriority: 2,
                 render: function(data, type, row) {
                     switch (data) {
                     case (1):
@@ -35,6 +24,17 @@ $(document).ready(function() {
                     default:
                         return "Unknown";
                     }
+                }
+            },
+            {
+                data: "MainTransfer.TransferTime",
+                searchable: true,
+                orderable: true,
+                responsivePriority: 21,
+                render: function (data, type, row) {
+                    if (row.MainTransfer.State == 1) return "Not Yet Transferred";
+                    return luxon.DateTime.fromISO(data, { zone: "utc" }).toLocal()
+                        .toFormat("dd.LL.yyyy TT"); // Formats data from UTC to local time
                 }
             },
             {
@@ -51,21 +51,21 @@ $(document).ready(function() {
                 data: "OriginLocation.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 15,
+                responsivePriority: 10,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "DestinationLocation.Name",
                 searchable: true,
                 orderable: true,
-                responsivePriority: 16,
+                responsivePriority: 11,
                 render: $.fn.dataTable.render.text()
             },
             {
                 data: "UnitBundleView.InventoryNumber",
                 searchable: true,
                 orderable: false,
-                responsivePriority: 2,
+                responsivePriority: 3,
                 defaultContent: "",
                 render: function(data, type, row) {
                     if (row.BundleId == null) {
