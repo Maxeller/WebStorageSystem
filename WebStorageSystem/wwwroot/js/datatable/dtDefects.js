@@ -52,9 +52,9 @@ $(document).ready(function () {
                 responsivePriority: 3,
                 render: function (data, type, row) {
                     switch (data) {
-                        case (1): return "Broken";
-                        case (2): return "In repair";
-                        case (3): return "Repaired";
+                        case (0): return "Broken";
+                        case (1): return "In repair";
+                        case (2): return "Repaired";
                         default: return "Unknown";
                     }
                 }
@@ -67,7 +67,7 @@ $(document).ready(function () {
                 render: $.fn.dataTable.render.text()
             },
             {
-                data: "ReportedByUser.UserName",
+                data: "CreatedByUser.UserName",
                 searchable: true,
                 orderable: true,
                 responsivePriority: 50,
@@ -77,7 +77,7 @@ $(document).ready(function () {
                 }
             },
             {
-                data: "CausedByUser.UserName",
+                data: "DiscoveredByUser.UserName",
                 searchable: true,
                 orderable: true,
                 responsivePriority: 51,
@@ -194,7 +194,7 @@ $(document).ready(function () {
                                 .sort()
                                 .each(function (d, j) {
                                     select.append(
-                                        '<option value="' + d + '">' + states[d - 1] + '</option>'
+                                        '<option value="' + d + '">' + states[d] + '</option>'
                                     );
                                 });
                         } else {

@@ -18,12 +18,13 @@ namespace WebStorageSystem.Areas.Defects.Data.Entities
         [Required]
         public int UnitId { get; set; }
 
-        public ApplicationUser ReportedByUser { get; set; }
-        [Required]
-        public string ReportedByUserId { get; set; }
+        public ApplicationUser CreatedByUser { get; set; }
 
-        public ApplicationUser CausedByUser { get; set; }
-        public string CausedByUserId { get; set; }
+        [Required]
+        public string CreatedByUserId { get; set; } // Set automatically while creating
+
+        public ApplicationUser DiscoveredByUser { get; set; }
+        public string DiscoveredByUserId { get; set; }
             
         [Required, StringLength(500)]
         public string Description { get; set; }

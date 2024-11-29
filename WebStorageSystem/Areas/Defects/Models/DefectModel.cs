@@ -18,14 +18,14 @@ namespace WebStorageSystem.Areas.Defects.Models
         [Required, DisplayName("Unit")] 
         public int UnitId { get; set; }
 
-        public ApplicationUserModel ReportedByUser { get; set; }
+        public ApplicationUserModel CreatedByUser { get; set; }
 
-        [DisplayName("Reported by")]
-        public string ReportedByUserId { get; set; }
+        [DisplayName("Created by")]
+        public string CreatedByUserId { get; set; }
 
-        public ApplicationUserModel CausedByUser { get; set; }
-        [DisplayName("Caused by")]
-        public string CausedByUserId { get; set; }
+        public ApplicationUserModel DiscoveredByUser { get; set; }
+        [DisplayName("Discovered by")]
+        public string DiscoveredByUserId { get; set; }
 
         [Required]
         public string Description { get; set; }

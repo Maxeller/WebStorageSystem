@@ -9,8 +9,8 @@ namespace WebStorageSystem.Data.Entities.Identities
     public class ApplicationUser : IdentityUser
     {
         public IEnumerable<MainTransfer> Transfers { get; set; }
-        public IEnumerable<Defect> ReportedDefects { get; set; }
-        public IEnumerable<Defect> CausedDefects { get; set; }
+        public IEnumerable<Defect> CreatedDefects { get; set; }
+        public IEnumerable<Defect> DiscoveredDefects { get; set; }
         public ICollection<Location> SubscribedLocations { get; set; }
     }
 }

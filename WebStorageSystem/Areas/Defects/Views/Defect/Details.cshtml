@@ -41,16 +41,16 @@
             @Model.State
         </dd>
         <dt class="col-sm-2">
-            Reported by
+            Created by
         </dt>
         <dd class="col-sm-10">
-            @Model.ReportedByUser.UserName
+            @Model.CreatedByUser.UserName
         </dd>
         <dt class="col-sm-2">
-            Cause by
+            Discovered by
         </dt>
         <dd class="col-sm-10">
-            @if (Model.CausedByUser != null) @Model.CausedByUser.UserName
+            @if (Model.DiscoveredByUser != null) @Model.DiscoveredByUser.UserName
         </dd>
         <partial name="ImageUpload/View" model="Model.Image"/>
         <dt class="col-sm-2">

@@ -27,11 +27,11 @@
                 <span asp-validation-for="UnitId" class="text-danger" />
             </div>
             <div class="form-group">
-                <label asp-for="CausedByUserId" class="control-label"></label>
-                <select asp-for="CausedByUserId" class="form-control selectTwo" asp-items="ViewBag.Users" data-placeholder="Select User">
+                <label asp-for="DiscoveredByUserId" class="control-label"></label>
+                <select asp-for="DiscoveredByUserId" class="form-control selectTwo" asp-items="ViewBag.Users" data-placeholder="Select User">
                     <option value="">-- Select User --</option>
                 </select>
-                <span asp-validation-for="CausedByUserId" class="text-danger" />
+                <span asp-validation-for="DiscoveredByUserId" class="text-danger" />
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
@@ -67,7 +67,7 @@
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="CreatedDate" />
             <input type="hidden" asp-for="RowVersion" />
-            <input type="hidden" asp-for="ReportedByUserId" />
+            <input type="hidden" asp-for="CreatedByUserId" />
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)

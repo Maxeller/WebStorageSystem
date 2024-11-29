@@ -45,10 +45,10 @@ namespace WebStorageSystem.Models
         public IEnumerable<MainTransferModel> Transfers { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<DefectModel> ReportedDefects { get; set; }
+        public IEnumerable<DefectModel> CreatedDefects { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<DefectModel> CausedDefects { get; set; }
+        public IEnumerable<DefectModel> DiscoveredDefects { get; set; }
 
         [JsonIgnore]
         public IEnumerable<LocationModel> SubscribedLocations { get; set; }

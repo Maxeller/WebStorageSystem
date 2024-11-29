@@ -206,13 +206,13 @@ namespace WebStorageSystem.Data.Database
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
                 entity
-                    .HasOne(defect => defect.ReportedByUser)
-                    .WithMany(user => user.ReportedDefects)
+                    .HasOne(defect => defect.CreatedByUser)
+                    .WithMany(user => user.CreatedDefects)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
                 entity
-                    .HasOne(defect => defect.CausedByUser)
-                    .WithMany(user => user.CausedDefects)
+                    .HasOne(defect => defect.DiscoveredByUser)
+                    .WithMany(user => user.DiscoveredDefects)
                     .OnDelete(DeleteBehavior.Restrict);
                 entity.HasQueryFilter(defect => !defect.IsDeleted);
                 entity.ToTable("Defects");

@@ -46,8 +46,8 @@ namespace WebStorageSystem.Areas.Defects.Data.Services
                 .Include(defect => defect.Unit)
                     .ThenInclude(unit => unit.Location)
                         .ThenInclude(location => location.LocationType)
-                .Include(defect => defect.ReportedByUser)
-                .Include(defect => defect.CausedByUser)
+                .Include(defect => defect.CreatedByUser)
+                .Include(defect => defect.DiscoveredByUser)
                 .Include(defect => defect.Image)
                 .AsNoTracking();
         }
@@ -94,8 +94,8 @@ namespace WebStorageSystem.Areas.Defects.Data.Services
                 .Include(defect => defect.Unit)
                     .ThenInclude(unit => unit.Location)
                         //.ThenInclude(location => location.LocationType)
-                .Include(defect => defect.ReportedByUser)
-                .Include(defect => defect.CausedByUser)
+                .Include(defect => defect.CreatedByUser)
+                .Include(defect => defect.DiscoveredByUser)
                 .AsNoTracking();
 
             // SEARCH
@@ -123,7 +123,7 @@ namespace WebStorageSystem.Areas.Defects.Data.Services
         public async Task AddDefectAsync(Defect defect)
         {
             var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User); // Gets current user from HttpContext
-            defect.ReportedByUserId = currentUser.Id;
+            defect.CreatedByUserId = currentUser.Id;
             _context.Defects.Add(defect);
 
             var defectUnit = await _context.Units.FirstOrDefaultAsync(u => u.Id == defect.UnitId);
