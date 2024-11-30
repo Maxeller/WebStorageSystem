@@ -52,9 +52,9 @@ $(document).ready(function () {
                 responsivePriority: 3,
                 render: function (data, type, row) {
                     switch (data) {
-                        case (0): return "Broken";
-                        case (1): return "In repair";
-                        case (2): return "Repaired";
+                        case (1): return "Broken";
+                        case (2): return "In repair";
+                        case (3): return "Repaired";
                         default: return "Unknown";
                     }
                 }
@@ -194,7 +194,7 @@ $(document).ready(function () {
                                 .sort()
                                 .each(function (d, j) {
                                     select.append(
-                                        '<option value="' + d + '">' + states[d] + '</option>'
+                                        '<option value="' + d + '">' + states[d-1] + '</option>'
                                     );
                                 });
                         } else {

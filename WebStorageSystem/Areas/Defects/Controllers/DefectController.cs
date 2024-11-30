@@ -66,14 +66,14 @@ namespace WebStorageSystem.Areas.Defects.Controllers
         {
             await CreateUnitDropdownList(getDeleted);
             await CreateUserDropdownList(getDeleted);
-            return View();
+            return View(new DefectModel() { State = DefectState.Broken });
         }
         
         // POST: Defects/Defect/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin, Warehouse")]
-        public async Task<IActionResult> Create([Bind("DefectNumber,UnitId,CausedByUserId,Description,Notes,Image,IsDeleted")] DefectModel defectModel, [FromQuery] bool getDeleted = false)
+        public async Task<IActionResult> Create([Bind("DefectNumber,UnitId,DiscoveredByUserId,Description,Notes,Image,IsDeleted")] DefectModel defectModel, [FromQuery] bool getDeleted = false)
         {
             if (!ModelState.IsValid)
             {
@@ -113,7 +113,7 @@ namespace WebStorageSystem.Areas.Defects.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin, Warehouse")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DefectNumber,UnitId,ReportedByUserId,CausedByUserId,Description,Notes,Image,ImageId,State,CreatedDate,IsDeleted,RowVersion")] DefectModel defectModel, [FromQuery] bool getDeleted)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DefectNumber,UnitId,CreatedByUserId,DiscoveredByUserId,Description,Notes,Image,ImageId,State,CreatedDate,IsDeleted,RowVersion")] DefectModel defectModel, [FromQuery] bool getDeleted)
         {
             if (id != defectModel.Id) return NotFound();
             if (!ModelState.IsValid)
@@ -123,7 +123,7 @@ namespace WebStorageSystem.Areas.Defects.Controllers
                 return View(defectModel);
             }
 
-            if (defectModel.Image.ImageFile != null)
+            if (defectModel.Image?.ImageFile != null)
             {
                 var image = await _imageService.AddImageAsync(defectModel.Image, _hostEnvironment.WebRootPath);
                 defectModel.ImageId = image.Id;
