@@ -934,7 +934,7 @@ $(document).ready(function () {
             columns: myColumns,
             
             searchCols: [
-                null, null, null, null, null, null, null, null, null, null, null, { search: "false" }, { search: "false" }, null
+                null, null, null, null, null, null, null, null, null, null, null, null, { search: "false" }, null
             ],
             order: [[0, "asc"]],
             initComplete: function () {
