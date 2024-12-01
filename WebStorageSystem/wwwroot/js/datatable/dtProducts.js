@@ -312,7 +312,12 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 responsivePriority: 22,
-                render: $.fn.dataTable.render.text()
+                render: function (data, type, row) {
+                    if (data === null) return null;
+                    let clean = $.fn.dataTable.render.text().display(data);
+                    let link = "<a href=" + clean +">LINK</a>";
+                    return link;
+                }
             },
             {
                 data: "CreatedDate",
@@ -464,7 +469,12 @@ $(document).ready(function () {
                 searchable: true,
                 orderable: true,
                 responsivePriority: 31,
-                render: $.fn.dataTable.render.text()
+                render: function (data, type, row) {
+                    if (data === null) return null;
+                    let clean = $.fn.dataTable.render.text().display(data);
+                    let link = "<a href=" + clean + ">LINK</a>";
+                    return link;
+                }
             },
             {
                 data: "ProductType.Name",
