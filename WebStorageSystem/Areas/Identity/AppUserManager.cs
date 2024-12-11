@@ -15,7 +15,7 @@ namespace WebStorageSystem.Areas.Identity
     public class AppUserManager : UserManager<ApplicationUser>
     {
         private readonly AppDbContext _context;
-        private readonly ILogger<AppUserManager> _logger;
+        private readonly ILogger<UserManager<ApplicationUser>> _logger;
 
         public AppUserManager(IUserStore<ApplicationUser> store, IOptions<IdentityOptions> optionsAccessor, IPasswordHasher<ApplicationUser> passwordHasher, IEnumerable<IUserValidator<ApplicationUser>> userValidators, IEnumerable<IPasswordValidator<ApplicationUser>> passwordValidators, ILookupNormalizer keyNormalizer, IdentityErrorDescriber errors, IServiceProvider services, ILogger<UserManager<ApplicationUser>> logger, AppDbContext context) : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
         {
