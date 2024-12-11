@@ -15,10 +15,12 @@ namespace WebStorageSystem.Areas.Identity
     public class AppUserManager : UserManager<ApplicationUser>
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<AppUserManager> _logger;
 
         public AppUserManager(IUserStore<ApplicationUser> store, IOptions<IdentityOptions> optionsAccessor, IPasswordHasher<ApplicationUser> passwordHasher, IEnumerable<IUserValidator<ApplicationUser>> userValidators, IEnumerable<IPasswordValidator<ApplicationUser>> passwordValidators, ILookupNormalizer keyNormalizer, IdentityErrorDescriber errors, IServiceProvider services, ILogger<UserManager<ApplicationUser>> logger, AppDbContext context) : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<List<Location>> GetSubscribedLocations(ApplicationUser user)
@@ -69,7 +71,7 @@ namespace WebStorageSystem.Areas.Identity
             }
             catch (Exception ex)
             {
-                //TODO logger
+                _logger.LogError(ex, ex.Message);
                 return IdentityResult.Failed();
             }
         }
