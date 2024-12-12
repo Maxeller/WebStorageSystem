@@ -73,7 +73,7 @@ namespace WebStorageSystem.Areas.Defects.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin, Warehouse")]
-        public async Task<IActionResult> Create([Bind("DefectNumber,UnitId,DiscoveredByUserId,Description,Notes,Image,IsDeleted")] DefectModel defectModel, [FromQuery] bool getDeleted = false)
+        public async Task<IActionResult> Create([Bind("DefectNumber,UnitId,DiscoveredByUserId,Description,Notes,State,Image,IsDeleted")] DefectModel defectModel, [FromQuery] bool getDeleted = false)
         {
             if (!ModelState.IsValid)
             {
