@@ -79,7 +79,6 @@ namespace WebStorageSystem.Extensions
             return newQuery;
         }
 
-        // TODO: Merge with OrderBy() ?
         /// <summary>
         /// Sorts the elements of a sequence in descending order according to a property.
         /// </summary>
